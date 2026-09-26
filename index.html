@@ -1,0 +1,83 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>LABG Suite</title>
+<meta name="description" content="Aplicaciones científicas libres para la investigación y la docencia en ciencias agrícolas y biológicas. Corren en el navegador, sin instalar nada.">
+<link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:ital,wght@0,400;0,500;0,600;1,400&family=IBM+Plex+Serif:ital,wght@0,500;0,600;0,700;1,500&display=swap">
+<link rel="stylesheet" href="assets/css/site.css">
+<script src="data/config.js"></script>
+<script src="data/apps.js"></script>
+<script src="data/publicaciones.js"></script>
+<script src="data/blog.js"></script>
+<script src="assets/js/site.js"></script>
+</head>
+<body data-page="inicio">
+<main>
+  <section class="hero">
+    <div class="wrap hero-grid">
+      <div class="hero-copy">
+        <span class="eyebrow">Ciencias agrícolas y biológicas · Software libre</span>
+        <h1>Software científico libre para el <em>campo</em> y el laboratorio</h1>
+        <p class="lead">Aplicaciones para diseñar experimentos, analizar datos, estudiar la diversidad genética y modelar la distribución de especies. Se abren en el navegador y tus datos nunca salen de tu computadora.</p>
+        <div class="hero-actions">
+          <a class="btn btn-primary" href="aplicaciones.html">Explorar las aplicaciones</a>
+          <a class="btn btn-ghost" href="descargas.html">Manuales y descargas</a>
+        </div>
+        <div class="facts">
+          <span><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg>Sin instalación</span>
+          <span><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg>Sin cuentas ni pagos</span>
+          <span><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg>Español e inglés</span>
+          <span><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg>Código abierto (GPL)</span>
+        </div>
+      </div>
+      <div class="stack" id="stack" aria-label="Capturas de algunas aplicaciones"></div>
+    </div>
+  </section>
+
+  <section class="section" style="padding-bottom:0">
+    <div class="wrap">
+      <div class="numbers">
+        <div><b id="nApps">–</b><span>aplicaciones en la suite</span></div>
+        <div><b id="nOnline">–</b><span>ya disponibles en línea</span></div>
+        <div><b id="nDoi">–</b><span>con DOI en Zenodo</span></div>
+        <div><b id="nPubs">–</b><span>publicaciones científicas</span></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="wrap">
+      <div class="section-head">
+        <div><span class="eyebrow">Destacadas</span><h2>Empieza por aquí</h2></div>
+        <a class="btn btn-ghost" href="aplicaciones.html">Ver el catálogo completo →</a>
+      </div>
+      <div class="grid-apps" id="featured"></div>
+    </div>
+  </section>
+
+  <section class="section band">
+    <div class="wrap">
+      <div class="section-head">
+        <div><span class="eyebrow">Áreas</span><h2>Una herramienta para cada etapa de la investigación</h2></div>
+      </div>
+      <div class="areas" id="areas"></div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="wrap">
+      <div class="section-head">
+        <div><span class="eyebrow">Blog</span><h2>Novedades y guías</h2></div>
+        <a class="btn btn-ghost" href="blog.html">Todas las entradas →</a>
+      </div>
+      <div class="posts" id="latest"></div>
+    </div>
+  </section>
+</main>
+</body>
+</html>

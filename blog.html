@@ -1,0 +1,42 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Blog · LABG Suite</title>
+<meta name="description" content="Novedades, guías de uso y talleres de la suite LABG.">
+<link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:ital,wght@0,400;0,500;0,600;1,400&family=IBM+Plex+Serif:ital,wght@0,500;0,600;0,700;1,500&display=swap">
+<link rel="stylesheet" href="assets/css/site.css">
+<script src="data/config.js"></script>
+<script src="data/apps.js"></script>
+<script src="data/blog.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/marked@12.0.2/marked.min.js"></script>
+<script src="assets/js/site.js"></script>
+</head>
+<body data-page="blog">
+<main>
+  <div id="blogList">
+    <section class="section" style="padding-bottom:24px;background:var(--paper);border-bottom:1px solid var(--line)">
+      <div class="wrap" style="display:grid;gap:12px">
+        <span class="eyebrow">Blog</span>
+        <h1>Novedades, guías y talleres</h1>
+        <p class="lead">Anuncios de nuevas versiones, tutoriales paso a paso y los materiales de los cursos que se imparten con las aplicaciones.</p>
+      </div>
+    </section>
+    <section class="section" style="padding-top:28px"><div class="wrap"><div class="posts" id="posts"></div></div></section>
+  </div>
+  <section class="section" id="blogPost" hidden>
+    <div class="wrap">
+      <article class="article">
+        <header class="post-head" id="postHead"></header>
+        <div class="prose" id="postBody"></div>
+        <div class="related" id="postApps"></div>
+      </article>
+    </div>
+  </section>
+</main>
+</body>
+</html>

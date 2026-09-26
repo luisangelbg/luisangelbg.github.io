@@ -1,0 +1,44 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Descargas · LABG Suite</title>
+<meta name="description" content="Manuales de usuario en PDF, manuales en línea y código de las aplicaciones LABG para usarlas sin conexión.">
+<link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:ital,wght@0,400;0,500;0,600;1,400&family=IBM+Plex+Serif:ital,wght@0,500;0,600;0,700;1,500&display=swap">
+<link rel="stylesheet" href="assets/css/site.css">
+<script src="data/config.js"></script>
+<script src="data/apps.js"></script>
+
+<script src="assets/js/site.js"></script>
+</head>
+<body data-page="descargas">
+<main>
+  <section class="section" style="padding-bottom:24px;background:var(--paper);border-bottom:1px solid var(--line)">
+    <div class="wrap" style="display:grid;gap:12px">
+      <span class="eyebrow">Descargas</span>
+      <h1>Manuales y aplicaciones</h1>
+      <p class="lead"><span id="nMan">–</span> manuales de usuario en PDF (<span id="mbMan">–</span> MB en total), su versión para leer en línea y cada aplicación completa en un .zip para trabajar sin internet.</p>
+    </div>
+  </section>
+  <section class="section" style="padding-top:28px">
+    <div class="wrap" style="display:grid;gap:24px">
+      <div class="table-wrap">
+        <table class="dl">
+          <thead><tr><th>Aplicación</th><th>Manual PDF</th><th>Manual en línea</th><th>App para usar sin conexión</th></tr></thead>
+          <tbody id="dlBody"></tbody>
+        </table>
+      </div>
+      <div class="principles">
+        <div class="principle"><h3>Usar sin conexión</h3><p>Descarga el .zip, descomprímelo y abre <span class="mono">index.html</span> con doble clic. Si la app trae datos de ejemplo, usa el archivo <span class="mono">Open …bat</span> o <span class="mono">server.ps1</span> para cargarlos.</p></div>
+        <div class="principle"><h3>Datos de ejemplo</h3><p>Cada aplicación incluye conjuntos de datos reales o simulados para practicar. Están dentro del .zip, en la carpeta <span class="mono">data</span> o <span class="mono">datos</span>, y se cargan con un botón desde la propia app.</p></div>
+        <div class="principle"><h3>Versiones anteriores</h3><p>Cada versión publicada queda archivada en Zenodo con su propio DOI. Desde la ficha de cada app puedes llegar a su registro.</p></div>
+      </div>
+    </div>
+  </section>
+</main>
+</body>
+</html>
