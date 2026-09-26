@@ -93,7 +93,7 @@
         ${NAV.map(([href, label, key]) => `<a href="${href}"${key === cur ? ' aria-current="page"' : ""}>${label}</a>`).join("")}
         <button class="icon-btn" type="button" id="themeBtn" aria-label="Cambiar tema claro u oscuro" title="Tema claro / oscuro">${I.moon}</button>
       </nav></div>`;
-    document.body.prepend(h);
+    const ph = $("#hdr"); if (ph) ph.replaceWith(h); else document.body.prepend(h);
     $("#themeBtn").addEventListener("click", toggleTheme);
     $("#menuBtn").addEventListener("click", (e) => {
       const n = $("#nav"); n.classList.toggle("open");
@@ -159,15 +159,48 @@
     return `${C.autorCita} (2026). ${a.nombre}: ${a.lema}${v} [Software]. ${where}`;
   }
 
+
+  /* ---------- Movimiento: entradas al hacer scroll, contadores, parallax ---------- */
+  document.documentElement.classList.add("js");
+  const reduced = matchMedia("(prefers-reduced-motion: reduce)").matches;
+  const io = ("IntersectionObserver" in window) && !reduced
+    ? new IntersectionObserver((es) => es.forEach((e) => { if (e.isIntersecting) { e.target.classList.add("in"); io.unobserve(e.target); } }), { rootMargin: "0px 0px -8% 0px", threshold: 0.08 })
+    : null;
+  function reveal(root = document) {
+    const sel = ".card, .area, .post-card, .principle, .pub-year, .puntos li, .cite-box, .ficha, .section-head, .numbers, .table-wrap, .contact-card, .about-grid > div, .lead";
+    root.querySelectorAll(sel).forEach((el) => {
+      if (el.classList.contains("reveal") || el.closest(".hero")) return;
+      el.classList.add("reveal");
+      const sib = [...el.parentElement.children].filter((c) => c.classList.contains("reveal"));
+      el.style.setProperty("--d", `${Math.min(sib.indexOf(el), 8) * 80}ms`);
+      if (io) io.observe(el); else el.classList.add("in");
+    });
+  }
+  function countUp(el) {
+    const end = +el.dataset.n; if (!end || reduced) { el.textContent = end || el.textContent; return; }
+    const t0 = performance.now(), dur = 1100;
+    (function tick(t) { const k = Math.min(1, (t - t0) / dur), v = Math.round(end * (1 - Math.pow(1 - k, 3))); el.textContent = v; if (k < 1) requestAnimationFrame(tick); })(t0);
+  }
+  function setNumber(id, n) {
+    const el = $(id); if (!el) return; el.dataset.n = n; el.textContent = n;
+    if (io) { el.textContent = "0"; const o = new IntersectionObserver((es) => { if (es[0].isIntersecting) { countUp(el); o.disconnect(); } }); o.observe(el); }
+  }
+  function parallax() {
+    const st = $("#stack"); if (!st || reduced || matchMedia("(max-width: 1000px)").matches) return;
+    const shots = st.querySelectorAll(".shot"); let raf = 0;
+    addEventListener("scroll", () => { if (raf) return; raf = requestAnimationFrame(() => { raf = 0; const y = Math.min(scrollY, 600); shots.forEach((s, i) => s.style.setProperty("--py", `${y * (0.05 + i * 0.04)}px`)); }); }, { passive: true });
+    st.style.setProperty("--pp", "1");
+  }
+
   /* ---------- Páginas ---------- */
   const pages = {
     inicio() {
       const feat = APPS.filter((a) => a.destacada);
       const on = APPS.filter(online).length;
-      $("#nApps").textContent = APPS.length;
-      $("#nOnline").textContent = on;
-      $("#nDoi").textContent = APPS.filter((a) => a.doi).length;
-      $("#nPubs").textContent = PUBS.length;
+      setNumber("#nApps", APPS.length);
+      setNumber("#nOnline", on);
+      setNumber("#nDoi", APPS.filter((a) => a.doi).length);
+      setNumber("#nPubs", PUBS.length);
       $("#featured").innerHTML = feat.slice(0, 6).map(card).join("");
       const stackApps = ["PCAPro", "BioModellingPro", "AgriDesign"].map((id) => APPS.find((a) => a.id === id)).filter(Boolean);
       $("#stack").innerHTML = stackApps.map((a) => `<div class="shot"><div class="bar"><i></i><i></i><i></i><b>luisangelbg.github.io/${esc(a.id)}</b></div><img src="${U.shot(a)}" alt="Portada de ${esc(a.nombre)}" width="1200" height="750"></div>`).join("");
@@ -176,6 +209,7 @@
         return `<a class="area" href="aplicaciones.html#${k}"><span class="eyebrow">${list.length} ${list.length === 1 ? "app" : "apps"}</span><h3>${esc(c.nombre)}</h3><p>${list.map((a) => esc(a.nombre)).join(" · ")}</p></a>`;
       }).join("");
       $("#latest").innerHTML = POSTS.slice(0, 3).map(postCard).join("");
+      parallax();
     },
 
     aplicaciones() {
@@ -200,6 +234,7 @@
           (st.value === "todas" || a.estado === st.value) &&
           (!t || norm([a.nombre, a.lema, a.descripcion, a.puntos.join(" ")].join(" ")).includes(t)));
         grid.innerHTML = list.length ? list.map(card).join("") : '<p class="empty" style="grid-column:1/-1">Ninguna aplicación coincide con la búsqueda.</p>';
+        grid.classList.add("fade-swap"); grid.querySelectorAll(".card").forEach((c, i) => c.style.animationDelay = `${Math.min(i, 8) * 45}ms`);
         cnt.textContent = `${list.length} de ${APPS.length} aplicaciones`;
       }
       draw();
@@ -328,6 +363,7 @@
               <button class="link-btn" type="button" data-cite="${esc(ref(p))}">Copiar referencia</button>
             </div></article>`).join("")
         }</div></div>`).join("");
+        $("#pubs").classList.add("fade-swap");
       }
       draw();
     },
@@ -402,5 +438,7 @@
     header(page);
     footer();
     if (pages[page]) pages[page]();
+    reveal();
+    new MutationObserver(() => reveal()).observe(document.querySelector("main"), { childList: true, subtree: true });
   });
 })();
