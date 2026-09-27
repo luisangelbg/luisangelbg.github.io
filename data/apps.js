@@ -56,7 +56,7 @@ window.LABG_APPS = [
     lema: "Grupos naturales en datos biológicos, ecológicos y agronómicos",
     descripcion: "Del cuadro de datos al dendrograma listo para publicar: tendencia de agrupamiento, coeficientes de similitud para todo tipo de variables, métodos jerárquicos y de partición, número óptimo de grupos, validación y perfil de cada grupo.",
     categoria: "estadistica", estado: "enlinea", version: "1.0.1", doi: "10.5281/zenodo.22682795", licencia: "GPL-3.0",
-    manualPdf: "ClusteringPro User's Manual.pdf", manualMb: 26, manualHtml: true, datos: true,
+    manualPdf: "ClusteringPro User's Manual.pdf", manualMb: 25, manualHtml: true, datos: true,
     puntos: ["Datos cuantitativos, binarios, nominales, mixtos y ecológicos", "k-means, PAM, CLARA, c-means difuso, DBSCAN y mezclas gaussianas", "Validación y estabilidad de los grupos", "Dendrogramas y mapas editables"],
     destacada: false
   },
@@ -101,7 +101,7 @@ window.LABG_APPS = [
     lema: "De los progenitores al mejor híbrido",
     descripcion: "Cruzas dialélicas, diseños de apareamiento, medias generacionales, índices de selección, interacción genotipo × ambiente, modelo animal, predicción genómica y de híbridos, para mejoramiento vegetal y animal.",
     categoria: "genetica", estado: "enlinea", version: "1.0.0", doi: "", licencia: "GPL-3.0",
-    manualPdf: "BreedingPro User's Manual.pdf", manualMb: 26, manualHtml: true, datos: true,
+    manualPdf: "BreedingPro User's Manual.pdf", manualMb: 25, manualHtml: true, datos: true,
     puntos: ["Griffing, Hayman–Jinks y Gardner–Eberhart", "Heredabilidad, heterosis e índices de selección", "Interacción G×A: AMMI y estabilidad", "BLUP y predicción genómica"],
     destacada: true
   },
@@ -164,7 +164,7 @@ window.LABG_APPS = [
     lema: "De tu búsqueda bibliográfica a un artículo bibliométrico",
     descripcion: "Importa las exportaciones de las bases de datos, une duplicados, normaliza autores, instituciones y países, calcula los indicadores clásicos, dibuja las estructuras conceptual, intelectual y social y registra una revisión sistemática PRISMA 2020.",
     categoria: "ciencia", estado: "enlinea", version: "1.0.1", doi: "10.5281/zenodo.22879993", licencia: "GPL-3.0",
-    manualPdf: "SciMetricsPro User's Manual.pdf", manualMb: 27, manualHtml: true, datos: true,
+    manualPdf: "SciMetricsPro User's Manual.pdf", manualMb: 26, manualHtml: true, datos: true,
     puntos: ["Lee exportaciones de las principales bases", "Redes de coautoría, cocitación y temas", "Diagrama PRISMA 2020", "Texto metodológico redactado con tus datos"],
     destacada: true
   },
