@@ -1,0 +1,1 @@
+{ "name": "labg-portal", "private": true, "type": "module", "scripts": { "build": "node scripts/build.mjs", "sync": "node scripts/sync-apps.mjs", "check": "node scripts/check-links.mjs", "dev": "python3 -m http.server 8000" } }

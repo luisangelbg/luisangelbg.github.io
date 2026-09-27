@@ -1,0 +1,23 @@
+# Al editar data/ o las entradas del blog, regenera las páginas y las publica.
+name: Compilar portal
+on:
+  push:
+    branches: [main]
+    paths: ["data/**", "blog/entradas/**", "scripts/build.mjs"]
+  workflow_dispatch:
+permissions:
+  contents: write
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with: { node-version: 22 }
+      - run: node scripts/build.mjs
+      - name: Guardar páginas generadas
+        run: |
+          git config user.name "labg-bot"
+          git config user.email "actions@users.noreply.github.com"
+          git add -A
+          git diff --cached --quiet || git commit -m "Regenerar páginas [skip ci]" && git push

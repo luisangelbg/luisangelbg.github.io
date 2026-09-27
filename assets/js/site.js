@@ -20,7 +20,8 @@
     pdf: (a) => a.manualPdf ? `${C.base}/${a.id}/manual/${encodeURIComponent(a.manualPdf)}` : "",
     html: (a) => a.manualHtml ? `${C.base}/${a.id}/manual/es/manual-completo.html` : "",
     doi: (d) => `https://doi.org/${d}`,
-    ficha: (a) => `app.html#${a.id}`,
+    ficha: (a) => `apps/${a.id.toLowerCase()}/`,
+    post: (p) => `blog/${p.slug}/`,
     shot: (a) => `assets/apps/${a.id}.webp`
   };
   const online = (a) => a.estado === "enlinea";
@@ -70,6 +71,58 @@
     }
   }
 
+
+  /* ---------- Buscador global (apps, publicaciones y blog) ---------- */
+  function buildIndex() {
+    const ix = [];
+    APPS.forEach((a) => ix.push({ k: "app", t: a.nombre, s: a.lema, x: norm([a.nombre, a.id, a.lema, a.descripcion, a.puntos.join(" "), (CATS[a.categoria] || {}).nombre].join(" ")), h: U.ficha(a), on: online(a) }));
+    PUBS.forEach((p) => ix.push({ k: "pub", t: p.titulo, s: `${p.revista}, ${p.anio}`, x: norm([p.titulo, p.autores, p.revista, p.tema, p.anio].join(" ")), h: p.doi ? U.doi(p.doi) : (p.url || "publicaciones.html"), ext: true }));
+    POSTS.forEach((p) => ix.push({ k: "post", t: p.titulo, s: p.resumen, x: norm([p.titulo, p.resumen, p.etiquetas.join(" ")].join(" ")), h: U.post(p) }));
+    return ix;
+  }
+  let INDEX = null, sdlg = null;
+  function openSearch() {
+    if (!sdlg) {
+      INDEX = buildIndex();
+      sdlg = document.createElement("div");
+      sdlg.className = "sdlg"; sdlg.setAttribute("role", "dialog"); sdlg.setAttribute("aria-modal", "true"); sdlg.setAttribute("aria-label", "Buscar en el sitio");
+      sdlg.innerHTML = `<div class="sbox">
+        <label class="search sinput" for="sq">${I.search}<input id="sq" type="search" placeholder="Buscar apps, publicaciones y entradas…" autocomplete="off"><kbd>Esc</kbd></label>
+        <div class="sres" id="sres" role="listbox" aria-live="polite"></div>
+        <div class="shint"><span><kbd>↑</kbd><kbd>↓</kbd> moverse</span><span><kbd>↵</kbd> abrir</span><span><kbd>Ctrl</kbd>+<kbd>K</kbd> abrir el buscador</span></div>
+      </div>`;
+      document.body.appendChild(sdlg);
+      const inp = $("#sq", sdlg), res = $("#sres", sdlg);
+      const KIND = { app: "Aplicación", pub: "Publicación", post: "Blog" };
+      let sel = 0;
+      function draw() {
+        const q = norm(inp.value.trim());
+        const words = q.split(/\s+/).filter(Boolean);
+        let list = words.length ? INDEX.filter((r) => words.every((w) => r.x.includes(w))) : INDEX.filter((r) => r.k === "app").slice(0, 8);
+        list = list.sort((a, b) => ({ app: 0, post: 1, pub: 2 }[a.k] - { app: 0, post: 1, pub: 2 }[b.k])).slice(0, 12);
+        sel = 0;
+        res.innerHTML = list.length ? list.map((r, i) => `<a class="sitem" role="option" href="${r.h}"${r.ext ? ' target="_blank" rel="noopener"' : ""} data-i="${i}">
+          <span class="skind skind-${r.k}">${KIND[r.k]}</span><span class="stext"><b>${esc(r.t)}</b><small>${esc(r.s)}</small></span>${r.k === "app" && r.on === false ? '<span class="chip chip-soon">Próximamente</span>' : ""}</a>`).join("")
+          : `<p class="empty" style="padding:24px">Nada coincide con «${esc(inp.value)}».</p>`;
+        mark();
+      }
+      function mark() { res.querySelectorAll(".sitem").forEach((el, i) => el.setAttribute("aria-selected", i === sel)); }
+      inp.addEventListener("input", draw);
+      inp.addEventListener("keydown", (e) => {
+        const items = res.querySelectorAll(".sitem");
+        if (e.key === "ArrowDown") { e.preventDefault(); sel = Math.min(sel + 1, items.length - 1); mark(); items[sel]?.scrollIntoView({ block: "nearest" }); }
+        if (e.key === "ArrowUp") { e.preventDefault(); sel = Math.max(sel - 1, 0); mark(); items[sel]?.scrollIntoView({ block: "nearest" }); }
+        if (e.key === "Enter" && items[sel]) { items[sel].click(); }
+      });
+      sdlg.addEventListener("click", (e) => { if (e.target === sdlg) closeSearch(); });
+      addEventListener("keydown", (e) => { if (e.key === "Escape" && sdlg.classList.contains("open")) closeSearch(); });
+      draw();
+    }
+    sdlg.classList.add("open"); document.body.style.overflow = "hidden";
+    const inp = $("#sq", sdlg); inp.value = ""; inp.dispatchEvent(new Event("input")); setTimeout(() => inp.focus(), 30);
+  }
+  function closeSearch() { sdlg.classList.remove("open"); document.body.style.overflow = ""; $("#searchBtn")?.focus(); }
+
   /* ---------- Cabecera y pie ---------- */
   const NAV = [
     ["index.html", "Inicio", "inicio"],
@@ -91,10 +144,16 @@
       <button class="icon-btn menu-btn" type="button" id="menuBtn" aria-label="Abrir menú" aria-expanded="false">${I.menu}</button>
       <nav class="nav" id="nav" aria-label="Principal">
         ${NAV.map(([href, label, key]) => `<a href="${href}"${key === cur ? ' aria-current="page"' : ""}>${label}</a>`).join("")}
+        <button class="icon-btn" type="button" id="searchBtn" aria-label="Buscar en el sitio (Ctrl+K)" title="Buscar (Ctrl+K)">${I.search}</button>
         <button class="icon-btn" type="button" id="themeBtn" aria-label="Cambiar tema claro u oscuro" title="Tema claro / oscuro">${I.moon}</button>
       </nav></div>`;
     const ph = $("#hdr"); if (ph) ph.replaceWith(h); else document.body.prepend(h);
     $("#themeBtn").addEventListener("click", toggleTheme);
+    $("#searchBtn").addEventListener("click", openSearch);
+    addEventListener("keydown", (e) => {
+      if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === "k") { e.preventDefault(); openSearch(); }
+      if (e.key === "/" && !/input|textarea/i.test(document.activeElement.tagName)) { e.preventDefault(); openSearch(); }
+    });
     $("#menuBtn").addEventListener("click", (e) => {
       const n = $("#nav"); n.classList.toggle("open");
       e.currentTarget.setAttribute("aria-expanded", n.classList.contains("open"));
@@ -227,6 +286,7 @@
       });
       q.addEventListener("input", draw);
       st.addEventListener("change", draw);
+      const q0 = new URLSearchParams(location.search).get("q"); if (q0) q.value = q0;
       function draw() {
         const t = norm(q.value);
         const list = APPS.filter((a) =>
@@ -241,8 +301,10 @@
     },
 
     app() {
-      const id = decodeURIComponent(location.hash.slice(1));
-      const a = APPS.find((x) => x.id === id) || APPS[0];
+      const id = document.body.dataset.id || decodeURIComponent(location.hash.slice(1));
+      const a = APPS.find((x) => x.id === id);
+      if (!a) { location.replace("aplicaciones.html"); return; }
+      if (!document.body.dataset.id) { location.replace(U.ficha(a)); return; }
       document.title = `${a.nombre} · ${C.sitio} Suite`;
       const cat = CATS[a.categoria] || {};
       const rows = [
@@ -294,7 +356,6 @@
         </div>
       </div></section>`;
       $("#citeBtn").addEventListener("click", () => copy(citation(a), "Cita copiada"));
-      window.addEventListener("hashchange", () => { pages.app(); scrollTo(0, 0); }, { once: true });
       const others = APPS.filter((x) => x.categoria === a.categoria && x.id !== a.id);
       $("#others").innerHTML = others.length ? others.map(card).join("") : APPS.filter((x) => x.destacada && x.id !== a.id).slice(0, 3).map(card).join("");
     },
@@ -369,8 +430,9 @@
     },
 
     blog() {
-      const slug = decodeURIComponent(location.hash.slice(1));
+      const slug = document.body.dataset.id || decodeURIComponent(location.hash.slice(1));
       const post = POSTS.find((p) => p.slug === slug);
+      if (post && !document.body.dataset.id) { location.replace(U.post(post)); return; }
       const list = $("#blogList"), art = $("#blogPost");
       if (!post) {
         art.hidden = true; list.hidden = false;
@@ -390,7 +452,6 @@
         const rel = (post.apps || []).map((id) => APPS.find((a) => a.id === id)).filter(Boolean);
         $("#postApps").innerHTML = rel.length ? `<span class="eyebrow">Aplicaciones mencionadas</span><div class="dl-links">${rel.map((a) => `<a class="btn btn-ghost btn-sm" href="${U.ficha(a)}">${esc(a.nombre)}</a>`).join("")}</div>` : "";
       }
-      window.addEventListener("hashchange", () => { pages.blog(); scrollTo(0, 0); }, { once: true });
     },
 
     acerca() {
@@ -426,7 +487,7 @@
     catch (e) { return d; }
   }
   function postCard(p) {
-    return `<a class="post-card" href="blog.html#${esc(p.slug)}">
+    return `<a class="post-card" href="${U.post(p)}">
       <time datetime="${p.fecha}">${fmtDate(p.fecha)}</time>
       <h3>${esc(p.titulo)}</h3><p>${esc(p.resumen)}</p>
       <div class="tags">${p.etiquetas.map((t) => `<span class="chip chip-cat">${esc(t)}</span>`).join("")}</div>
