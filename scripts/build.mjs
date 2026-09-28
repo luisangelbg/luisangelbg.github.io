@@ -59,11 +59,12 @@ function head({ title, desc, url, image, base, jsonld, type = "website" }) {
 <link rel="stylesheet" href="assets/css/fonts.css">
 <link rel="stylesheet" href="assets/css/site.css">
 <script type="application/ld+json">${JSON.stringify(jsonld)}</script>
-<script src="data/config.js"></script>
-<script src="data/apps.js"></script>
-<script src="data/publicaciones.js"></script>
-<script src="data/blog.js"></script>
-${type === "article" ? '<script src="https://cdn.jsdelivr.net/npm/marked@12.0.2/marked.min.js"></script>\n' : ""}<script src="assets/js/site.js"></script>
+<script>try{var t=localStorage.getItem("labg-tema");if(t==="dark"||t==="light")document.documentElement.setAttribute("data-theme",t)}catch(e){}document.documentElement.classList.add("js")</script>
+<script defer src="data/config.js"></script>
+<script defer src="data/apps.js"></script>
+<script defer src="data/publicaciones.js"></script>
+<script defer src="data/blog.js"></script>
+<script defer src="assets/js/site.js"></script>
 </head>`;
 }
 

@@ -34,7 +34,12 @@
     down: '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 4v12m0 0-5-5m5 5 5-5M5 20h14"/></svg>',
     code: '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m8 17-5-5 5-5m8 0 5 5-5 5"/></svg>',
     search: '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>',
-    moon: '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"/></svg>',
+    moon: '<svg class="i-moon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"/></svg>',
+    sun: '<svg class="i-sun" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="4.2"/><path d="M12 2v2.5M12 19.5V22M2 12h2.5M19.5 12H22M4.9 4.9l1.8 1.8M17.3 17.3l1.8 1.8M4.9 19.1l1.8-1.8M17.3 6.7l1.8-1.8"/></svg>',
+    grid: '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3.5" y="3.5" width="7" height="7" rx="1.5"/><rect x="13.5" y="3.5" width="7" height="7" rx="1.5"/><rect x="3.5" y="13.5" width="7" height="7" rx="1.5"/><rect x="13.5" y="13.5" width="7" height="7" rx="1.5"/></svg>',
+    list: '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M9 6h11M9 12h11M9 18h11"/><circle cx="4.5" cy="6" r="1" fill="currentColor"/><circle cx="4.5" cy="12" r="1" fill="currentColor"/><circle cx="4.5" cy="18" r="1" fill="currentColor"/></svg>',
+    close: '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6 6 18"/></svg>',
+    quote: '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 7h4v4c0 3-1.5 5-4 6M15 7h4v4c0 3-1.5 5-4 6"/></svg>',
     menu: '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M4 7h16M4 12h16M4 17h16"/></svg>',
     copy: '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="9" y="9" width="12" height="12" rx="2"/><path d="M5 15V5a2 2 0 0 1 2-2h10"/></svg>'
   };
@@ -43,12 +48,19 @@
   function store(k, v) { try { if (v === undefined) return localStorage.getItem(k); localStorage.setItem(k, v); } catch (e) { return null; } }
   const saved = store("labg-tema");
   if (saved === "dark" || saved === "light") document.documentElement.setAttribute("data-theme", saved);
+  const curTheme = () => document.documentElement.getAttribute("data-theme") ||
+    (matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light");
+  function paintTheme() {
+    const b = $("#themeBtn"); if (!b) return;
+    const dark = curTheme() === "dark";
+    const tip = dark ? "Cambiar a tema claro" : "Cambiar a tema oscuro";
+    b.setAttribute("aria-label", tip); b.title = tip; b.setAttribute("aria-pressed", dark);
+  }
   function toggleTheme() {
-    const cur = document.documentElement.getAttribute("data-theme") ||
-      (matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light");
-    const next = cur === "dark" ? "light" : "dark";
+    const next = curTheme() === "dark" ? "light" : "dark";
     document.documentElement.setAttribute("data-theme", next);
     store("labg-tema", next);
+    paintTheme();
   }
 
   /* ---------- Aviso breve ---------- */
@@ -80,19 +92,26 @@
     POSTS.forEach((p) => ix.push({ k: "post", t: p.titulo, s: p.resumen, x: norm([p.titulo, p.resumen, p.etiquetas.join(" ")].join(" ")), h: U.post(p) }));
     return ix;
   }
+  /* Ventana nativa (<dialog> con showModal): retiene el foco, deja inerte el
+     resto de la página y se cierra con Esc. El campo sigue el patrón de
+     cuadro combinado: las flechas mueven la opción activa sin sacar el foco. */
   let INDEX = null, sdlg = null;
   function openSearch() {
     if (!sdlg) {
       INDEX = buildIndex();
-      sdlg = document.createElement("div");
-      sdlg.className = "sdlg"; sdlg.setAttribute("role", "dialog"); sdlg.setAttribute("aria-modal", "true"); sdlg.setAttribute("aria-label", "Buscar en el sitio");
+      sdlg = document.createElement("dialog");
+      sdlg.className = "sdlg"; sdlg.setAttribute("aria-label", "Buscar en el sitio");
       sdlg.innerHTML = `<div class="sbox">
-        <label class="search sinput" for="sq">${I.search}<input id="sq" type="search" placeholder="Buscar apps, publicaciones y entradas…" autocomplete="off"><kbd>Esc</kbd></label>
-        <div class="sres" id="sres" role="listbox" aria-live="polite"></div>
-        <div class="shint"><span><kbd>↑</kbd><kbd>↓</kbd> moverse</span><span><kbd>↵</kbd> abrir</span><span><kbd>Ctrl</kbd>+<kbd>K</kbd> abrir el buscador</span></div>
+        <div class="search sinput">${I.search}<input id="sq" type="search" placeholder="Buscar apps, publicaciones y entradas…" autocomplete="off"
+          role="combobox" aria-expanded="true" aria-controls="sres" aria-autocomplete="list" aria-label="Buscar en el sitio">
+          <button type="button" class="icon-btn sclose" aria-label="Cerrar el buscador">${I.close}</button></div>
+        <div class="sres" id="sres" role="listbox" aria-label="Resultados"></div>
+        <p class="sempty" id="sempty" hidden></p>
+        <p class="sr-only" id="scount" aria-live="polite"></p>
+        <div class="shint"><span><kbd>↑</kbd><kbd>↓</kbd> moverse</span><span><kbd>↵</kbd> abrir</span><span><kbd>Esc</kbd> cerrar</span><span><kbd>Ctrl</kbd>+<kbd>K</kbd> o <kbd>/</kbd> abrir el buscador</span></div>
       </div>`;
       document.body.appendChild(sdlg);
-      const inp = $("#sq", sdlg), res = $("#sres", sdlg);
+      const inp = $("#sq", sdlg), res = $("#sres", sdlg), empty = $("#sempty", sdlg), count = $("#scount", sdlg);
       const KIND = { app: "Aplicación", pub: "Publicación", post: "Blog" };
       let sel = 0;
       function draw() {
@@ -101,27 +120,38 @@
         let list = words.length ? INDEX.filter((r) => words.every((w) => r.x.includes(w))) : INDEX.filter((r) => r.k === "app").slice(0, 8);
         list = list.sort((a, b) => ({ app: 0, post: 1, pub: 2 }[a.k] - { app: 0, post: 1, pub: 2 }[b.k])).slice(0, 12);
         sel = 0;
-        res.innerHTML = list.length ? list.map((r, i) => `<a class="sitem" role="option" href="${r.h}"${r.ext ? ' target="_blank" rel="noopener"' : ""} data-i="${i}">
-          <span class="skind skind-${r.k}">${KIND[r.k]}</span><span class="stext"><b>${esc(r.t)}</b><small>${esc(r.s)}</small></span>${r.k === "app" && r.on === false ? '<span class="chip chip-soon">Próximamente</span>' : ""}</a>`).join("")
-          : `<p class="empty" style="padding:24px">Nada coincide con «${esc(inp.value)}».</p>`;
+        res.innerHTML = list.map((r, i) => `<a class="sitem" id="sopt${i}" role="option" tabindex="-1" href="${r.h}"${r.ext ? ' target="_blank" rel="noopener"' : ""}>
+          <span class="skind skind-${r.k}">${KIND[r.k]}</span><span class="stext"><b>${esc(r.t)}</b><small>${esc(r.s)}</small></span>${r.k === "app" && r.on === false ? '<span class="chip chip-soon">Próximamente</span>' : ""}</a>`).join("");
+        res.hidden = !list.length;
+        empty.hidden = !!list.length;
+        empty.innerHTML = list.length ? "" : `Nada coincide con «${esc(inp.value)}». Prueba con otra palabra o <a href="aplicaciones.html">recorre el catálogo</a>.`;
+        count.textContent = words.length ? (list.length ? `${list.length} resultado${list.length === 1 ? "" : "s"}` : "Sin resultados") : "";
         mark();
       }
-      function mark() { res.querySelectorAll(".sitem").forEach((el, i) => el.setAttribute("aria-selected", i === sel)); }
+      function mark() {
+        const items = res.querySelectorAll(".sitem");
+        items.forEach((el, i) => el.setAttribute("aria-selected", i === sel));
+        if (items[sel]) { inp.setAttribute("aria-activedescendant", items[sel].id); items[sel].scrollIntoView({ block: "nearest" }); }
+        else inp.removeAttribute("aria-activedescendant");
+      }
       inp.addEventListener("input", draw);
       inp.addEventListener("keydown", (e) => {
         const items = res.querySelectorAll(".sitem");
-        if (e.key === "ArrowDown") { e.preventDefault(); sel = Math.min(sel + 1, items.length - 1); mark(); items[sel]?.scrollIntoView({ block: "nearest" }); }
-        if (e.key === "ArrowUp") { e.preventDefault(); sel = Math.max(sel - 1, 0); mark(); items[sel]?.scrollIntoView({ block: "nearest" }); }
-        if (e.key === "Enter" && items[sel]) { items[sel].click(); }
+        if (e.key === "ArrowDown") { e.preventDefault(); sel = Math.min(sel + 1, items.length - 1); mark(); }
+        if (e.key === "ArrowUp") { e.preventDefault(); sel = Math.max(sel - 1, 0); mark(); }
+        if (e.key === "Home" && e.ctrlKey) { e.preventDefault(); sel = 0; mark(); }
+        if (e.key === "Enter" && items[sel]) { e.preventDefault(); items[sel].click(); }
       });
-      sdlg.addEventListener("click", (e) => { if (e.target === sdlg) closeSearch(); });
-      addEventListener("keydown", (e) => { if (e.key === "Escape" && sdlg.classList.contains("open")) closeSearch(); });
-      draw();
+      $(".sclose", sdlg).addEventListener("click", () => sdlg.close());
+      sdlg.addEventListener("click", (e) => { if (e.target === sdlg) sdlg.close(); });
+      /* al cerrar, el navegador devuelve el foco a donde estaba */
+      sdlg.addEventListener("close", () => document.documentElement.classList.remove("no-scroll"));
     }
-    sdlg.classList.add("open"); document.body.style.overflow = "hidden";
-    const inp = $("#sq", sdlg); inp.value = ""; inp.dispatchEvent(new Event("input")); setTimeout(() => inp.focus(), 30);
+    if (sdlg.open) return;
+    const inp = $("#sq", sdlg); inp.value = ""; inp.dispatchEvent(new Event("input"));
+    sdlg.showModal(); document.documentElement.classList.add("no-scroll");
+    inp.focus();
   }
-  function closeSearch() { sdlg.classList.remove("open"); document.body.style.overflow = ""; $("#searchBtn")?.focus(); }
 
   /* ---------- Cabecera y pie ---------- */
   const NAV = [
@@ -141,23 +171,34 @@
         <span class="brand-mark">${esc(C.sitio)}</span>
         <span class="brand-text"><b>${esc(C.sitio)} Suite</b><span>${esc(C.subtitulo)}</span></span>
       </a>
-      <button class="icon-btn menu-btn" type="button" id="menuBtn" aria-label="Abrir menú" aria-expanded="false">${I.menu}</button>
       <nav class="nav" id="nav" aria-label="Principal">
         ${NAV.map(([href, label, key]) => `<a href="${href}"${key === cur ? ' aria-current="page"' : ""}>${label}</a>`).join("")}
-        <button class="icon-btn" type="button" id="searchBtn" aria-label="Buscar en el sitio (Ctrl+K)" title="Buscar (Ctrl+K)">${I.search}</button>
-        <button class="icon-btn" type="button" id="themeBtn" aria-label="Cambiar tema claro u oscuro" title="Tema claro / oscuro">${I.moon}</button>
-      </nav></div>`;
+      </nav>
+      <div class="top-tools">
+        <button class="icon-btn search-btn" type="button" id="searchBtn" aria-label="Buscar en el sitio (Ctrl+K)" title="Buscar (Ctrl+K)">${I.search}<span class="search-label">Buscar</span><kbd class="search-kbd">Ctrl K</kbd></button>
+        <button class="icon-btn theme-btn" type="button" id="themeBtn">${I.moon}${I.sun}</button>
+        <button class="icon-btn menu-btn" type="button" id="menuBtn" aria-label="Abrir el menú" aria-controls="nav" aria-expanded="false">${I.menu}</button>
+      </div></div>`;
     const ph = $("#hdr"); if (ph) ph.replaceWith(h); else document.body.prepend(h);
     $("#themeBtn").addEventListener("click", toggleTheme);
+    paintTheme();
     $("#searchBtn").addEventListener("click", openSearch);
     addEventListener("keydown", (e) => {
       if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === "k") { e.preventDefault(); openSearch(); }
-      if (e.key === "/" && !/input|textarea/i.test(document.activeElement.tagName)) { e.preventDefault(); openSearch(); }
+      const typing = /input|textarea|select/i.test(document.activeElement.tagName) || document.activeElement.isContentEditable;
+      if (e.key === "/" && !typing) { e.preventDefault(); openSearch(); }
     });
-    $("#menuBtn").addEventListener("click", (e) => {
-      const n = $("#nav"); n.classList.toggle("open");
-      e.currentTarget.setAttribute("aria-expanded", n.classList.contains("open"));
-    });
+    /* menú del celular: se abre con el botón y se cierra con Esc, al tocar fuera o al elegir */
+    const nav = $("#nav"), mb = $("#menuBtn");
+    const setMenu = (open) => {
+      nav.classList.toggle("open", open);
+      mb.setAttribute("aria-expanded", open);
+      mb.setAttribute("aria-label", open ? "Cerrar el menú" : "Abrir el menú");
+    };
+    mb.addEventListener("click", () => setMenu(!nav.classList.contains("open")));
+    addEventListener("keydown", (e) => { if (e.key === "Escape" && nav.classList.contains("open")) { setMenu(false); mb.focus(); } });
+    document.addEventListener("click", (e) => { if (nav.classList.contains("open") && !h.contains(e.target)) setMenu(false); });
+    nav.addEventListener("click", (e) => { if (e.target.closest("a")) setMenu(false); });
   }
   function footer() {
     const f = document.createElement("footer");
@@ -194,24 +235,35 @@
       `<span><b>${esc(a.licencia)}</b></span>`,
       a.doi ? `<span>DOI <b>${esc(a.doi.replace("10.5281/zenodo.", "zenodo."))}</b></span>` : ""
     ].join("");
+    const extra = [
+      online(a) && a.manualPdf ? `<a class="icon-btn" href="${U.pdf(a)}" target="_blank" rel="noopener" aria-label="Manual de ${esc(a.nombre)} en PDF (${a.manualMb} MB, abre otra pestaña)" title="Manual PDF · ${a.manualMb} MB">${I.doc}</a>` : "",
+      `<button class="icon-btn" type="button" data-cite-id="${esc(a.id)}" aria-label="Copiar la cita de ${esc(a.nombre)}" title="Copiar la cita">${I.quote}</button>`
+    ].join("");
     return `<article class="card" data-cat="${esc(a.categoria)}">
       <a class="card-img" href="${U.ficha(a)}" tabindex="-1" aria-hidden="true">
         <img src="${U.shot(a)}" alt="" loading="lazy" width="1200" height="750">${statusChip(a)}
       </a>
       <div class="card-body">
         <span class="eyebrow">${esc((CATS[a.categoria] || {}).corto || "")}</span>
-        <h3><a href="${U.ficha(a)}">${esc(a.nombre)}</a></h3>
+        <h3><a href="${U.ficha(a)}">${esc(a.nombre)}<span class="sr-only"> (${online(a) ? "en línea" : "próximamente"})</span></a></h3>
         <p class="card-lema">${esc(a.lema)}</p>
         <div class="label">${meta}</div>
       </div>
       <div class="card-actions">
         ${online(a)
-          ? `<a class="btn btn-primary btn-sm" href="${U.app(a)}" target="_blank" rel="noopener">Abrir app ${I.arrow}</a>`
+          ? `<a class="btn btn-primary btn-sm" href="${U.app(a)}" target="_blank" rel="noopener">Abrir app ${I.arrow}<span class="sr-only"> ${esc(a.nombre)} (abre otra pestaña)</span></a>`
           : `<span class="btn btn-ghost btn-sm" aria-disabled="true">Próximamente</span>`}
-        <a class="btn btn-ghost btn-sm" href="${U.ficha(a)}">Ver ficha</a>
+        <a class="btn btn-ghost btn-sm" href="${U.ficha(a)}">Ficha<span class="sr-only"> de ${esc(a.nombre)}</span></a>
+        <span class="card-extra">${extra}</span>
       </div>
     </article>`;
   }
+  /* «Copiar la cita» funciona en cualquier tarjeta, dondequiera que se dibuje */
+  document.addEventListener("click", (e) => {
+    const b = e.target.closest("[data-cite-id]"); if (!b) return;
+    const a = APPS.find((x) => x.id === b.dataset.citeId);
+    if (a) copy(citation(a), `Cita de ${a.nombre} copiada`);
+  });
   function citation(a) {
     const v = a.version ? ` (Versión ${a.version})` : "";
     const where = a.doi ? `Zenodo. ${U.doi(a.doi)}` : `${U.repo(a)}`;
@@ -272,30 +324,66 @@
     },
 
     aplicaciones() {
-      const grid = $("#grid"), q = $("#q"), pills = $("#pills"), cnt = $("#count"), st = $("#estado");
-      let cat = "todas";
-      const h = location.hash.slice(1);
-      if (CATS[h]) cat = h;
+      const grid = $("#grid"), q = $("#q"), pills = $("#pills"), cnt = $("#count"), st = $("#estado"), ord = $("#orden"), views = $("#vista");
+      /* el estado del catálogo vive en la dirección: se puede compartir y el botón «atrás» lo respeta */
+      const P = new URLSearchParams(location.search);
+      let cat = CATS[location.hash.slice(1)] ? location.hash.slice(1) : "todas";
+      q.value = P.get("q") || "";
+      if (["enlinea", "proximamente"].includes(P.get("estado"))) st.value = P.get("estado");
+      if ([...ord.options].some((o) => o.value === P.get("orden"))) ord.value = P.get("orden");
+      let view = P.get("vista") || store("labg-vista") || "tarjetas";
+      if (view !== "lista") view = "tarjetas";
+
       pills.innerHTML = [["todas", "Todas"]].concat(Object.entries(CATS).map(([k, c]) => [k, c.corto]))
-        .map(([k, l]) => `<button class="pill" type="button" data-k="${k}" aria-pressed="${k === cat}">${l}</button>`).join("");
+        .map(([k, l]) => `<button class="pill" type="button" data-k="${k}" aria-pressed="${k === cat}">${l} <span class="pill-n">${k === "todas" ? APPS.length : APPS.filter((a) => a.categoria === k).length}</span></button>`).join("");
       pills.addEventListener("click", (e) => {
         const b = e.target.closest(".pill"); if (!b) return;
         cat = b.dataset.k;
         pills.querySelectorAll(".pill").forEach((p) => p.setAttribute("aria-pressed", p === b));
         draw();
       });
-      q.addEventListener("input", draw);
+      views.addEventListener("click", (e) => {
+        const b = e.target.closest("[data-view]"); if (!b) return;
+        view = b.dataset.view; store("labg-vista", view); draw();
+      });
+      let tq; q.addEventListener("input", () => { clearTimeout(tq); tq = setTimeout(draw, 120); });
       st.addEventListener("change", draw);
-      const q0 = new URLSearchParams(location.search).get("q"); if (q0) q.value = q0;
+      ord.addEventListener("change", draw);
+      grid.addEventListener("click", (e) => { if (e.target.closest("#clearFilters")) { q.value = ""; st.value = "todas"; cat = "todas"; pills.querySelectorAll(".pill").forEach((p) => p.setAttribute("aria-pressed", p.dataset.k === "todas")); draw(); q.focus(); } });
+      addEventListener("hashchange", () => { const k = location.hash.slice(1); if (CATS[k] && k !== cat) { cat = k; pills.querySelectorAll(".pill").forEach((p) => p.setAttribute("aria-pressed", p.dataset.k === cat)); draw(); } });
+
+      const ver = (v) => String(v || "0").split(".").map((n) => +n || 0);
+      const cmpVer = (a, b) => { const x = ver(a), y = ver(b); for (let i = 0; i < 3; i++) if ((x[i] || 0) !== (y[i] || 0)) return (y[i] || 0) - (x[i] || 0); return 0; };
+      const byName = (a, b) => a.nombre.localeCompare(b.nombre, "es");
+      const SORT = {
+        recomendado: (a, b) => (b.destacada ? 1 : 0) - (a.destacada ? 1 : 0) || (online(b) ? 1 : 0) - (online(a) ? 1 : 0) || byName(a, b),
+        nombre: byName,
+        area: (a, b) => Object.keys(CATS).indexOf(a.categoria) - Object.keys(CATS).indexOf(b.categoria) || byName(a, b),
+        version: (a, b) => (online(b) ? 1 : 0) - (online(a) ? 1 : 0) || cmpVer(a.version, b.version) || byName(a, b)
+      };
+      function sync() {
+        const p = new URLSearchParams();
+        if (q.value.trim()) p.set("q", q.value.trim());
+        if (st.value !== "todas") p.set("estado", st.value);
+        if (ord.value !== "recomendado") p.set("orden", ord.value);
+        if (view === "lista") p.set("vista", "lista");
+        const url = location.pathname + (p.toString() ? "?" + p : "") + (cat !== "todas" ? "#" + cat : "");
+        if (url !== location.pathname + location.search + location.hash) history.replaceState(null, "", url);
+      }
       function draw() {
-        const t = norm(q.value);
+        const t = norm(q.value).split(/\s+/).filter(Boolean);
         const list = APPS.filter((a) =>
           (cat === "todas" || a.categoria === cat) &&
           (st.value === "todas" || a.estado === st.value) &&
-          (!t || norm([a.nombre, a.lema, a.descripcion, a.puntos.join(" ")].join(" ")).includes(t)));
-        grid.innerHTML = list.length ? list.map(card).join("") : '<p class="empty" style="grid-column:1/-1">Ninguna aplicación coincide con la búsqueda.</p>';
-        grid.classList.add("fade-swap"); grid.querySelectorAll(".card").forEach((c, i) => c.style.animationDelay = `${Math.min(i, 8) * 45}ms`);
+          (!t.length || t.every((w) => norm([a.nombre, a.id, a.lema, a.descripcion, a.puntos.join(" "), (CATS[a.categoria] || {}).nombre].join(" ")).includes(w))))
+          .sort(SORT[ord.value] || SORT.recomendado);
+        grid.classList.toggle("as-list", view === "lista");
+        views.querySelectorAll("[data-view]").forEach((b) => b.setAttribute("aria-pressed", b.dataset.view === view));
+        grid.innerHTML = list.length ? list.map(card).join("")
+          : `<div class="empty" style="grid-column:1/-1"><p><b>Ninguna aplicación coincide.</b></p><p>Prueba con otra palabra, otra área o «Todas» en disponibilidad.</p><p style="margin-top:14px"><button class="btn btn-ghost btn-sm" type="button" id="clearFilters">Quitar los filtros</button></p></div>`;
+        grid.classList.remove("fade-swap"); void grid.offsetWidth; grid.classList.add("fade-swap");
         cnt.textContent = `${list.length} de ${APPS.length} aplicaciones`;
+        sync();
       }
       draw();
     },
@@ -303,7 +391,7 @@
     app() {
       const id = document.body.dataset.id || decodeURIComponent(location.hash.slice(1));
       const a = APPS.find((x) => x.id === id);
-      if (!a) { location.replace("aplicaciones.html"); return; }
+      if (!a) { location.replace("aplicaciones.html" + (id ? "?q=" + encodeURIComponent(id) : "")); return; }
       if (!document.body.dataset.id) { location.replace(U.ficha(a)); return; }
       document.title = `${a.nombre} · ${C.sitio} Suite`;
       const cat = CATS[a.categoria] || {};
@@ -447,11 +535,37 @@
         const body = $("#postBody");
         body.innerHTML = '<p class="muted">Cargando…</p>';
         fetch(`blog/entradas/${post.slug}.md`).then((r) => { if (!r.ok) throw 0; return r.text(); })
-          .then((md) => { body.innerHTML = window.marked ? window.marked.parse(md) : `<pre>${esc(md)}</pre>`; })
+          .then((src) => { body.innerHTML = markdown(src); })
           .catch(() => { body.innerHTML = '<p>No se pudo cargar la entrada. Si abriste el archivo con doble clic, usa el servidor local (ver LEEME.md).</p>'; });
         const rel = (post.apps || []).map((id) => APPS.find((a) => a.id === id)).filter(Boolean);
         $("#postApps").innerHTML = rel.length ? `<span class="eyebrow">Aplicaciones mencionadas</span><div class="dl-links">${rel.map((a) => `<a class="btn btn-ghost btn-sm" href="${U.ficha(a)}">${esc(a.nombre)}</a>`).join("")}</div>` : "";
       }
+    },
+
+    /* Página 404: propone la app cuyo nombre se parece más a la dirección pedida */
+    p404() {
+      const path = decodeURIComponent(location.pathname).replace(/\/+$/, "");
+      /* cada app vive en el primer tramo de la dirección: /NombreApp/… */
+      const seg = norm(path.split("/").filter(Boolean)[0] || "").replace(/\.html?$/, "").replace(/[^a-z0-9]/g, "");
+      $("#badPath").textContent = path || "/";
+      const dist = (a, b) => {                                   /* distancia de edición */
+        const d = Array.from({ length: a.length + 1 }, (_, i) => [i]);
+        for (let j = 1; j <= b.length; j++) d[0][j] = j;
+        for (let i = 1; i <= a.length; i++) for (let j = 1; j <= b.length; j++)
+          d[i][j] = Math.min(d[i - 1][j] + 1, d[i][j - 1] + 1, d[i - 1][j - 1] + (a[i - 1] === b[j - 1] ? 0 : 1));
+        return d[a.length][b.length];
+      };
+      const scored = seg ? APPS.map((a) => {
+        const k = norm(a.id).replace(/[^a-z0-9]/g, "");
+        return { a, s: k.includes(seg) || seg.includes(k) ? 0 : dist(seg, k) / Math.max(seg.length, k.length) };
+      }).sort((x, y) => x.s - y.s) : [];
+      const best = scored.filter((x) => x.s <= 0.4).slice(0, 3).map((x) => x.a);
+      const show = best.length ? best : APPS.filter((a) => a.destacada).slice(0, 3);
+      $("#guessHead").textContent = best.length ? "¿Buscabas alguna de estas?" : "Aplicaciones destacadas";
+      $("#guess").innerHTML = show.map(card).join("");
+      const f = $("#q404");
+      if (seg) f.value = seg;
+      $("#f404").addEventListener("submit", (e) => { e.preventDefault(); location.href = "aplicaciones.html?q=" + encodeURIComponent(f.value.trim()); });
     },
 
     acerca() {
@@ -481,6 +595,62 @@
       }
     }
   };
+
+  /* ---------- Markdown de las entradas del blog ----------
+     Convertidor propio y pequeño para lo que usan las entradas: títulos (#…######),
+     párrafos, listas con viñeta o numeradas, citas (>), bloques de código (```),
+     línea horizontal (---), **negritas**, *cursivas*, `código`, [enlaces](url),
+     ![imágenes](url) y direcciones sueltas. Todo el texto se escapa primero. */
+  function inline(s) {
+    const code = [];
+    s = esc(s).replace(/`([^`]+)`/g, (m, c) => { code.push(c); return `\u0000${code.length - 1}\u0000`; });
+    const safe = (u) => /^(https?:|mailto:|#|\/|[\w.-]+(\/|\.html|\.md|$))/i.test(u) ? u : "#";
+    s = s.replace(/!\[([^\]]*)\]\(([^)\s]+)\)/g, (m, alt, u) => `<img src="${safe(u)}" alt="${alt}" loading="lazy">`)
+      .replace(/\[([^\]]+)\]\(([^)\s]+)\)/g, (m, t, u) => /^https?:/i.test(u) ? `<a href="${safe(u)}" target="_blank" rel="noopener">${t}</a>` : `<a href="${safe(u)}">${t}</a>`)
+      .replace(/(^|[\s(])(https?:\/\/[^\s<)]+[^\s<).,;:])/g, (m, pre, u) => `${pre}<a href="${u}" target="_blank" rel="noopener">${u}</a>`)
+      .replace(/\*\*([^*]+)\*\*/g, "<strong>$1</strong>")
+      .replace(/(^|[^*\w])\*([^*\s][^*]*?)\*(?!\w)/g, "$1<em>$2</em>")
+      .replace(/(^|[^\w])_([^_\s][^_]*?)_(?!\w)/g, "$1<em>$2</em>");
+    return s.replace(/\u0000(\d+)\u0000/g, (m, i) => `<code>${code[+i]}</code>`);
+  }
+  function markdown(src) {
+    const lines = String(src).replace(/\r\n?/g, "\n").split("\n");
+    const out = []; let i = 0;
+    const isBlockStart = (l) => /^(#{1,6}\s|>\s?|```|\s*[-*+]\s+|\s*\d+[.)]\s+|-{3,}\s*$)/.test(l);
+    while (i < lines.length) {
+      const l = lines[i];
+      if (!l.trim()) { i++; continue; }
+      let m;
+      if ((m = l.match(/^(#{1,6})\s+(.*?)\s*#*\s*$/))) {
+        const n = Math.min(6, Math.max(2, m[1].length));     /* el h1 es el título de la entrada */
+        out.push(`<h${n}>${inline(m[2])}</h${n}>`); i++;
+      } else if (/^```/.test(l)) {
+        const buf = []; i++;
+        while (i < lines.length && !/^```/.test(lines[i])) buf.push(lines[i++]);
+        i++; out.push(`<pre><code>${esc(buf.join("\n"))}</code></pre>`);
+      } else if (/^-{3,}\s*$/.test(l)) {
+        out.push("<hr>"); i++;
+      } else if (/^>\s?/.test(l)) {
+        const buf = [];
+        while (i < lines.length && /^>\s?/.test(lines[i])) buf.push(lines[i++].replace(/^>\s?/, ""));
+        out.push(`<blockquote>${markdown(buf.join("\n"))}</blockquote>`);
+      } else if ((m = l.match(/^\s*([-*+]|\d+[.)])\s+/))) {
+        const ordered = /\d/.test(m[1]);
+        const re = ordered ? /^\s*\d+[.)]\s+/ : /^\s*[-*+]\s+/;
+        const items = [];
+        while (i < lines.length && (re.test(lines[i]) || (lines[i].trim() && /^\s{2,}/.test(lines[i]) && items.length))) {
+          if (re.test(lines[i])) items.push(lines[i].replace(re, "")); else items[items.length - 1] += " " + lines[i].trim();
+          i++;
+        }
+        out.push(`<${ordered ? "ol" : "ul"}>${items.map((t) => `<li>${inline(t)}</li>`).join("")}</${ordered ? "ol" : "ul"}>`);
+      } else {
+        const buf = [];
+        while (i < lines.length && lines[i].trim() && !(buf.length && isBlockStart(lines[i]))) buf.push(lines[i++].trim());
+        out.push(`<p>${inline(buf.join(" "))}</p>`);
+      }
+    }
+    return out.join("\n");
+  }
 
   function fmtDate(d) {
     try { return new Date(d + "T12:00:00").toLocaleDateString("es-MX", { day: "numeric", month: "long", year: "numeric" }); }

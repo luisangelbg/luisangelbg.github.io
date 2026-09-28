@@ -35,7 +35,7 @@ Queda en **https://luisangelbg.github.io/** y cada app sigue en su dirección ac
 |---|---|
 | Agregar o editar una app | `data/apps.js` (copia un bloque). Captura de 1200×750 en `assets/apps/<id>.webp` y, si quieres, imagen para redes de 1200×630 en `assets/og/<id>.jpg` |
 | Publicar una app "Próximamente" | En `data/apps.js` cambia `estado: "proximamente"` → `"enlinea"` (después de subir su repositorio y activar Pages en él) |
-| Escribir en el blog | Crea `blog/entradas/<slug>.md` (Markdown) y agrega su bloque en `data/blog.js` |
+| Escribir en el blog | Crea `blog/entradas/<slug>.md` (Markdown: títulos, párrafos, listas, citas, negritas, cursivas, código, enlaces e imágenes) y agrega su bloque en `data/blog.js` |
 | Agregar una publicación | `data/publicaciones.js` |
 | Cambiar nombre, ORCID, correo, formulario | `data/config.js` |
 

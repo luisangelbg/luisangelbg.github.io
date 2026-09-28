@@ -24,12 +24,13 @@
 <link rel="preload" href="assets/fonts/serif-600-latin.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="stylesheet" href="assets/css/fonts.css">
 <link rel="stylesheet" href="assets/css/site.css">
-<script src="data/config.js"></script>
-<script src="data/apps.js"></script>
-<script src="data/publicaciones.js"></script>
-<script src="data/blog.js"></script>
+<script>try{var t=localStorage.getItem("labg-tema");if(t==="dark"||t==="light")document.documentElement.setAttribute("data-theme",t)}catch(e){}document.documentElement.classList.add("js")</script>
+<script defer src="data/config.js"></script>
+<script defer src="data/apps.js"></script>
+<script defer src="data/publicaciones.js"></script>
+<script defer src="data/blog.js"></script>
 
-<script src="assets/js/site.js"></script>
+<script defer src="assets/js/site.js"></script>
 </head>
 <body data-page="aplicaciones">
 <a class="skip" href="#main">Saltar al contenido</a>
@@ -46,12 +47,25 @@
     <div class="wrap">
       <div class="toolbar">
         <label class="search" for="q"><span class="muted" aria-hidden="true"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg></span>
+          <span class="sr-only">Buscar en el catálogo</span>
           <input id="q" type="search" placeholder="Buscar: ANOVA, dendrograma, heredabilidad, nicho…" autocomplete="off"></label>
-        <select class="field" id="estado" aria-label="Disponibilidad">
-          <option value="todas">Todas</option>
-          <option value="enlinea">En línea</option>
-          <option value="proximamente">Próximamente</option>
-        </select>
+        <label class="select-wrap"><span class="select-label">Disponibilidad</span>
+          <select class="field" id="estado">
+            <option value="todas">Todas</option>
+            <option value="enlinea">En línea</option>
+            <option value="proximamente">Próximamente</option>
+          </select></label>
+        <label class="select-wrap"><span class="select-label">Ordenar</span>
+          <select class="field" id="orden">
+            <option value="recomendado">Recomendado</option>
+            <option value="nombre">Nombre (A–Z)</option>
+            <option value="area">Área</option>
+            <option value="version">Versión más reciente</option>
+          </select></label>
+        <div class="view-seg" id="vista" role="group" aria-label="Vista del catálogo">
+          <button type="button" class="icon-btn" data-view="tarjetas" aria-pressed="true" aria-label="Ver como tarjetas" title="Tarjetas"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3.5" y="3.5" width="7" height="7" rx="1.5"/><rect x="13.5" y="3.5" width="7" height="7" rx="1.5"/><rect x="3.5" y="13.5" width="7" height="7" rx="1.5"/><rect x="13.5" y="13.5" width="7" height="7" rx="1.5"/></svg></button>
+          <button type="button" class="icon-btn" data-view="lista" aria-pressed="false" aria-label="Ver como lista" title="Lista"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M9 6h11M9 12h11M9 18h11"/><circle cx="4.5" cy="6" r="1" fill="currentColor"/><circle cx="4.5" cy="12" r="1" fill="currentColor"/><circle cx="4.5" cy="18" r="1" fill="currentColor"/></svg></button>
+        </div>
       </div>
       <div class="toolbar" style="justify-content:space-between">
         <div class="pills" id="pills" role="group" aria-label="Área"></div>
