@@ -21,6 +21,7 @@
      datos       true si el repositorio trae datos de ejemplo
      puntos      3 o 4 cosas que hace (se muestran en la ficha)
      destacada   true para mostrarla en la portada
+     anio        (opcional) año de la cita; si falta se usa el de publicación de la suite (2026)
    ===================================================================== */
 
 window.LABG_CATEGORIAS = {

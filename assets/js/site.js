@@ -204,23 +204,33 @@
     const f = document.createElement("footer");
     f.className = "foot";
     const year = new Date().getFullYear();
+    const ext = (href, label) => `<li><a href="${href}" target="_blank" rel="noopener">${label}<span class="sr-only"> (abre otra pestaña)</span><svg class="ext" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 17 17 7M8 7h9v9"/></svg></a></li>`;
+    const areas = Object.entries(CATS).map(([k, c]) => `<li><a href="aplicaciones.html#${k}">${esc(c.corto)}</a></li>`).join("");
     f.innerHTML = `<div class="wrap">
       <div class="foot-grid">
-        <div style="display:grid;gap:10px">
-          <b style="font-family:var(--f-display);font-size:1.3rem;color:#fff">${esc(C.sitio)} Suite</b>
-          <p style="max-width:42ch">Aplicaciones científicas libres para la investigación y la docencia en ciencias agrícolas y biológicas.</p>
+        <div class="foot-about">
+          <p class="foot-name">${esc(C.sitio)} Suite</p>
+          <p class="foot-desc">Aplicaciones científicas libres para la investigación y la docencia en ciencias agrícolas y biológicas. Corren en el navegador y tus datos no salen de tu computadora.</p>
+          <p class="foot-count">${APPS.length} aplicaciones · ${APPS.filter(online).length} en línea · ${APPS.filter((a) => a.doi).length} con DOI</p>
         </div>
-        <div><h4>Sitio</h4><ul>${NAV.map(([h, l]) => `<li><a href="${h}">${l}</a></li>`).join("")}</ul></div>
-        <div><h4>Enlaces</h4><ul>
-          <li><a href="${esc(C.github)}" target="_blank" rel="noopener">GitHub</a></li>
-          <li><a href="https://orcid.org/${esc(C.orcid)}" target="_blank" rel="noopener">ORCID</a></li>
-          ${C.researchgate ? `<li><a href="${esc(C.researchgate)}" target="_blank" rel="noopener">ResearchGate</a></li>` : ""}
-          <li><a href="https://zenodo.org/search?q=${encodeURIComponent('"' + C.autor + '"')}" target="_blank" rel="noopener">Zenodo</a></li>
+        <nav aria-labelledby="ft-sitio"><h2 class="foot-h" id="ft-sitio">Sitio</h2><ul>${NAV.map(([h, l]) => `<li><a href="${h}">${l}</a></li>`).join("")}</ul></nav>
+        <nav aria-labelledby="ft-areas"><h2 class="foot-h" id="ft-areas">Áreas</h2><ul>${areas}</ul></nav>
+        <div><h2 class="foot-h">Identificadores</h2><ul>
+          ${ext(esc(C.github), "Código (GitHub)")}
+          ${ext(`https://orcid.org/${esc(C.orcid)}`, "ORCID")}
+          ${C.researchgate ? ext(esc(C.researchgate), "ResearchGate") : ""}
+          ${ext(`https://zenodo.org/search?q=${encodeURIComponent('"' + C.autor + '"')}`, "Versiones con DOI (Zenodo)")}
         </ul></div>
       </div>
-      <div class="foot-bottom"><span>© ${year} ${esc(C.autor)} · Las aplicaciones se distribuyen como software libre (GPL/AGPL).</span><span>Sin anuncios, sin cuentas y sin rastreo</span></div>
+      <div class="foot-bottom">
+        <span>© ${year} ${esc(C.autor)} · Las aplicaciones se distribuyen como software libre (GPL/AGPL).</span>
+        <span>Sin anuncios, sin cuentas y sin rastreo</span>
+        <a class="foot-top" href="#main">Volver arriba ↑</a>
+      </div>
     </div>`;
     document.body.appendChild(f);
+    /* «Volver arriba» funciona igual con la etiqueta base de las fichas */
+    f.querySelector(".foot-top").addEventListener("click", (e) => { e.preventDefault(); scrollTo({ top: 0, behavior: reduced ? "auto" : "smooth" }); const m = document.querySelector("main"); if (m) { if (!m.hasAttribute("tabindex")) m.tabIndex = -1; m.focus({ preventScroll: true }); } });
   }
 
   /* ---------- Piezas reutilizables ---------- */
@@ -264,10 +274,28 @@
     const a = APPS.find((x) => x.id === b.dataset.citeId);
     if (a) copy(citation(a), `Cita de ${a.nombre} copiada`);
   });
+  /* Año de la cita: el campo «anio» de la app en data/apps.js; si falta, el
+     año de publicación de la suite (C.anioCita, 2026 por omisión). */
+  const yearOf = (a) => a.anio || C.anioCita || 2026;
   function citation(a) {
     const v = a.version ? ` (Versión ${a.version})` : "";
     const where = a.doi ? `Zenodo. ${U.doi(a.doi)}` : `${U.repo(a)}`;
-    return `${C.autorCita} (2026). ${a.nombre}: ${a.lema}${v} [Software]. ${where}`;
+    return `${C.autorCita} (${yearOf(a)}). ${a.nombre}: ${a.lema}${v} [Software]. ${where}`;
+  }
+  function bibtex(a) {
+    const key = norm(C.autor.split(" ").slice(-1)[0]).replace(/[^a-z]/g, "") + yearOf(a) + norm(a.id).replace(/[^a-z0-9]/g, "");
+    const tex = (s) => String(s).replace(/([&%$#_{}])/g, "\\$1");
+    const f = [
+      ["author", `{${C.autor.split(" ").slice(-1)[0]}}, ${C.autor.split(" ").slice(0, -1).join(" ")}`],
+      ["title", `{${tex(a.nombre)}}: ${tex(a.lema)}`],
+      ["year", yearOf(a)],
+      a.version ? ["version", a.version] : null,
+      a.doi ? ["publisher", "Zenodo"] : null,
+      a.doi ? ["doi", a.doi] : null,
+      ["url", a.doi ? U.doi(a.doi) : U.repo(a)],
+      ["license", a.licencia]
+    ].filter(Boolean);
+    return `@software{${key},\n${f.map(([k, v]) => `  ${k.padEnd(9)} = {${v}}`).join(",\n")}\n}`;
   }
 
 
@@ -403,47 +431,109 @@
         ["Requiere", "Un navegador de escritorio actualizado"],
         ["Instalación", "Ninguna"]
       ];
+      const NEW = ' <span class="sr-only">(abre otra pestaña)</span>';
+      const toc = [["que-hace", "Qué hace"], ["citar", "Cómo citar"], ["ficha-tecnica", "Ficha técnica"]]
+        .concat(online(a) ? [["descargas", "Descargas"]] : [], [["relacionadas", "Relacionadas"]]);
       $("#detail").innerHTML = `
       <section class="detail-hero"><div class="wrap">
-        <div class="crumbs"><a href="aplicaciones.html">Aplicaciones</a> / <a href="aplicaciones.html#${a.categoria}">${esc(cat.corto || "")}</a> / ${esc(a.nombre)}</div>
+        <nav class="crumbs" aria-label="Migas de pan"><ol>
+          <li><a href="index.html">Inicio</a></li>
+          <li><a href="aplicaciones.html">Aplicaciones</a></li>
+          <li><a href="aplicaciones.html#${a.categoria}">${esc(cat.corto || "")}</a></li>
+          <li><span aria-current="page">${esc(a.nombre)}</span></li>
+        </ol></nav>
         <div class="detail-grid">
           <div class="detail-copy">
             <div class="chips">${statusChip(a)}<span class="chip chip-cat">${esc(cat.nombre || "")}</span></div>
             <h1>${esc(a.nombre)}</h1>
-            <p class="lead" style="font-family:var(--f-display);font-style:italic">${esc(a.lema)}</p>
+            <p class="lead detail-lema">${esc(a.lema)}</p>
             <p>${esc(a.descripcion)}</p>
             <div class="hero-actions">
-              ${online(a) ? `<a class="btn btn-primary" href="${U.app(a)}" target="_blank" rel="noopener">Abrir ${esc(a.nombre)} ${I.arrow}</a>` : `<span class="btn btn-ghost" aria-disabled="true">Disponible próximamente</span>`}
-              ${online(a) && a.manualPdf ? `<a class="btn btn-ghost" href="${U.pdf(a)}" target="_blank" rel="noopener">${I.doc} Manual PDF</a>` : ""}
-              ${online(a) ? `<a class="btn btn-ghost" href="${U.repo(a)}" target="_blank" rel="noopener">${I.code} Código</a>` : ""}
+              ${online(a) ? `<a class="btn btn-primary" href="${U.app(a)}" target="_blank" rel="noopener">Abrir ${esc(a.nombre)} ${I.arrow}${NEW}</a>` : `<span class="btn btn-ghost" aria-disabled="true">Disponible próximamente</span>`}
+              ${online(a) && a.manualPdf ? `<a class="btn btn-ghost" href="${U.pdf(a)}" target="_blank" rel="noopener">${I.doc} Manual PDF${NEW}</a>` : ""}
+              <a class="btn btn-ghost" href="${U.ficha(a)}#citar">${I.quote} Citar</a>
+              ${online(a) ? `<a class="btn btn-ghost" href="${U.repo(a)}" target="_blank" rel="noopener">${I.code} Código${NEW}</a>` : ""}
             </div>
           </div>
           <div class="detail-shot"><img src="${U.shot(a)}" alt="Portada de ${esc(a.nombre)}" width="1200" height="750"></div>
         </div>
       </div></section>
-      <section class="section"><div class="wrap two-col">
-        <div style="display:grid;gap:18px">
-          <h2>Qué hace</h2>
-          <ul class="puntos">${a.puntos.map((p) => `<li>${I.check}<span>${esc(p)}</span></li>`).join("")}</ul>
-          <div class="cite-box">
-            <span class="eyebrow">Cómo citar</span>
-            <p id="citeText">${esc(citation(a))}</p>
-            <div><button class="btn btn-ghost btn-sm" type="button" id="citeBtn">${I.copy} Copiar cita</button></div>
-          </div>
-        </div>
-        <div style="display:grid;gap:18px">
-          <h2>Ficha técnica</h2>
-          <dl class="ficha">${rows.map(([k, v]) => `<div><dt>${k}</dt><dd>${v}</dd></div>`).join("")}</dl>
-          ${online(a) ? `<div class="cite-box"><span class="eyebrow">Descargas</span>
-            <div class="dl-links">
-              ${a.manualPdf ? `<a class="btn btn-ghost btn-sm" href="${U.pdf(a)}" target="_blank" rel="noopener">${I.doc} Manual PDF <span class="size">${a.manualMb} MB</span></a>` : ""}
-              ${a.manualHtml ? `<a class="btn btn-ghost btn-sm" href="${U.html(a)}" target="_blank" rel="noopener">${I.doc} Manual en línea</a>` : ""}
-              <a class="btn btn-ghost btn-sm" href="${U.zip(a)}">${I.down} App completa (.zip)</a>
+      <section class="section"><div class="wrap detail-layout">
+        <nav class="toc" aria-label="En esta página">
+          <span class="toc-title">En esta página</span>
+          <ol>${toc.map(([id, l]) => `<li><a href="${U.ficha(a)}#${id}" data-toc="${id}">${l}</a></li>`).join("")}</ol>
+        </nav>
+        <div class="detail-main">
+          <section id="que-hace" class="detail-sec">
+            <h2>Qué hace</h2>
+            <ul class="puntos">${a.puntos.map((p) => `<li>${I.check}<span>${esc(p)}</span></li>`).join("")}</ul>
+          </section>
+          <section id="citar" class="detail-sec">
+            <h2>Cómo citar</h2>
+            <p class="muted">Si usaste ${esc(a.nombre)} en una tesis, artículo o informe, cítala como cualquier otra fuente${a.doi ? "; el DOI siempre lleva a la versión más reciente" : ""}.</p>
+            <div class="cite-box">
+              <div class="cite-tabs" role="tablist" aria-label="Formato de la cita">
+                <button type="button" role="tab" id="tab-apa" aria-controls="cite-apa" aria-selected="true">APA</button>
+                <button type="button" role="tab" id="tab-bib" aria-controls="cite-bib" aria-selected="false" tabindex="-1">BibTeX</button>
+              </div>
+              <div role="tabpanel" id="cite-apa" aria-labelledby="tab-apa"><p class="cite-text">${esc(citation(a))}</p></div>
+              <div role="tabpanel" id="cite-bib" aria-labelledby="tab-bib" hidden><pre class="cite-bib">${esc(bibtex(a))}</pre></div>
+              <div class="dl-links">
+                <button class="btn btn-primary btn-sm" type="button" id="citeBtn">${I.copy} Copiar</button>
+                <button class="btn btn-ghost btn-sm" type="button" id="bibBtn">${I.down} Descargar .bib</button>
+              </div>
             </div>
-            <p class="muted" style="font-size:.88rem">El .zip permite usar la aplicación sin internet: descomprímelo y abre <span class="mono">index.html</span>.</p></div>` : ""}
+          </section>
+          <section id="ficha-tecnica" class="detail-sec">
+            <h2>Ficha técnica</h2>
+            <dl class="ficha">${rows.map(([k, v]) => `<div><dt>${k}</dt><dd>${v}</dd></div>`).join("")}</dl>
+          </section>
+          ${online(a) ? `<section id="descargas" class="detail-sec">
+            <h2>Descargas</h2>
+            <div class="cite-box">
+              <div class="dl-links">
+                ${a.manualPdf ? `<a class="btn btn-ghost btn-sm" href="${U.pdf(a)}" target="_blank" rel="noopener">${I.doc} Manual PDF <span class="size">${a.manualMb} MB</span>${NEW}</a>` : ""}
+                ${a.manualHtml ? `<a class="btn btn-ghost btn-sm" href="${U.html(a)}" target="_blank" rel="noopener">${I.doc} Manual en línea${NEW}</a>` : ""}
+                <a class="btn btn-ghost btn-sm" href="${U.zip(a)}">${I.down} App completa (.zip)</a>
+              </div>
+              <p class="muted small">El .zip permite usar la aplicación sin internet: descomprímelo y abre <span class="mono">index.html</span>.</p>
+            </div>
+          </section>` : ""}
         </div>
       </div></section>`;
-      $("#citeBtn").addEventListener("click", () => copy(citation(a), "Cita copiada"));
+
+      /* pestañas de la cita: flechas para cambiar, como en cualquier lista de pestañas */
+      const tabs = [$("#tab-apa"), $("#tab-bib")];
+      let fmt = "apa";
+      const pick = (t) => {
+        fmt = t === tabs[0] ? "apa" : "bib";
+        tabs.forEach((x) => { const on = x === t; x.setAttribute("aria-selected", on); x.tabIndex = on ? 0 : -1; $("#" + x.getAttribute("aria-controls")).hidden = !on; });
+      };
+      tabs.forEach((t, i) => {
+        t.addEventListener("click", () => pick(t));
+        t.addEventListener("keydown", (e) => {
+          if (e.key === "ArrowRight" || e.key === "ArrowLeft") { e.preventDefault(); const n = tabs[(i + 1) % 2]; pick(n); n.focus(); }
+        });
+      });
+      $("#citeBtn").addEventListener("click", () => copy(fmt === "apa" ? citation(a) : bibtex(a), fmt === "apa" ? "Cita APA copiada" : "Cita BibTeX copiada"));
+      $("#bibBtn").addEventListener("click", () => {
+        const url = URL.createObjectURL(new Blob([bibtex(a) + "\n"], { type: "application/x-bibtex;charset=utf-8" }));
+        const l = document.createElement("a"); l.href = url; l.download = `${a.id}.bib`; document.body.appendChild(l); l.click(); l.remove();
+        setTimeout(() => URL.revokeObjectURL(url), 2000);
+      });
+
+      /* índice: marca la sección que se está leyendo */
+      const links = [...document.querySelectorAll(".toc a")];
+      if ("IntersectionObserver" in window) {
+        const seen = new Map();
+        const ob = new IntersectionObserver((es) => {
+          es.forEach((e) => seen.set(e.target.id, e.isIntersecting));
+          const cur = toc.map(([id]) => id).find((id) => seen.get(id));
+          if (cur) links.forEach((l) => l.toggleAttribute("aria-current", l.dataset.toc === cur));
+        }, { rootMargin: "-80px 0px -55% 0px" });
+        toc.forEach(([id]) => { const s = document.getElementById(id); if (s) ob.observe(s); });
+      }
+
       const others = APPS.filter((x) => x.categoria === a.categoria && x.id !== a.id);
       $("#others").innerHTML = others.length ? others.map(card).join("") : APPS.filter((x) => x.destacada && x.id !== a.id).slice(0, 3).map(card).join("");
     },
@@ -500,7 +590,7 @@
         $("#pcount").textContent = `${list.length} de ${ALL.length} registros`;
         if (!list.length) { $("#pubs").innerHTML = '<p class="empty">Ningún registro coincide con los filtros.</p>'; return; }
         const years = [...new Set(list.map((p) => p.anio))];
-        $("#pubs").innerHTML = years.map((y) => `<div class="pub-year"><h3>${y}</h3><div class="pub-list">${
+        $("#pubs").innerHTML = years.map((y) => `<div class="pub-year"><h2>${y}</h2><div class="pub-list">${
           list.filter((p) => p.anio === y).map((p) => `<article class="pub">
             <div class="pub-title">${esc(p.titulo)}</div>
             <div class="pub-authors">${esc(p.autores).replace(me, (m) => `<mark>${m}</mark>`)}</div>

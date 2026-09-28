@@ -68,6 +68,30 @@ function head({ title, desc, url, image, base, jsonld, type = "website" }) {
 </head>`;
 }
 
+/* Contenido de la ficha escrito en el HTML: lo leen los buscadores y quien
+   navega sin JavaScript. Con JavaScript, site.js lo sustituye por la ficha
+   completa (índice, pestañas de la cita, descargas). La cita debe coincidir
+   con citation() de assets/js/site.js. */
+function staticDetail(a, cat) {
+  const on = a.estado === "enlinea";
+  const year = a.anio || C.anioCita || 2026;
+  const cite = `${C.autorCita} (${year}). ${a.nombre}: ${a.lema}${a.version ? ` (Versión ${a.version})` : ""} [Software]. ${a.doi ? `Zenodo. https://doi.org/${a.doi}` : `${C.github}/${a.id}`}`;
+  return `
+    <section class="detail-hero"><div class="wrap">
+      <nav class="crumbs" aria-label="Migas de pan"><ol><li><a href="index.html">Inicio</a></li><li><a href="aplicaciones.html">Aplicaciones</a></li><li><a href="aplicaciones.html#${a.categoria}">${esc(cat.corto || "")}</a></li><li><span aria-current="page">${esc(a.nombre)}</span></li></ol></nav>
+      <div class="detail-copy">
+        <h1>${esc(a.nombre)}</h1>
+        <p class="lead detail-lema">${esc(a.lema)}</p>
+        <p>${esc(a.descripcion)}</p>
+        <div class="hero-actions">${on ? `<a class="btn btn-primary" href="${SITE}/${a.id}/">Abrir ${esc(a.nombre)}</a>` : `<span class="btn btn-ghost" aria-disabled="true">Disponible próximamente</span>`}</div>
+      </div>
+    </div></section>
+    <section class="section"><div class="wrap detail-main">
+      <section id="que-hace" class="detail-sec"><h2>Qué hace</h2><ul class="puntos">${a.puntos.map((p) => `<li><span>${esc(p)}</span></li>`).join("")}</ul></section>
+      <section id="citar" class="detail-sec"><h2>Cómo citar</h2><div class="cite-box"><p class="cite-text">${esc(cite)}</p></div></section>
+    </div></section>`;
+}
+
 /* ---------- Páginas de aplicaciones ---------- */
 for (const a of APPS) {
   const cat = CATS[a.categoria] || {};
@@ -91,9 +115,9 @@ for (const a of APPS) {
 <body data-page="app" data-id="${a.id}">
 <a class="skip" href="apps/${slug(a)}/#detail">Saltar al contenido</a>
 <div id="hdr" style="min-height:64px"></div>
-<main>
-  <div id="detail"></div>
-  <section class="section band">
+<main id="main">
+  <div id="detail">${staticDetail(a, cat)}</div>
+  <section class="section band" id="relacionadas">
     <div class="wrap">
       <div class="section-head"><div><span class="eyebrow">Relacionadas</span><h2>De la misma área</h2></div></div>
       <div class="grid-apps" id="others"></div>
