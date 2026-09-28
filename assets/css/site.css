@@ -118,6 +118,8 @@ p { margin: 0; }
 .search-btn { gap: 8px; }
 .search-label, .search-kbd { display: none; }
 .search-kbd { font: 500 .68rem var(--f-mono); color: var(--muted); border: 1px solid var(--line); border-bottom-width: 2px; border-radius: 5px; padding: 1px 5px; background: var(--ground); }
+/* el atajo se dibuja con CSS: así no cuenta como texto del nombre del botón */
+.search-kbd::before { content: "Ctrl K"; }
 @media (min-width: 1180px) {
   .search-btn { width: auto; padding: 0 8px 0 12px; display: inline-flex; align-items: center; }
   .search-label { display: inline; font: 500 .9rem var(--f-body); color: var(--muted); margin-right: 18px; }
@@ -529,7 +531,7 @@ dialog.sdlg[open] .sbox { animation: rise 200ms var(--ease) both; }
 .select-wrap { display: inline-flex; align-items: center; gap: 8px; font-size: .86rem; color: var(--muted); }
 .select-label { white-space: nowrap; }
 .view-seg { display: inline-flex; gap: 4px; }
-.pill-n { font: 500 .72rem var(--f-mono); opacity: .75; margin-left: 2px; }
+.pill-n { font: 500 .72rem var(--f-mono); margin-left: 2px; }
 .card-actions { align-items: center; }
 .card-extra { display: inline-flex; gap: 6px; margin-left: auto; }
 .card-extra .icon-btn { width: 36px; height: 36px; }

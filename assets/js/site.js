@@ -167,15 +167,15 @@
     const h = document.createElement("header");
     h.className = "top";
     h.innerHTML = `<div class="wrap">
-      <a class="brand" href="index.html" aria-label="${esc(C.sitio)} Suite — ${esc(C.subtitulo)} (inicio)">
-        <span class="brand-mark">${esc(C.sitio)}</span>
-        <span class="brand-text"><b>${esc(C.sitio)} Suite</b><span>${esc(C.subtitulo)}</span></span>
+      <a class="brand" href="index.html">
+        <span class="brand-mark" aria-hidden="true">${esc(C.sitio)}</span>
+        <span class="brand-text"><b>${esc(C.sitio)} Suite</b><span>${esc(C.subtitulo)}</span></span><span class="sr-only"> (inicio)</span>
       </a>
       <nav class="nav" id="nav" aria-label="Principal">
         ${NAV.map(([href, label, key]) => `<a href="${href}"${key === cur ? ' aria-current="page"' : ""}>${label}</a>`).join("")}
       </nav>
       <div class="top-tools">
-        <button class="icon-btn search-btn" type="button" id="searchBtn" aria-label="Buscar en el sitio (Ctrl+K)" title="Buscar (Ctrl+K)">${I.search}<span class="search-label">Buscar</span><kbd class="search-kbd" aria-hidden="true">Ctrl K</kbd></button>
+        <button class="icon-btn search-btn" type="button" id="searchBtn" aria-label="Buscar en el sitio" aria-keyshortcuts="Control+K /" title="Buscar (Ctrl+K)">${I.search}<span class="search-label">Buscar</span><kbd class="search-kbd" aria-hidden="true"></kbd></button>
         <button class="icon-btn theme-btn" type="button" id="themeBtn">${I.moon}${I.sun}</button>
         <button class="icon-btn menu-btn" type="button" id="menuBtn" aria-label="Abrir el menú" aria-controls="nav" aria-expanded="false">${I.menu}</button>
       </div></div>`;
