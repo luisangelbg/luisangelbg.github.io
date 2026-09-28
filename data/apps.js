@@ -84,7 +84,7 @@ window.LABG_APPS = [
     lema: "¿Cuánto calor, cuánta agua y para cuándo?",
     descripcion: "Agroclimatología y fenología de cultivos, de la serie de la estación al informe: control de calidad de los datos, clima del sitio con climograma y heladas, grados-día con seis métodos, evapotranspiración de referencia por FAO-56 Penman–Monteith y cuatro métodos simples, balance hídrico diario de la zona radical, calendario de riego, etapas BBCH calibrables, frío invernal, fotoperiodo, ventana de siembra y escenarios de calentamiento. Todo con escalas de lectura y figuras editables hasta 900 ppp.",
     categoria: "agronomia", estado: "enlinea", version: "1.0.1", doi: "10.5281/zenodo.23004710", licencia: "GPL-3.0",
-    manualPdf: "PhenologyPro User's Manual.pdf", manualMb: 14, manualHtml: true, datos: true,
+    manualPdf: "PhenologyPro User's Manual.pdf", manualMb: 13, manualHtml: true, datos: true,
     puntos: ["Grados-día y etapas BBCH fechadas por tiempo térmico, con calibración", "ETo por FAO-56 Penman–Monteith y cuatro métodos simples, con lo que la estación mida", "Balance hídrico diario, calendario de riego y capacidad de diseño", "Heladas, frío invernal, ventana de siembra y escenarios de +1, +2 y +3 °C"],
     destacada: true
   },
