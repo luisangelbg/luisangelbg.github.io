@@ -133,6 +133,15 @@ window.LABG_APPS = [
     destacada: true
   },
   {
+    id: "PollinationPro", nombre: "PollinationPro",
+    lema: "¿Coinciden la flor y su polinizador?",
+    descripcion: "Plantas, polinizadores y su solapamiento con datos de presencia, para cualquier cultivo, pariente silvestre o planta nativa: registros de GBIF e interacciones publicadas, depuración y taxonomía, mapas, coocurrencia corregida por esfuerzo de muestreo, fenología con estadística circular, nicho ambiental, desajuste de distribución con clima futuro y redes de visitas.",
+    categoria: "biogeografia", estado: "enlinea", version: "1.2.1", doi: "10.5281/zenodo.23004694", licencia: "GPL-3.0",
+    manualPdf: "PollinationPro User's Manual.pdf", manualMb: 17, manualHtml: true, datos: true,
+    puntos: ["Registros de GBIF, interacciones publicadas y tus visitas", "Coocurrencia de Veech con grupo objetivo y fenología circular", "Nicho ambiental y desajuste planta–polinizador con clima futuro", "Red de visitas contra modelos nulos, informe y paquete"],
+    destacada: true
+  },
+  {
     id: "PhylogenyPro", nombre: "PhylogenyPro",
     lema: "Del alineamiento al árbol fechado",
     descripcion: "Filogenia molecular completa: alineamiento, selección del modelo de sustitución, parsimonia, máxima verosimilitud e inferencia bayesiana, soporte de ramas, reloj molecular con fósiles, diversificación, caracteres y áreas ancestrales.",
