@@ -39,7 +39,7 @@ window.LABG_APPS = [
     descripcion: "119 métodos estadísticos en 14 áreas, desde la limpieza de datos hasta modelos mixtos, series de tiempo, supervivencia y evaluación sensorial. Cada análisis entrega la tabla, una figura editable, una lectura en lenguaje claro y un párrafo listo para el artículo.",
     categoria: "estadistica", estado: "proximamente", version: "1.2.0", doi: "", licencia: "AGPL-3.0",
     manualPdf: "", manualMb: 0, manualHtml: false, datos: true,
-    puntos: ["119 métodos en 14 áreas", "Interpretación en lenguaje claro de cada resultado", "Párrafo de resultados con estadístico, gl, p y tamaño del efecto", "Motor Python incluido: no se conecta a internet"],
+    puntos: ["119 métodos en 14 áreas", "Interpretación en lenguaje claro de cada resultado", "Párrafo de resultados con estadístico, gl, p y tamaño del efecto", "Motor de cálculo incluido: no se conecta a internet"],
     destacada: true
   },
   {
@@ -66,7 +66,7 @@ window.LABG_APPS = [
     descripcion: "Sube una hoja de cálculo y obtén estadística descriptiva, supuestos del ANOVA, regresión, comparación de medias, correlación y análisis multivariado, con gráficas editables de calidad para publicación.",
     categoria: "estadistica", estado: "enlinea", version: "", doi: "", licencia: "GPL-3.0",
     manualPdf: "", manualMb: 0, manualHtml: false, datos: true,
-    puntos: ["Descriptiva, ANOVA y comparación de medias", "Regresión y correlación", "PCA y agrupamiento", "Cálculo en Python dentro del navegador"],
+    puntos: ["Descriptiva, ANOVA y comparación de medias", "Regresión y correlación", "PCA y agrupamiento", "Todo el cálculo dentro del navegador"],
     destacada: false
   },
   {
@@ -90,11 +90,11 @@ window.LABG_APPS = [
   {
     id: "EconomicsPro", nombre: "EconomicsPro",
     lema: "¿Conviene el proyecto, y cuánto aguanta?",
-    descripcion: "Evaluación económica y financiera de proyectos agroindustriales: mercado, inversión, costos, financiamiento, estados proforma, VAN, TIR, relación beneficio-costo, punto de equilibrio, sensibilidad, Monte Carlo y evaluación social.",
-    categoria: "agronomia", estado: "proximamente", version: "", doi: "", licencia: "GPL-3.0",
-    manualPdf: "", manualMb: 0, manualHtml: false, datos: true,
-    puntos: ["VAN, TIR, B/C, periodo de recuperación", "Análisis de riesgo y simulación Monte Carlo", "Evaluación económica y social con precios de cuenta", "Comparación de alternativas"],
-    destacada: false
+    descripcion: "Evaluación económica y financiera de proyectos agrícolas y agroindustriales, del supuesto al informe: horizonte, precios constantes o corrientes y tasa de descuento por TREMA, CPPC o CAPM; series deflactadas con cinco métodos de proyección; inversión con reposición automática, costos y capital de trabajo; créditos y estados proforma con los dos flujos; VAN, TIR con todas sus raíces, TIRM, B/C, recuperación y valor anual equivalente; análisis marginal del CIMMYT; valores límite, escenarios y Monte Carlo con correlación; precios cuenta con el puente exacto al VAN económico; y comparación de alternativas, reemplazo, turno de Faustmann y comprar o rentar.",
+    categoria: "agronomia", estado: "enlinea", version: "1.0.7", doi: "10.5281/zenodo.23005974", licencia: "GPL-3.0",
+    manualPdf: "EconomicsPro User's Manual.pdf", manualMb: 12, manualHtml: true, datos: true,
+    puntos: ["VAN, TIR y todos los indicadores de los dos flujos, con el dictamen redactado", "Riesgo: valores límite, escenarios, Monte Carlo con correlación y árbol de decisión", "Evaluación social con precios cuenta y un puente exacto del VAN privado al económico", "Informe que se lee solo y paquete .zip que permite rehacer todos los cálculos"],
+    destacada: true
   },
   {
     id: "BreedingPro", nombre: "BreedingPro",
@@ -120,25 +120,25 @@ window.LABG_APPS = [
     descripcion: "Para el trabajo diario de una colección de recursos fitogenéticos de cualquier especie y forma de conservación: pasaporte MCPD v2.1, control de duplicados, mapas de colecta sin internet, diversidad geográfica, vacíos de colecta, existencias, germinación y regeneración.",
     categoria: "genetica", estado: "proximamente", version: "", doi: "", licencia: "GPL-3.0",
     manualPdf: "", manualMb: 0, manualHtml: false, datos: true,
-    puntos: ["Pasaporte con descriptores FAO/Bioversity MCPD v2.1", "Control de duplicados y etiquetas", "Mapas de colecta y vacíos de colecta", "Semillas, campo, in vitro y criopreservación"],
+    puntos: ["Pasaporte con los descriptores multicultivo MCPD v2.1", "Control de duplicados y etiquetas", "Mapas de colecta y vacíos de colecta", "Semillas, campo, in vitro y criopreservación"],
     destacada: false
   },
   {
     id: "BioModellingPro", nombre: "BioModelling Pro",
     lema: "De los registros al mapa de idoneidad",
-    descripcion: "Descarga registros de GBIF, depúralos, extrae variables bioclimáticas, de clima y de suelo, explóralas y modela la distribución de la especie con diez algoritmos y un ensamble, con validación, umbrales y proyecciones a escenarios climáticos.",
+    descripcion: "Descarga registros de presencia de portales abiertos de biodiversidad, depúralos, extrae variables bioclimáticas, de clima y de suelo, explóralas y modela la distribución de la especie con diez algoritmos y un ensamble, con validación, umbrales y proyecciones a escenarios climáticos.",
     categoria: "biogeografia", estado: "enlinea", version: "1.1.1", doi: "10.5281/zenodo.22907825", licencia: "GPL-3.0",
     manualPdf: "BioModelling Pro User's Manual.pdf", manualMb: 13, manualHtml: true, datos: true,
-    puntos: ["Registros de GBIF y depuración", "MaxEnt y otros nueve algoritmos, más ensamble", "Validación, umbrales e importancia de variables", "Proyección a escenarios de cambio climático"],
+    puntos: ["Registros de presencia abiertos y su depuración", "Máxima entropía y otros nueve algoritmos, más ensamble", "Validación, umbrales e importancia de variables", "Proyección a escenarios de cambio climático"],
     destacada: true
   },
   {
     id: "PollinationPro", nombre: "PollinationPro",
     lema: "¿Coinciden la flor y su polinizador?",
-    descripcion: "Plantas, polinizadores y su solapamiento con datos de presencia, para cualquier cultivo, pariente silvestre o planta nativa: registros de GBIF e interacciones publicadas, depuración y taxonomía, mapas, coocurrencia corregida por esfuerzo de muestreo, fenología con estadística circular, nicho ambiental, desajuste de distribución con clima futuro y redes de visitas.",
+    descripcion: "Plantas, polinizadores y su solapamiento con datos de presencia, para cualquier cultivo, pariente silvestre o planta nativa: registros de presencia abiertos e interacciones publicadas, depuración y taxonomía, mapas, coocurrencia corregida por esfuerzo de muestreo, fenología con estadística circular, nicho ambiental, desajuste de distribución con clima futuro y redes de visitas.",
     categoria: "biogeografia", estado: "enlinea", version: "1.2.1", doi: "10.5281/zenodo.23004694", licencia: "GPL-3.0",
     manualPdf: "PollinationPro User's Manual.pdf", manualMb: 17, manualHtml: true, datos: true,
-    puntos: ["Registros de GBIF, interacciones publicadas y tus visitas", "Coocurrencia de Veech con grupo objetivo y fenología circular", "Nicho ambiental y desajuste planta–polinizador con clima futuro", "Red de visitas contra modelos nulos, informe y paquete"],
+    puntos: ["Registros de presencia abiertos, interacciones publicadas y tus visitas", "Coocurrencia de Veech con grupo objetivo y fenología circular", "Nicho ambiental y desajuste planta–polinizador con clima futuro", "Red de visitas contra modelos nulos, informe y paquete"],
     destacada: true
   },
   {
