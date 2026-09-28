@@ -74,7 +74,7 @@ for (const a of APPS) {
     "@context": "https://schema.org", "@type": "SoftwareApplication",
     name: a.nombre, alternateName: a.id, description: a.descripcion, url: appUrl(a),
     applicationCategory: "ScienceApplication", applicationSubCategory: cat.nombre,
-    operatingSystem: "Any (web browser)", browserRequirements: "Chrome or Edge",
+    operatingSystem: "Any (web browser)", browserRequirements: "An up-to-date desktop web browser",
     softwareVersion: a.version || undefined, license: `https://spdx.org/licenses/${a.licencia}.html`,
     isAccessibleForFree: true, offers: { "@type": "Offer", price: "0", priceCurrency: "MXN" },
     author, creator: author, inLanguage: ["es", "en"],

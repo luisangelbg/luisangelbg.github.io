@@ -177,7 +177,7 @@
           <li><a href="https://zenodo.org/search?q=${encodeURIComponent('"' + C.autor + '"')}" target="_blank" rel="noopener">Zenodo</a></li>
         </ul></div>
       </div>
-      <div class="foot-bottom"><span>© ${year} ${esc(C.autor)} · Las aplicaciones se distribuyen como software libre (GPL/AGPL).</span><span>Hospedado gratis en GitHub Pages</span></div>
+      <div class="foot-bottom"><span>© ${year} ${esc(C.autor)} · Las aplicaciones se distribuyen como software libre (GPL/AGPL).</span><span>Sin anuncios, sin cuentas y sin rastreo</span></div>
     </div>`;
     document.body.appendChild(f);
   }
@@ -312,7 +312,7 @@
         ["Licencia", a.licencia],
         ["DOI", a.doi ? `<a href="${U.doi(a.doi)}" target="_blank" rel="noopener">${esc(a.doi)}</a>` : "En trámite"],
         ["Estado", online(a) ? "Publicada" : "Próximamente"],
-        ["Requiere", "Chrome o Edge"],
+        ["Requiere", "Un navegador de escritorio actualizado"],
         ["Instalación", "Ninguna"]
       ];
       $("#detail").innerHTML = `

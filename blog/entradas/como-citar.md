@@ -12,7 +12,7 @@ La cita tiene esta forma:
 
 - En la **ficha de cada aplicación** de este sitio hay un botón *Copiar cita*.
 - Dentro de cada aplicación, en la portada, está el enlace **Cómo citar**.
-- En el repositorio de GitHub, el archivo `CITATION.cff` permite copiar la cita en formato APA o BibTeX desde el botón *Cite this repository*.
+- En el repositorio de código, el archivo `CITATION.cff` permite copiar la cita en formato APA o BibTeX con el botón para citar el repositorio.
 
 ## En la sección de métodos
 

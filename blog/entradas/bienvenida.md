@@ -4,7 +4,7 @@ Este sitio reúne en un solo lugar las aplicaciones científicas que he desarrol
 
 Todas las aplicaciones de la suite comparten tres principios:
 
-- **Corren en tu navegador.** No hay que instalar nada ni crear una cuenta. Basta con abrir el enlace en Chrome o Edge.
+- **Corren en tu navegador.** No hay que instalar nada ni crear una cuenta. Basta con abrir el enlace en un navegador de escritorio actualizado.
 - **Tus datos no salen de tu computadora.** El cálculo ocurre en el propio navegador; no hay un servidor que reciba tus archivos.
 - **Son software libre.** Se distribuyen con licencia GPL y su código está en GitHub, así que cualquiera puede revisar cómo se calcula cada resultado.
 
