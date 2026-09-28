@@ -145,8 +145,8 @@ window.LABG_APPS = [
     id: "PhylogenyPro", nombre: "PhylogenyPro",
     lema: "Del alineamiento al árbol fechado",
     descripcion: "Filogenia molecular completa: alineamiento, selección del modelo de sustitución, parsimonia, máxima verosimilitud e inferencia bayesiana, soporte de ramas, reloj molecular con fósiles, diversificación, caracteres y áreas ancestrales.",
-    categoria: "biogeografia", estado: "proximamente", version: "1.2.0", doi: "", licencia: "GPL-3.0",
-    manualPdf: "", manualMb: 0, manualHtml: false, datos: true,
+    categoria: "biogeografia", estado: "enlinea", version: "1.4.0", doi: "10.5281/zenodo.23005815", licencia: "GPL-3.0",
+    manualPdf: "PhylogenyPro_Manual_de_usuario_ES.pdf", manualMb: 4, manualHtml: true, datos: true,
     puntos: ["ADN, aminoácidos, codones y morfología", "Parsimonia, máxima verosimilitud y MCMC bayesiano", "Reloj molecular y calibración con fósiles", "Reconstrucción de caracteres y áreas ancestrales"],
     destacada: false
   },
