@@ -23,6 +23,7 @@
 <link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
 <link rel="preload" href="assets/fonts/sans-400-latin.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="preload" href="assets/fonts/serif-600-latin.woff2" as="font" type="font/woff2" crossorigin>
+
 <link rel="stylesheet" href="assets/css/fonts.css">
 <link rel="stylesheet" href="assets/css/site.css">
 <script type="application/ld+json">{"@context":"https://schema.org","@type":"BlogPosting","headline":"Cómo citar las aplicaciones en tu tesis o artículo","description":"Cada aplicación publicada tiene un DOI de Zenodo. Aquí se explica cuál usar y dónde encontrar la cita lista.","datePublished":"2026-09-26","dateModified":"2026-09-26","url":"https://luisangelbg.github.io/blog/como-citar/","mainEntityOfPage":"https://luisangelbg.github.io/blog/como-citar/","author":{"@type":"Person","name":"Luis Ángel Barrera-Guzmán","url":"https://orcid.org/0000-0001-8057-2583","identifier":"https://orcid.org/0000-0001-8057-2583"},"publisher":{"@type":"Person","name":"Luis Ángel Barrera-Guzmán"},"keywords":"Guías, Ciencia abierta","inLanguage":"es","image":"https://luisangelbg.github.io/assets/og/default.jpg"}</script>
@@ -31,6 +32,7 @@
 <script defer src="data/apps.js"></script>
 <script defer src="data/publicaciones.js"></script>
 <script defer src="data/blog.js"></script>
+<script defer src="assets/js/markdown.js"></script>
 <script defer src="assets/js/site.js"></script>
 </head>
 <body data-page="blog" data-id="como-citar">
@@ -41,8 +43,19 @@
   <section class="section" id="blogPost">
     <div class="wrap">
       <article class="article">
-        <header class="post-head" id="postHead"></header>
-        <div class="prose" id="postBody"></div>
+        <header class="post-head" id="postHead"><a href="blog.html" class="muted" style="font-size:.9rem">← Todas las entradas</a>
+          <div class="tags"><span class="chip chip-cat">Guías</span><span class="chip chip-cat">Ciencia abierta</span></div>
+          <h1 style="font-size:clamp(1.9rem,4vw,2.7rem)">Cómo citar las aplicaciones en tu tesis o artículo</h1>
+          <time datetime="2026-09-26">26 de septiembre de 2026 · Luis Ángel Barrera-Guzmán</time></header>
+        <div class="prose" id="postBody" data-static><p>Si usaste alguna de las aplicaciones de la suite en tu tesis, artículo o informe, cítala como cualquier otra fuente. Así otros investigadores pueden reproducir tu análisis.</p>
+<h2>Usa el DOI de Zenodo</h2>
+<p>Las aplicaciones publicadas tienen un <strong>DOI de concepto</strong> en Zenodo. Ese DOI siempre apunta a la versión más reciente. Cada versión tiene además su propio DOI, que conviene usar si necesitas indicar exactamente con qué versión trabajaste.</p>
+<p>La cita tiene esta forma:</p>
+<blockquote><p>Barrera-Guzmán, L. Á. (2026). <em>PCAPro: an offline, browser-based platform for guided principal component analysis</em> (Versión 1.1.0) [Software]. Zenodo. <a href="https://doi.org/10.5281/zenodo.22649709" target="_blank" rel="noopener">https://doi.org/10.5281/zenodo.22649709</a></p></blockquote>
+<h2>Dónde encontrar la cita lista</h2>
+<ul><li>En la <strong>ficha de cada aplicación</strong> de este sitio hay un botón <em>Copiar cita</em>.</li><li>Dentro de cada aplicación, en la portada, está el enlace <strong>Cómo citar</strong>.</li><li>En el repositorio de código, el archivo <code>CITATION.cff</code> permite copiar la cita en formato APA o BibTeX con el botón para citar el repositorio.</li></ul>
+<h2>En la sección de métodos</h2>
+<p>Además de la cita, menciona la versión y los ajustes que usaste. Muchas aplicaciones generan un informe con el texto de métodos ya redactado con tus parámetros; puedes adaptarlo a tu estilo.</p></div>
         <div class="related" id="postApps"></div>
       </article>
     </div>

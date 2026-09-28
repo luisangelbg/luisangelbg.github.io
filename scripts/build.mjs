@@ -22,6 +22,9 @@ const esc = (s) => String(s ?? "").replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "
 // Carga data/*.js tal como lo haría el navegador
 const win = {};
 for (const f of ["config", "apps", "publicaciones", "blog"]) vm.runInNewContext(read(`data/${f}.js`), { window: win });
+// Convertidor de Markdown del sitio (el mismo que usa la página)
+vm.runInNewContext(read("assets/js/markdown.js"), { window: win });
+const MD = win.LABG_MD;
 const C = win.LABG_CONFIG, APPS = win.LABG_APPS, CATS = win.LABG_CATEGORIAS, PUBS = win.LABG_PUBLICACIONES, POSTS = win.LABG_BLOG;
 const SITE = C.base.replace(/\/$/, "");
 const today = new Date().toISOString().slice(0, 10);
@@ -30,7 +33,7 @@ const appUrl = (a) => `${SITE}/apps/${slug(a)}/`;
 const postUrl = (p) => `${SITE}/blog/${p.slug}/`;
 const author = { "@type": "Person", name: C.autor, url: `https://orcid.org/${C.orcid}`, identifier: `https://orcid.org/${C.orcid}` };
 
-function head({ title, desc, url, image, base, jsonld, type = "website" }) {
+function head({ title, desc, url, image, base, jsonld, type = "website", preloadImg = "" }) {
   return `<!doctype html>
 <html lang="es">
 <head>
@@ -56,6 +59,8 @@ function head({ title, desc, url, image, base, jsonld, type = "website" }) {
 <link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
 <link rel="preload" href="assets/fonts/sans-400-latin.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="preload" href="assets/fonts/serif-600-latin.woff2" as="font" type="font/woff2" crossorigin>
+${preloadImg ? `<link rel="preload" href="${preloadImg}" as="image" fetchpriority="high">
+` : ""}
 <link rel="stylesheet" href="assets/css/fonts.css">
 <link rel="stylesheet" href="assets/css/site.css">
 <script type="application/ld+json">${JSON.stringify(jsonld)}</script>
@@ -64,7 +69,7 @@ function head({ title, desc, url, image, base, jsonld, type = "website" }) {
 <script defer src="data/apps.js"></script>
 <script defer src="data/publicaciones.js"></script>
 <script defer src="data/blog.js"></script>
-<script defer src="assets/js/site.js"></script>
+${type === "article" ? '<script defer src="assets/js/markdown.js"></script>\n' : ""}<script defer src="assets/js/site.js"></script>
 </head>`;
 }
 
@@ -110,7 +115,7 @@ for (const a of APPS) {
   };
   const html = head({
     title: `${a.nombre} · ${C.sitio} Suite`, desc: `${a.lema}. ${a.descripcion}`.slice(0, 300),
-    url: appUrl(a), image: `${SITE}/assets/og/${a.id}.jpg`, base: "../../", jsonld
+    url: appUrl(a), image: `${SITE}/assets/og/${a.id}.jpg`, base: "../../", jsonld, preloadImg: `assets/apps/${a.id}.webp`
   }) + `
 <body data-page="app" data-id="${a.id}">
 <a class="skip" href="apps/${slug(a)}/#detail">Saltar al contenido</a>
@@ -128,6 +133,17 @@ for (const a of APPS) {
 </html>
 `;
   write(`apps/${slug(a)}/index.html`, html);
+}
+
+/* Cabecera de la entrada escrita en el HTML (el mismo marcado que arma
+   blog() en assets/js/site.js): la página no se mueve al cargar. */
+function postHead(p) {
+  let date = p.fecha;
+  try { date = new Date(p.fecha + "T12:00:00").toLocaleDateString("es-MX", { day: "numeric", month: "long", year: "numeric" }); } catch (e) { /* fecha tal cual */ }
+  return `<a href="blog.html" class="muted" style="font-size:.9rem">← Todas las entradas</a>
+          <div class="tags">${p.etiquetas.map((t) => `<span class="chip chip-cat">${esc(t)}</span>`).join("")}</div>
+          <h1 style="font-size:clamp(1.9rem,4vw,2.7rem)">${esc(p.titulo)}</h1>
+          <time datetime="${p.fecha}">${date} · ${esc(C.autor)}</time>`;
 }
 
 /* ---------- Entradas del blog ---------- */
@@ -150,8 +166,8 @@ for (const p of POSTS) {
   <section class="section" id="blogPost">
     <div class="wrap">
       <article class="article">
-        <header class="post-head" id="postHead"></header>
-        <div class="prose" id="postBody"></div>
+        <header class="post-head" id="postHead">${postHead(p)}</header>
+        <div class="prose" id="postBody" data-static>${MD.markdown(read(`blog/entradas/${p.slug}.md`))}</div>
         <div class="related" id="postApps"></div>
       </article>
     </div>

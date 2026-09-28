@@ -167,7 +167,7 @@
     const h = document.createElement("header");
     h.className = "top";
     h.innerHTML = `<div class="wrap">
-      <a class="brand" href="index.html" aria-label="${esc(C.sitio)} — inicio">
+      <a class="brand" href="index.html" aria-label="${esc(C.sitio)} Suite — ${esc(C.subtitulo)} (inicio)">
         <span class="brand-mark">${esc(C.sitio)}</span>
         <span class="brand-text"><b>${esc(C.sitio)} Suite</b><span>${esc(C.subtitulo)}</span></span>
       </a>
@@ -175,7 +175,7 @@
         ${NAV.map(([href, label, key]) => `<a href="${href}"${key === cur ? ' aria-current="page"' : ""}>${label}</a>`).join("")}
       </nav>
       <div class="top-tools">
-        <button class="icon-btn search-btn" type="button" id="searchBtn" aria-label="Buscar en el sitio (Ctrl+K)" title="Buscar (Ctrl+K)">${I.search}<span class="search-label">Buscar</span><kbd class="search-kbd">Ctrl K</kbd></button>
+        <button class="icon-btn search-btn" type="button" id="searchBtn" aria-label="Buscar en el sitio (Ctrl+K)" title="Buscar (Ctrl+K)">${I.search}<span class="search-label">Buscar</span><kbd class="search-kbd" aria-hidden="true">Ctrl K</kbd></button>
         <button class="icon-btn theme-btn" type="button" id="themeBtn">${I.moon}${I.sun}</button>
         <button class="icon-btn menu-btn" type="button" id="menuBtn" aria-label="Abrir el menú" aria-controls="nav" aria-expanded="false">${I.menu}</button>
       </div></div>`;
@@ -455,7 +455,7 @@
               ${online(a) ? `<a class="btn btn-ghost" href="${U.repo(a)}" target="_blank" rel="noopener">${I.code} Código${NEW}</a>` : ""}
             </div>
           </div>
-          <div class="detail-shot"><img src="${U.shot(a)}" alt="Portada de ${esc(a.nombre)}" width="1200" height="750"></div>
+          <div class="detail-shot"><img src="${U.shot(a)}" alt="Portada de ${esc(a.nombre)}" width="1200" height="750" fetchpriority="high"></div>
         </div>
       </div></section>
       <section class="section"><div class="wrap detail-layout">
@@ -566,7 +566,7 @@
       const present = Object.keys(TIPOS).filter((k) => ALL.some((p) => p.tipo === k));
       let tipo = "todos";
       $("#tipos").innerHTML = [["todos", "Todo"]].concat(present.map((k) => [k, TIPOS[k]]))
-        .map(([k, l]) => `<button class="pill" type="button" data-k="${k}" aria-pressed="${k === tipo}">${l} <span class="mono" style="opacity:.7">${k === "todos" ? ALL.length : ALL.filter((p) => p.tipo === k).length}</span></button>`).join("");
+        .map(([k, l]) => `<button class="pill" type="button" data-k="${k}" aria-pressed="${k === tipo}">${l} <span class="pill-n">${k === "todos" ? ALL.length : ALL.filter((p) => p.tipo === k).length}</span></button>`).join("");
       $("#tipos").addEventListener("click", (e) => {
         const b = e.target.closest(".pill"); if (!b) return;
         tipo = b.dataset.k; $("#tipos").querySelectorAll(".pill").forEach((p) => p.setAttribute("aria-pressed", p === b)); draw();
@@ -623,10 +623,12 @@
           <h1 style="font-size:clamp(1.9rem,4vw,2.7rem)">${esc(post.titulo)}</h1>
           <time datetime="${post.fecha}">${fmtDate(post.fecha)} · ${esc(C.autor)}</time>`;
         const body = $("#postBody");
+        if (!body.hasAttribute("data-static")) {
         body.innerHTML = '<p class="muted">Cargando…</p>';
         fetch(`blog/entradas/${post.slug}.md`).then((r) => { if (!r.ok) throw 0; return r.text(); })
           .then((src) => { body.innerHTML = markdown(src); })
           .catch(() => { body.innerHTML = '<p>No se pudo cargar la entrada. Si abriste el archivo con doble clic, usa el servidor local (ver LEEME.md).</p>'; });
+        }
         const rel = (post.apps || []).map((id) => APPS.find((a) => a.id === id)).filter(Boolean);
         $("#postApps").innerHTML = rel.length ? `<span class="eyebrow">Aplicaciones mencionadas</span><div class="dl-links">${rel.map((a) => `<a class="btn btn-ghost btn-sm" href="${U.ficha(a)}">${esc(a.nombre)}</a>`).join("")}</div>` : "";
       }
@@ -686,61 +688,8 @@
     }
   };
 
-  /* ---------- Markdown de las entradas del blog ----------
-     Convertidor propio y pequeño para lo que usan las entradas: títulos (#…######),
-     párrafos, listas con viñeta o numeradas, citas (>), bloques de código (```),
-     línea horizontal (---), **negritas**, *cursivas*, `código`, [enlaces](url),
-     ![imágenes](url) y direcciones sueltas. Todo el texto se escapa primero. */
-  function inline(s) {
-    const code = [];
-    s = esc(s).replace(/`([^`]+)`/g, (m, c) => { code.push(c); return `\u0000${code.length - 1}\u0000`; });
-    const safe = (u) => /^(https?:|mailto:|#|\/|[\w.-]+(\/|\.html|\.md|$))/i.test(u) ? u : "#";
-    s = s.replace(/!\[([^\]]*)\]\(([^)\s]+)\)/g, (m, alt, u) => `<img src="${safe(u)}" alt="${alt}" loading="lazy">`)
-      .replace(/\[([^\]]+)\]\(([^)\s]+)\)/g, (m, t, u) => /^https?:/i.test(u) ? `<a href="${safe(u)}" target="_blank" rel="noopener">${t}</a>` : `<a href="${safe(u)}">${t}</a>`)
-      .replace(/(^|[\s(])(https?:\/\/[^\s<)]+[^\s<).,;:])/g, (m, pre, u) => `${pre}<a href="${u}" target="_blank" rel="noopener">${u}</a>`)
-      .replace(/\*\*([^*]+)\*\*/g, "<strong>$1</strong>")
-      .replace(/(^|[^*\w])\*([^*\s][^*]*?)\*(?!\w)/g, "$1<em>$2</em>")
-      .replace(/(^|[^\w])_([^_\s][^_]*?)_(?!\w)/g, "$1<em>$2</em>");
-    return s.replace(/\u0000(\d+)\u0000/g, (m, i) => `<code>${code[+i]}</code>`);
-  }
-  function markdown(src) {
-    const lines = String(src).replace(/\r\n?/g, "\n").split("\n");
-    const out = []; let i = 0;
-    const isBlockStart = (l) => /^(#{1,6}\s|>\s?|```|\s*[-*+]\s+|\s*\d+[.)]\s+|-{3,}\s*$)/.test(l);
-    while (i < lines.length) {
-      const l = lines[i];
-      if (!l.trim()) { i++; continue; }
-      let m;
-      if ((m = l.match(/^(#{1,6})\s+(.*?)\s*#*\s*$/))) {
-        const n = Math.min(6, Math.max(2, m[1].length));     /* el h1 es el título de la entrada */
-        out.push(`<h${n}>${inline(m[2])}</h${n}>`); i++;
-      } else if (/^```/.test(l)) {
-        const buf = []; i++;
-        while (i < lines.length && !/^```/.test(lines[i])) buf.push(lines[i++]);
-        i++; out.push(`<pre><code>${esc(buf.join("\n"))}</code></pre>`);
-      } else if (/^-{3,}\s*$/.test(l)) {
-        out.push("<hr>"); i++;
-      } else if (/^>\s?/.test(l)) {
-        const buf = [];
-        while (i < lines.length && /^>\s?/.test(lines[i])) buf.push(lines[i++].replace(/^>\s?/, ""));
-        out.push(`<blockquote>${markdown(buf.join("\n"))}</blockquote>`);
-      } else if ((m = l.match(/^\s*([-*+]|\d+[.)])\s+/))) {
-        const ordered = /\d/.test(m[1]);
-        const re = ordered ? /^\s*\d+[.)]\s+/ : /^\s*[-*+]\s+/;
-        const items = [];
-        while (i < lines.length && (re.test(lines[i]) || (lines[i].trim() && /^\s{2,}/.test(lines[i]) && items.length))) {
-          if (re.test(lines[i])) items.push(lines[i].replace(re, "")); else items[items.length - 1] += " " + lines[i].trim();
-          i++;
-        }
-        out.push(`<${ordered ? "ol" : "ul"}>${items.map((t) => `<li>${inline(t)}</li>`).join("")}</${ordered ? "ol" : "ul"}>`);
-      } else {
-        const buf = [];
-        while (i < lines.length && lines[i].trim() && !(buf.length && isBlockStart(lines[i]))) buf.push(lines[i++].trim());
-        out.push(`<p>${inline(buf.join(" "))}</p>`);
-      }
-    }
-    return out.join("\n");
-  }
+  /* ---------- Markdown de las entradas: assets/js/markdown.js ---------- */
+  const markdown = (src) => window.LABG_MD.markdown(src);
 
   function fmtDate(d) {
     try { return new Date(d + "T12:00:00").toLocaleDateString("es-MX", { day: "numeric", month: "long", year: "numeric" }); }

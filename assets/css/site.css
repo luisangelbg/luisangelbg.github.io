@@ -601,3 +601,11 @@ dialog.sdlg[open] .sbox { animation: rise 200ms var(--ease) both; }
 .foot-top:hover { text-decoration: underline; color: #fff; }
 @media (max-width: 1000px) { .foot-grid { grid-template-columns: 1fr 1fr; } .foot-about { grid-column: 1 / -1; } }
 @media (max-width: 640px) { .foot-grid { grid-template-columns: 1fr 1fr; } .foot-top { margin-left: 0; } }
+
+/* --- Áreas táctiles: los enlaces sueltos (fuera de un párrafo) miden al menos 24 px --- */
+.foot-top, .pub-meta a, .pub-meta .link-btn, .contact-card dd a, .contact-card dd .link-btn, .post-head > a, .crumbs a, .ficha dd a {
+  display: inline-flex; align-items: center; min-height: 24px; padding-block: 2px;
+}
+.pub-meta a, .pub-meta .link-btn { min-width: 24px; justify-content: center; }
+/* listas que dibuja JavaScript: reservan espacio mientras llegan, así el pie no salta */
+#pubs:empty, #grid:empty, #posts:empty, #featured:empty, #others:empty, .table-wrap:has(#dlBody:empty) { min-height: 100vh; }
