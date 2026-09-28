@@ -1,0 +1,11 @@
+Archivos de letra de este directorio
+=====================================
+
+Los archivos *.woff2 son la familia tipográfica IBM Plex (Sans, Serif y Mono),
+Copyright © 2017 IBM Corp., con el nombre reservado "Plex". Se distribuyen sin
+modificar, en los subconjuntos latino y latino extendido, bajo la SIL Open Font
+License, versión 1.1, cuyo texto completo está en OFL.txt, en este mismo directorio.
+
+En las hojas de estilo del sitio se les llama "LABG Sans", "LABG Serif" y
+"LABG Mono"; es solo el nombre local de la regla @font-face, no un cambio de
+nombre de la letra.
