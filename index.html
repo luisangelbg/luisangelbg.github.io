@@ -3,100 +3,208 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>LABG Suite</title>
-<meta name="description" content="Aplicaciones científicas libres para la investigación y la docencia en ciencias agrícolas y biológicas. Corren en el navegador, sin instalar nada.">
+<title>LABG — Del dato a la decisión</title>
+<meta name="description" content="Herramientas científicas gratuitas para analizar, modelar y decidir, directamente en tu navegador: diseño de experimentos, análisis multivariado, genética, biogeografía y más. Sin instalación, código abierto.">
+<meta name="theme-color" content="#FFFFFF">
+<meta name="color-scheme" content="light">
 <link rel="canonical" href="https://luisangelbg.github.io/">
 <meta property="og:type" content="website">
-<meta property="og:site_name" content="LABG Suite">
+<meta property="og:site_name" content="LABG">
 <meta property="og:locale" content="es_MX">
-<meta property="og:title" content="LABG Suite">
-<meta property="og:description" content="Aplicaciones científicas libres para la investigación y la docencia en ciencias agrícolas y biológicas. Corren en el navegador, sin instalar nada.">
+<meta property="og:title" content="LABG — Del dato a la decisión">
+<meta property="og:description" content="Herramientas científicas gratuitas para analizar, modelar y decidir, directamente en tu navegador.">
 <meta property="og:url" content="https://luisangelbg.github.io/">
-<meta property="og:image" content="https://luisangelbg.github.io/assets/og/default.jpg">
+<meta property="og:image" content="https://luisangelbg.github.io/assets/marca/png/labg-redes-1200x630.png">
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="Logotipo de LABG: la A convertida en un biplot sobre una campana de Gauss">
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:title" content="LABG Suite">
-<meta name="twitter:description" content="Aplicaciones científicas libres para la investigación y la docencia en ciencias agrícolas y biológicas. Corren en el navegador, sin instalar nada.">
-<meta name="twitter:image" content="https://luisangelbg.github.io/assets/og/default.jpg">
-<link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
-<link rel="preload" href="assets/fonts/sans-400-latin.woff2" as="font" type="font/woff2" crossorigin>
-<link rel="preload" href="assets/fonts/serif-600-latin.woff2" as="font" type="font/woff2" crossorigin>
-<link rel="preload" href="assets/apps/PCAPro.webp" as="image" fetchpriority="high">
-<link rel="stylesheet" href="assets/css/fonts.css">
-<link rel="stylesheet" href="assets/css/site.css">
-<script>try{var t=localStorage.getItem("labg-tema");if(t==="dark"||t==="light")document.documentElement.setAttribute("data-theme",t)}catch(e){}document.documentElement.classList.add("js")</script>
+<meta name="twitter:title" content="LABG — Del dato a la decisión">
+<meta name="twitter:description" content="Herramientas científicas gratuitas para analizar, modelar y decidir, directamente en tu navegador.">
+<meta name="twitter:image" content="https://luisangelbg.github.io/assets/marca/png/labg-redes-1200x630.png">
+<link rel="icon" href="assets/marca/favicon.ico" sizes="any">
+<link rel="icon" type="image/svg+xml" href="assets/marca/svg/labg-isotipo.svg">
+<link rel="apple-touch-icon" href="assets/marca/png/apple-touch-icon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400..700;1,9..144,400..600&family=Manrope:wght@400;500;600;700&display=swap">
+<link rel="stylesheet" href="assets/css/home.css">
+<script>
+  /* antes de pintar: qué héroe toca (intro, escena compuesta o logotipo en SVG) */
+  (function () {
+    var d = document.documentElement, reduce = false, gl = false, lite = false, seen = false;
+    try { reduce = matchMedia('(prefers-reduced-motion: reduce)').matches; } catch (e) {}
+    try {
+      var c = document.createElement('canvas'), x = c.getContext('webgl2') || c.getContext('webgl');
+      gl = !!x;
+      /* WebGL dibujado por software (sin tarjeta gráfica): se trata como equipo modesto */
+      var info = x && x.getExtension('WEBGL_debug_renderer_info');
+      if (info && /swiftshader|llvmpipe|softpipe|software|basic render/i.test(x.getParameter(info.UNMASKED_RENDERER_WEBGL) || '')) gl = false;
+      if (x && x.getExtension('WEBGL_lose_context')) x.getExtension('WEBGL_lose_context').loseContext();
+    } catch (e) {}
+    try { seen = sessionStorage.getItem('labg-intro') === '1'; } catch (e) {}
+    var n = navigator, mem = n.deviceMemory || 8, cores = n.hardwareConcurrency || 8;
+    lite = (n.connection && n.connection.saveData) || mem < 3 || cores < 3;
+    d.classList.add('js');
+    d.dataset.hero = !gl || lite ? 'svg-anim' : reduce ? 'svg' : seen ? 'composed' : 'intro';
+  })();
+</script>
+<script type="importmap">
+{ "imports": {
+  "three": "https://cdn.jsdelivr.net/npm/three@0.170.0/build/three.module.min.js",
+  "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.170.0/examples/jsm/"
+} }
+</script>
 <script defer src="data/config.js"></script>
 <script defer src="data/apps.js"></script>
-<script defer src="data/publicaciones.js"></script>
-<script defer src="data/blog.js"></script>
-<script defer src="assets/js/site.js"></script>
-<script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"WebSite","name":"LABG Suite","url":"https://luisangelbg.github.io/","inLanguage":"es","potentialAction":{"@type":"SearchAction","target":"https://luisangelbg.github.io/aplicaciones.html?q={search_term_string}","query-input":"required name=search_term_string"}},{"@type":"Person","name":"Luis Ángel Barrera-Guzmán","url":"https://luisangelbg.github.io/acerca.html","sameAs":["https://orcid.org/0000-0001-8057-2583","https://github.com/luisangelbg","https://www.researchgate.net/profile/Luis-Barrera-Guzman"]}]}</script>
+<script defer src="assets/js/home.js"></script>
+<script type="module" src="assets/js/hero-boot.js"></script>
+<script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"WebSite","name":"LABG","alternateName":"LABG Suite","url":"https://luisangelbg.github.io/","inLanguage":"es","description":"Herramientas científicas gratuitas para analizar, modelar y decidir, directamente en tu navegador.","potentialAction":{"@type":"SearchAction","target":"https://luisangelbg.github.io/aplicaciones.html?q={search_term_string}","query-input":"required name=search_term_string"}},{"@type":"Person","name":"Luis Ángel Barrera-Guzmán","url":"https://luisangelbg.github.io/acerca.html","sameAs":["https://orcid.org/0000-0001-8057-2583","https://github.com/luisangelbg","https://www.researchgate.net/profile/Luis-Barrera-Guzman"]}]}</script>
 </head>
-<body data-page="inicio">
+<body>
 <a class="skip" href="#main">Saltar al contenido</a>
-<div id="hdr" style="min-height:64px"></div>
+
+<header class="nav" id="nav">
+  <div class="nav-in">
+    <a class="brand" href="./" aria-label="LABG, inicio">
+      <img src="assets/marca/svg/labg-isotipo.svg" alt="" width="30" height="30">
+      <span>LABG</span>
+    </a>
+    <nav aria-label="Principal">
+      <ul class="nav-links" id="navLinks">
+        <li><a href="aplicaciones.html">Apps</a></li>
+        <li><a href="descargas.html">Manuales</a></li>
+        <li><a href="publicaciones.html">Publicaciones</a></li>
+        <li><a href="blog.html">Blog</a></li>
+      </ul>
+    </nav>
+    <button class="nav-toggle" id="navToggle" type="button" aria-expanded="false" aria-controls="navLinks">Menú</button>
+  </div>
+</header>
+
 <main id="main">
-  <section class="hero">
-    <div class="wrap hero-grid">
-      <div class="hero-copy">
-        <span class="eyebrow">Ciencias agrícolas y biológicas · Software libre</span>
-        <h1>Software científico libre para el <em>campo</em> y el laboratorio</h1>
-        <p class="lead">Aplicaciones para diseñar experimentos, analizar datos, estudiar la diversidad genética y modelar la distribución de especies. Se abren en el navegador y tus datos nunca salen de tu computadora.</p>
-        <div class="hero-actions">
-          <a class="btn btn-primary" href="aplicaciones.html">Explorar las aplicaciones</a>
-          <a class="btn btn-ghost" href="descargas.html">Manuales y descargas</a>
-        </div>
-        <div class="facts">
-          <span><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg>Sin instalación</span>
-          <span><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg>Sin cuentas ni pagos</span>
-          <span><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg>Español e inglés</span>
-          <span><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg>Código abierto (GPL)</span>
-        </div>
+  <section class="hero" id="hero" aria-labelledby="heroTitle">
+    <div class="hero-stage" aria-hidden="true">
+      <picture class="hero-svg">
+        <source srcset="assets/marca/svg/labg-logo-claro.svg" media="(prefers-reduced-motion: reduce)">
+        <img id="heroSvg" src="assets/marca/svg/labg-logo-animado-claro.svg" alt="" width="960" height="400" fetchpriority="high">
+      </picture>
+      <canvas id="heroCanvas"></canvas>
+      <!-- ilustraciones originales de los manuales de la suite -->
+      <div class="flora" id="flora">
+        <img class="f-maiz" src="assets/ilustraciones/maiz.svg" alt="" width="96" height="129">
+        <img class="f-monarca" src="assets/ilustraciones/monarca.svg" alt="" width="82" height="69">
+        <img class="f-agave" src="assets/ilustraciones/agave.svg" alt="" width="124" height="95">
+        <img class="f-cafe" src="assets/ilustraciones/cafe.svg" alt="" width="110" height="106">
+        <img class="f-chayote" src="assets/ilustraciones/chayote.svg" alt="" width="84" height="133">
+        <img class="f-abeja" src="assets/ilustraciones/abeja.svg" alt="" width="72" height="63">
+        <img class="f-maracuya" src="assets/ilustraciones/maracuya.svg" alt="" width="118" height="113">
+        <img class="f-pinonero" src="assets/ilustraciones/pinonero.svg" alt="" width="140" height="84">
       </div>
-      <div class="stack" id="stack" aria-label="Capturas de algunas aplicaciones"></div>
+    </div>
+    <div class="hero-copy">
+      <h1 id="heroTitle"><span class="sr-only">LABG — </span><span class="slogan">Del dato a la decisión.</span></h1>
+      <p class="hero-lead">Herramientas científicas gratuitas para analizar, modelar y decidir — directamente en tu navegador.</p>
+      <div class="cta">
+        <a class="btn btn-solid" href="aplicaciones.html">Explorar apps</a>
+        <a class="btn btn-line" href="descargas.html">Ver manuales</a>
+      </div>
+    </div>
+    <button class="skip-intro" id="skipIntro" type="button" hidden>Saltar intro</button>
+    <a class="scroll-cue" href="#ideas" aria-label="Bajar a la siguiente sección"><span></span></a>
+  </section>
+
+  <section class="ideas" id="ideas" aria-labelledby="ideasTitle">
+    <div class="wrap">
+      <p class="kicker">Tres ideas</p>
+      <h2 id="ideasTitle" class="h2">Cada app sigue el mismo camino: <em>del dato a la decisión.</em></h2>
+      <div class="ideas-grid">
+        <article class="idea">
+          <svg class="idea-art art-biplot" viewBox="0 0 120 120" aria-hidden="true">
+            <line class="axis" x1="10" y1="60" x2="110" y2="60"/><line class="axis" x1="60" y1="10" x2="60" y2="110"/>
+            <g class="pts"><circle cx="38" cy="44" r="3"/><circle cx="46" cy="36" r="3"/><circle cx="74" cy="80" r="3"/><circle cx="82" cy="72" r="3"/><circle cx="30" cy="70" r="3"/><circle cx="88" cy="48" r="3"/><circle cx="66" cy="32" r="3"/><circle cx="52" cy="86" r="3"/></g>
+            <g class="vec"><line x1="60" y1="60" x2="96" y2="30"/><line x1="60" y1="60" x2="28" y2="26"/><line x1="60" y1="60" x2="92" y2="94"/></g>
+            <circle class="origin" cx="60" cy="60" r="4.5"/>
+          </svg>
+          <h3>Analiza</h3>
+          <p>Describe, compara y resume tus datos: supuestos, pruebas, componentes principales y agrupamientos, con figuras listas para publicar.</p>
+        </article>
+        <article class="idea">
+          <svg class="idea-art art-contour" viewBox="0 0 120 120" aria-hidden="true">
+            <path d="M60 22c24 0 44 14 44 36s-18 42-46 42-44-18-44-40 22-38 46-38z"/>
+            <path d="M60 36c16 0 30 10 30 24s-12 28-31 28-30-12-30-27 15-25 31-25z"/>
+            <path d="M60 50c9 0 16 5 16 12s-7 13-17 13-16-6-16-13 8-12 17-12z"/>
+            <circle cx="60" cy="62" r="3.5"/>
+          </svg>
+          <h3>Modela</h3>
+          <p>Ajusta modelos que explican y predicen: diseños experimentales, genética de poblaciones, distribución de especies y escenarios de clima.</p>
+        </article>
+        <article class="idea">
+          <svg class="idea-art art-tree" viewBox="0 0 120 120" aria-hidden="true">
+            <path class="edge" d="M60 22V44M60 44H32V66M60 44H88V66M32 66H18V94M32 66H46V94M88 66V94"/>
+            <circle class="node n1" cx="60" cy="22" r="5"/><circle class="node n2" cx="32" cy="66" r="5"/><circle class="node n3" cx="88" cy="66" r="5"/>
+            <circle class="leaf l1" cx="18" cy="96" r="4"/><circle class="leaf l2" cx="46" cy="96" r="4"/><circle class="leaf l3" cx="88" cy="96" r="4"/>
+          </svg>
+          <h3>Decide</h3>
+          <p>Traduce los resultados en decisiones: qué tratamiento recomendar, qué accesión conservar, dónde sembrar y cuánto invertir.</p>
+        </article>
+      </div>
     </div>
   </section>
 
-  <section class="section" style="padding-bottom:0">
+  <section class="apps" id="apps" aria-labelledby="appsTitle">
     <div class="wrap">
-      <div class="numbers">
-        <div><b id="nApps">–</b><span>aplicaciones en la suite</span></div>
-        <div><b id="nOnline">–</b><span>ya disponibles en línea</span></div>
-        <div><b id="nDoi">–</b><span>con DOI en Zenodo</span></div>
-        <div><b id="nPubs">–</b><span>publicaciones científicas</span></div>
+      <div class="apps-head">
+        <div><p class="kicker">Apps destacadas</p><h2 id="appsTitle" class="h2">Empieza por aquí.</h2></div>
+        <a class="link-arrow" id="allApps" href="aplicaciones.html">Ver todas las apps →</a>
       </div>
+      <div class="cards" id="cards"></div>
     </div>
   </section>
 
-  <section class="section">
-    <div class="wrap">
-      <div class="section-head">
-        <div><span class="eyebrow">Destacadas</span><h2>Empieza por aquí</h2></div>
-        <a class="btn btn-ghost" href="aplicaciones.html">Ver el catálogo completo →</a>
-      </div>
-      <div class="grid-apps" id="featured"></div>
+  <section class="figures" aria-label="La suite en cifras">
+    <div class="wrap figures-grid">
+      <div><b id="nOnline">14</b><span>apps en línea</span></div>
+      <div><b>100 %</b><span>gratis</span></div>
+      <div><b>0</b><span>instalaciones: corren en el navegador</span></div>
+      <div><b>GPL</b><span>código abierto</span></div>
     </div>
   </section>
 
-  <section class="section band">
+  <section class="closing" aria-labelledby="closingTitle">
     <div class="wrap">
-      <div class="section-head">
-        <div><span class="eyebrow">Áreas</span><h2>Una herramienta para cada etapa de la investigación</h2></div>
-      </div>
-      <div class="areas" id="areas"></div>
-    </div>
-  </section>
-
-  <section class="section">
-    <div class="wrap">
-      <div class="section-head">
-        <div><span class="eyebrow">Blog</span><h2>Novedades y guías</h2></div>
-        <a class="btn btn-ghost" href="blog.html">Todas las entradas →</a>
-      </div>
-      <div class="posts" id="latest"></div>
+      <h2 id="closingTitle">La ciencia de datos, <em>al alcance del campo.</em></h2>
+      <a class="btn btn-solid" href="aplicaciones.html">Explorar apps</a>
     </div>
   </section>
 </main>
+
+<footer class="foot">
+  <div class="wrap foot-grid">
+    <div class="foot-brand">
+      <img src="assets/marca/svg/labg-isotipo.svg" alt="" width="40" height="40" loading="lazy">
+      <p><b>LABG</b><br><span>Del dato a la decisión.</span></p>
+    </div>
+    <nav aria-label="Sitio">
+      <h2>Sitio</h2>
+      <ul><li><a href="aplicaciones.html">Apps</a></li><li><a href="descargas.html">Manuales y descargas</a></li><li><a href="publicaciones.html">Publicaciones</a></li><li><a href="blog.html">Blog</a></li><li><a href="acerca.html">Acerca</a></li></ul>
+    </nav>
+    <nav aria-label="Identificadores">
+      <h2>Código y datos</h2>
+      <ul>
+        <li><a href="https://github.com/luisangelbg" rel="me noopener">GitHub</a></li>
+        <li><a href="https://zenodo.org/search?q=%220000-0001-8057-2583%22" rel="noopener">Zenodo</a></li>
+        <li><a href="https://orcid.org/0000-0001-8057-2583" rel="me noopener">ORCID</a></li>
+      </ul>
+    </nav>
+    <div>
+      <h2>Licencia y cita</h2>
+      <p>Software libre bajo la <a href="https://www.gnu.org/licenses/gpl-3.0.html" rel="noopener">licencia GPL</a>.</p>
+      <p><a href="aplicaciones.html">Cómo citar:</a> cada app tiene su DOI en Zenodo y su cita lista en su ficha.</p>
+    </div>
+  </div>
+  <p class="wrap foot-note">© <span id="year">2026</span> Luis Ángel Barrera-Guzmán.</p>
+</footer>
 </body>
 </html>
