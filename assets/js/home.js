@@ -93,7 +93,14 @@
   function flora() {
     const box = $('#flora');
     if (!box) return;
-    requestAnimationFrame(() => box.classList.add('in'));
+    /* se descargan después de la carga: el logotipo del héroe no comparte la red con ellas */
+    const show = () => {
+      const imgs = $$('img[data-src]', box);
+      imgs.forEach((im) => { im.src = im.dataset.src; im.removeAttribute('data-src'); });
+      Promise.all(imgs.map((im) => (im.decode ? im.decode().catch(() => {}) : null)))
+        .then(() => requestAnimationFrame(() => box.classList.add('in')));
+    };
+    if (document.readyState === 'complete') show(); else addEventListener('load', show, { once: true });
     if (reduce || !finePointer) return;
     let raf = 0;
     addEventListener('pointermove', (e) => {

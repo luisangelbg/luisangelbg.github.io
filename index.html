@@ -29,7 +29,7 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
 <!-- las letras se cargan sin bloquear el primer pintado: el texto aparece con la de respaldo y cambia al llegar -->
-<link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400..700;1,9..144,400..600&family=Manrope:wght@400;500;600;700&display=swap" onload="this.onload=null;this.rel='stylesheet'">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400..700;1,9..144,400..600&family=Manrope:wght@400;500;600;700&display=swap" media="print" onload="this.onload=null;this.media='all'">
 <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400..700;1,9..144,400..600&family=Manrope:wght@400;500;600;700&display=swap"></noscript>
 <link rel="stylesheet" href="assets/css/home.css">
 <script>
@@ -88,14 +88,14 @@
       <canvas id="heroCanvas"></canvas>
       <!-- ilustraciones originales de los manuales de la suite -->
       <div class="flora" id="flora">
-        <img class="f-maiz" src="assets/ilustraciones/maiz.svg" alt="" width="96" height="129">
-        <img class="f-monarca" src="assets/ilustraciones/monarca.svg" alt="" width="82" height="69">
-        <img class="f-agave" src="assets/ilustraciones/agave.svg" alt="" width="124" height="95">
-        <img class="f-cafe" src="assets/ilustraciones/cafe.svg" alt="" width="110" height="106">
-        <img class="f-chayote" src="assets/ilustraciones/chayote.svg" alt="" width="84" height="133">
-        <img class="f-abeja" src="assets/ilustraciones/abeja.svg" alt="" width="72" height="63">
-        <img class="f-maracuya" src="assets/ilustraciones/maracuya.svg" alt="" width="118" height="113">
-        <img class="f-pinonero" src="assets/ilustraciones/pinonero.svg" alt="" width="140" height="84">
+        <img class="f-maiz" data-src="assets/ilustraciones/maiz.svg" alt="" width="96" height="129">
+        <img class="f-monarca" data-src="assets/ilustraciones/monarca.svg" alt="" width="82" height="69">
+        <img class="f-agave" data-src="assets/ilustraciones/agave.svg" alt="" width="124" height="95">
+        <img class="f-cafe" data-src="assets/ilustraciones/cafe.svg" alt="" width="110" height="106">
+        <img class="f-chayote" data-src="assets/ilustraciones/chayote.svg" alt="" width="84" height="133">
+        <img class="f-abeja" data-src="assets/ilustraciones/abeja.svg" alt="" width="72" height="63">
+        <img class="f-maracuya" data-src="assets/ilustraciones/maracuya.svg" alt="" width="118" height="113">
+        <img class="f-pinonero" data-src="assets/ilustraciones/pinonero.svg" alt="" width="140" height="84">
       </div>
     </div>
     <div class="hero-copy">
