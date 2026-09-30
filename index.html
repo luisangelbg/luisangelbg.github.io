@@ -33,23 +33,16 @@
 <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400..700;1,9..144,400..600&family=Manrope:wght@400;500;600;700&display=swap"></noscript>
 <link rel="stylesheet" href="assets/css/home.css">
 <script>
-  /* antes de pintar: qué héroe toca (intro, escena compuesta o logotipo en SVG) */
+  /* antes de pintar: qué héroe toca. Aquí solo lo barato; la prueba de WebGL se hace después
+     de la carga (hero-boot.js), así el logotipo en SVG se pinta de inmediato en todos los casos */
   (function () {
-    var d = document.documentElement, reduce = false, gl = false, lite = false, seen = false;
+    var d = document.documentElement, reduce = false, seen = false;
     try { reduce = matchMedia('(prefers-reduced-motion: reduce)').matches; } catch (e) {}
-    try {
-      var c = document.createElement('canvas'), x = c.getContext('webgl2') || c.getContext('webgl');
-      gl = !!x;
-      /* WebGL dibujado por software (sin tarjeta gráfica): se trata como equipo modesto */
-      var info = x && x.getExtension('WEBGL_debug_renderer_info');
-      if (info && /swiftshader|llvmpipe|softpipe|software|basic render/i.test(x.getParameter(info.UNMASKED_RENDERER_WEBGL) || '')) gl = false;
-      if (x && x.getExtension('WEBGL_lose_context')) x.getExtension('WEBGL_lose_context').loseContext();
-    } catch (e) {}
     try { seen = sessionStorage.getItem('labg-intro') === '1'; } catch (e) {}
     var n = navigator, mem = n.deviceMemory || 8, cores = n.hardwareConcurrency || 8;
-    lite = (n.connection && n.connection.saveData) || mem < 3 || cores < 3;
+    var lite = (n.connection && n.connection.saveData) || mem < 3 || cores < 3;
     d.classList.add('js');
-    d.dataset.hero = !gl || lite ? 'svg-anim' : reduce ? 'svg' : seen ? 'composed' : 'intro';
+    d.dataset.hero = lite ? 'svg-anim' : reduce ? 'svg' : seen ? 'composed' : 'intro';
   })();
 </script>
 <script type="importmap">

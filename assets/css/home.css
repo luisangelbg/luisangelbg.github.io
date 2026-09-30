@@ -101,8 +101,7 @@ a:hover { color: var(--verde-profundo); }
 #heroCanvas.ready { opacity: 1; }
 .hero-svg { position: absolute; left: 50%; top: max(84px, 13vh); width: min(1000px, 94vw); transform: translateX(-50%); transition: opacity .9s var(--suave); }
 .hero-svg img { width: 100%; height: auto; }
-/* con WebGL la escena manda: el SVG solo cubre la espera en visitas con la escena ya compuesta */
-[data-hero="intro"] .hero-svg { opacity: 0; }
+/* el SVG se pinta de inmediato; si hay 3D, se desvanece cuando la escena empieza */
 .hero-svg.gone { opacity: 0; }
 @media (max-aspect-ratio: 4/5) { .hero-svg { top: max(92px, 16vh); width: 118vw; } }
 
