@@ -107,7 +107,6 @@
     gallery();
     figures();
     const y = $('#year'); if (y) y.textContent = new Date().getFullYear();
-    document.dispatchEvent(new Event('labg:gallery'));
   }
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', start); else start();
 })();

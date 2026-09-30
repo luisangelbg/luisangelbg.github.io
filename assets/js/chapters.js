@@ -30,6 +30,8 @@
     M.heroTop = docTop(hero);
     M.appsTop = docTop(apps); M.appsH = apps.offsetHeight;
     /* anclas de las filas de la tabla y del marco de la figura, en la pantalla, con su capítulo fijado */
+    galleryMeasure();
+    if (!root.classList.contains('scrolly')) return;       /* las anclas solo sirven a la escena */
     const pin1 = $('.ch-pin', secs[0]), pr = pin1.getBoundingClientRect();
     story.rows = $$('.data-table tbody tr', secs[0]).map((tr) => {
       const o = offsetIn(tr, pin1), sc = $('.table-scroll', secs[0]);
@@ -37,7 +39,6 @@
     });
     const pin4 = $('.ch-pin', secs[3]), plot = $('#figPlot'), p4 = pin4.getBoundingClientRect(), o4 = offsetIn(plot, pin4);
     story.plot = { x: p4.left + o4.x, y: o4.y, w: plot.offsetWidth, h: plot.offsetHeight };
-    galleryMeasure();
   }
 
   /* ---------- galería: fijada y de lado en escritorio; carrusel con el dedo en lo demás ---------- */
@@ -56,31 +57,36 @@
   }
 
   let raf = 0, lastActive = '';
+  /* escribir una variable CSS solo si cambió: cada escritura obliga a recalcular estilos de toda la sección */
+  const put = (el, k, v) => { const c = el.__v || (el.__v = {}); if (c[k] !== v) { c[k] = v; el.style.setProperty(k, v); } };
   function update() {
     raf = 0;
     const y = scrollY, vh = M.vh;
     /* entrada: de 0 a 1 mientras el héroe sube hasta que el primer capítulo se fija */
     let s = clamp01((y - M.heroTop) / Math.max(1, M.tops[0] - M.heroTop));
+    const live = root.classList.contains('scrolly');       /* en modo estático los capítulos no se animan */
     secs.forEach((sec, i) => {
       const run = Math.max(1, M.hs[i] - vh), p = clamp01((y - M.tops[i]) / run);
-      sec.style.setProperty('--p', p.toFixed(4));
-      sec.style.setProperty('--q', clamp01((y - M.tops[i] + vh) / vh).toFixed(4));   /* entrada de la sección */
+      if (live) {
+        put(sec, '--p', p.toFixed(3));
+        put(sec, '--q', clamp01((y - M.tops[i] + vh) / vh).toFixed(3));   /* entrada de la sección */
+      }
       if (y >= M.tops[i]) s = i + 1 + p;
     });
     story.s = s;
     /* el escenario 3D se desvanece mientras sale la figura final */
     const end4 = M.tops[3] + M.hs[3] - vh;
     story.fade = clamp01((y - end4) / (vh * 0.6));
-    stage.style.setProperty('--stage-o', (1 - story.fade).toFixed(3));
-    stage.style.visibility = story.fade >= 1 ? 'hidden' : '';
+    put(stage, '--stage-o', (1 - story.fade).toFixed(3));
+    put(stage, 'visibility', story.fade >= 1 ? 'hidden' : 'visible');
     /* galería */
     if (gal) {
       const p = clamp01((y - M.appsTop) / Math.max(1, M.appsH - vh));
-      apps.style.setProperty('--p', p.toFixed(4));
-      apps.style.setProperty('--g', p.toFixed(4));
+      put(apps, '--p', p.toFixed(4));
+      put(apps, '--g', p.toFixed(4));
     }
     /* la cifra del análisis sube con el scroll hasta su valor real */
-    if (root.classList.contains('scrolly')) {
+    if (live) {
       const p2 = +secs[1].style.getPropertyValue('--p') || 0;
       const k = clamp01((p2 - 0.42) / 0.35), v = (VAR * (1 - Math.pow(1 - k, 3))).toFixed(1);
       if (varOut.textContent !== v) varOut.textContent = v;
@@ -146,17 +152,28 @@
     });
 
     measure(); update();
+    /* las mediciones leen la maquetación: varias peticiones seguidas se juntan en una sola, en el siguiente cuadro */
+    let mraf = 0;
+    const remeasure = () => { if (!mraf) mraf = requestAnimationFrame(() => { mraf = 0; measure(); update(); }); };
     addEventListener('scroll', schedule, { passive: true });
-    addEventListener('resize', () => { measure(); schedule(); });
+    addEventListener('resize', remeasure);
     /* al volverse narrativa (la escena arrancó), las alturas cambian: medir de nuevo */
+    /* si la escena arranca cuando la persona ya bajó, las secciones cambian de alto:
+       se la deja al principio de la sección que estaba leyendo, sin saltos */
     let wasScrolly = root.classList.contains('scrolly');
     new MutationObserver(() => {
       const now = root.classList.contains('scrolly');
-      if (now !== wasScrolly) { wasScrolly = now; measure(); schedule(); }
+      if (now === wasScrolly) return;
+      wasScrolly = now;
+      const reading = scrollY > M.tops[0] - M.vh * 0.5 ? lastActive : '';
+      measure(); update();
+      if (reading && document.getElementById(reading)) {
+        scrollTo({ top: document.getElementById(reading).getBoundingClientRect().top + scrollY, behavior: 'auto' });
+        measure(); update();
+      }
     }).observe(root, { attributes: true, attributeFilter: ['class'] });
-    document.addEventListener('labg:gallery', () => { measure(); schedule(); });
-    addEventListener('load', () => { measure(); schedule(); });
-    if (document.fonts) document.fonts.ready.then(() => { measure(); schedule(); });
+    addEventListener('load', remeasure);
+    if (document.fonts) document.fonts.ready.then(remeasure);
   }
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', start); else start();
 })();
