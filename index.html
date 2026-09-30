@@ -34,7 +34,8 @@
 <link rel="stylesheet" href="assets/css/home.css">
 <script>
   /* antes de pintar: qué héroe toca. Aquí solo lo barato; la prueba de WebGL se hace después
-     de la carga (hero-boot.js), así el logotipo en SVG se pinta de inmediato en todos los casos */
+     de la carga (hero-boot.js), así el logotipo en SVG se pinta de inmediato en todos los casos.
+     Los capítulos empiezan como secciones estáticas; se vuelven narrativa con scroll cuando la escena 3D arranca. */
   (function () {
     var d = document.documentElement, reduce = false, seen = false;
     try { reduce = matchMedia('(prefers-reduced-motion: reduce)').matches; } catch (e) {}
@@ -53,30 +54,103 @@
 </script>
 <script defer src="data/config.js"></script>
 <script defer src="data/apps.js"></script>
+<script defer src="assets/js/datos-ejemplo.js"></script>
+<script defer src="assets/js/nav.js"></script>
 <script defer src="assets/js/home.js"></script>
+<script defer src="assets/js/chapters.js"></script>
 <script type="module" src="assets/js/hero-boot.js"></script>
 <script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"WebSite","name":"LABG","alternateName":"LABG Suite","url":"https://luisangelbg.github.io/","inLanguage":"es","description":"Herramientas científicas gratuitas para analizar, modelar y decidir, directamente en tu navegador.","potentialAction":{"@type":"SearchAction","target":"https://luisangelbg.github.io/aplicaciones.html?q={search_term_string}","query-input":"required name=search_term_string"}},{"@type":"Person","name":"Luis Ángel Barrera-Guzmán","url":"https://luisangelbg.github.io/acerca.html","sameAs":["https://orcid.org/0000-0001-8057-2583","https://github.com/luisangelbg","https://www.researchgate.net/profile/Luis-Barrera-Guzman"]}]}</script>
 </head>
 <body>
 <a class="skip" href="#main">Saltar al contenido</a>
+<div class="read-progress" aria-hidden="true"><i id="readBar"></i></div>
 
+<!-- barra global: isotipo · secciones · búsqueda y código -->
 <header class="nav" id="nav">
   <div class="nav-in">
     <a class="brand" href="./" aria-label="LABG, inicio">
-      <img src="assets/marca/svg/labg-isotipo.svg" alt="" width="30" height="30">
+      <img src="assets/marca/svg/labg-isotipo.svg" alt="" width="26" height="26">
       <span>LABG</span>
     </a>
-    <nav aria-label="Principal">
+    <nav class="nav-main" aria-label="Principal">
       <ul class="nav-links" id="navLinks">
-        <li><a href="aplicaciones.html">Apps</a></li>
+        <li><a href="aplicaciones.html" data-mega="megaApps">Apps</a></li>
+        <li><a href="aplicaciones.html" data-mega="megaAnalisis">Análisis</a></li>
         <li><a href="descargas.html">Manuales</a></li>
         <li><a href="publicaciones.html">Publicaciones</a></li>
         <li><a href="blog.html">Blog</a></li>
       </ul>
     </nav>
-    <button class="nav-toggle" id="navToggle" type="button" aria-expanded="false" aria-controls="navLinks">Menú</button>
+    <div class="nav-tools">
+      <form class="nav-search" id="navSearch" action="aplicaciones.html" role="search">
+        <label class="sr-only" for="searchInput">Buscar apps y manuales</label>
+        <input id="searchInput" name="q" type="search" placeholder="Buscar apps y manuales…" autocomplete="off" role="combobox" aria-autocomplete="list" aria-expanded="false" aria-controls="searchList">
+        <ul class="search-list" id="searchList" role="listbox" aria-label="Sugerencias"></ul>
+      </form>
+      <button class="icon-btn" id="searchBtn" type="button" aria-label="Buscar apps y manuales" aria-expanded="false" aria-controls="navSearch">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="6.5"/><path d="m20 20-4.2-4.2"/></svg>
+      </button>
+      <a class="icon-btn" href="https://github.com/luisangelbg" rel="me noopener" aria-label="Código fuente en GitHub">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="m8 7-5 5 5 5M16 7l5 5-5 5M13.5 4.5l-3 15"/></svg>
+      </a>
+      <button class="icon-btn nav-toggle" id="navToggle" type="button" aria-expanded="false" aria-controls="mobileMenu" aria-label="Abrir el menú">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 8h16M4 16h16"/></svg>
+      </button>
+    </div>
   </div>
+  <!-- paneles desplegables: se llenan desde data/apps.js -->
+  <div class="mega" id="megaApps" aria-label="Apps por área"><div class="mega-in"><div class="wrap mega-grid"></div></div></div>
+  <div class="mega" id="megaAnalisis" aria-label="Apps por tipo de análisis"><div class="mega-in"><div class="wrap mega-grid"></div></div></div>
 </header>
+<div class="nav-dim" id="navDim" aria-hidden="true"></div>
+
+<!-- menú a pantalla completa en teléfonos -->
+<div class="mobile-menu" id="mobileMenu" role="dialog" aria-modal="true" aria-label="Menú" hidden>
+  <div class="mobile-head">
+    <span class="brand"><img src="assets/marca/svg/labg-isotipo.svg" alt="" width="26" height="26"><span>LABG</span></span>
+    <button class="icon-btn" id="menuClose" type="button" aria-label="Cerrar el menú"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 6l12 12M18 6 6 18"/></svg></button>
+  </div>
+  <ul class="mobile-links">
+    <li style="--i:0"><a href="aplicaciones.html">Apps</a></li>
+    <li style="--i:1"><a href="aplicaciones.html#estadistica">Análisis</a></li>
+    <li style="--i:2"><a href="descargas.html">Manuales</a></li>
+    <li style="--i:3"><a href="publicaciones.html">Publicaciones</a></li>
+    <li style="--i:4"><a href="blog.html">Blog</a></li>
+    <li style="--i:5"><a href="acerca.html">Acerca</a></li>
+  </ul>
+  <form class="mobile-search" action="aplicaciones.html" role="search" style="--i:6">
+    <label class="sr-only" for="mobileQ">Buscar apps</label>
+    <input id="mobileQ" name="q" type="search" placeholder="Buscar apps…">
+  </form>
+</div>
+
+<!-- sub-barra de capítulos: aparece al pasar la entrada -->
+<nav class="subnav" id="subnav" aria-label="Capítulos de esta página">
+  <div class="subnav-in">
+    <a class="subnav-brand" href="#hero">LABG</a>
+    <ul class="subnav-links">
+      <li><a href="#datos" data-go="datos">Datos</a></li>
+      <li><a href="#analisis" data-go="analisis">Análisis</a></li>
+      <li><a href="#modelos" data-go="modelos">Modelos</a></li>
+      <li><a href="#decision" data-go="decision">Decisión</a></li>
+      <li><a href="#apps" data-go="apps">Apps</a></li>
+    </ul>
+    <label class="subnav-select"><span class="sr-only">Ir al capítulo</span>
+      <select id="subnavSelect">
+        <option value="hero">Inicio</option>
+        <option value="datos">Datos</option>
+        <option value="analisis">Análisis</option>
+        <option value="modelos">Modelos</option>
+        <option value="decision">Decisión</option>
+        <option value="apps">Apps</option>
+      </select>
+    </label>
+    <a class="btn btn-solid btn-sm" href="aplicaciones.html">Abrir apps</a>
+  </div>
+</nav>
+
+<!-- escenario 3D: un solo lienzo fijo detrás de la entrada y de los capítulos 1 a 4 -->
+<div class="stage" id="stage" aria-hidden="true"><canvas id="heroCanvas"></canvas></div>
 
 <main id="main">
   <section class="hero" id="hero" aria-labelledby="heroTitle">
@@ -85,7 +159,6 @@
         <source srcset="assets/marca/svg/labg-logo-claro.svg" media="(prefers-reduced-motion: reduce)">
         <img id="heroSvg" src="assets/marca/svg/labg-logo-animado-claro.svg" alt="" width="960" height="400" fetchpriority="high">
       </picture>
-      <canvas id="heroCanvas"></canvas>
       <!-- ilustraciones originales de los manuales de la suite -->
       <div class="flora" id="flora">
         <img class="f-maiz" data-src="assets/ilustraciones/maiz.svg" alt="" width="96" height="129">
@@ -107,70 +180,125 @@
       </div>
     </div>
     <button class="skip-intro" id="skipIntro" type="button" hidden>Saltar intro</button>
-    <a class="scroll-cue" href="#ideas" aria-label="Bajar a la siguiente sección"><span></span></a>
+    <a class="scroll-cue" href="#datos" aria-label="Bajar al primer capítulo"><span></span></a>
   </section>
 
-  <section class="ideas" id="ideas" aria-labelledby="ideasTitle">
-    <div class="wrap">
-      <p class="kicker">Tres ideas</p>
-      <h2 id="ideasTitle" class="h2">Cada app sigue el mismo camino: <em>del dato a la decisión.</em></h2>
-      <div class="ideas-grid">
-        <article class="idea">
-          <svg class="idea-art art-biplot" viewBox="0 0 120 120" aria-hidden="true">
-            <line class="axis" x1="10" y1="60" x2="110" y2="60"/><line class="axis" x1="60" y1="10" x2="60" y2="110"/>
-            <g class="pts"><circle cx="38" cy="44" r="3"/><circle cx="46" cy="36" r="3"/><circle cx="74" cy="80" r="3"/><circle cx="82" cy="72" r="3"/><circle cx="30" cy="70" r="3"/><circle cx="88" cy="48" r="3"/><circle cx="66" cy="32" r="3"/><circle cx="52" cy="86" r="3"/></g>
-            <g class="vec"><line x1="60" y1="60" x2="96" y2="30"/><line x1="60" y1="60" x2="28" y2="26"/><line x1="60" y1="60" x2="92" y2="94"/></g>
-            <circle class="origin" cx="60" cy="60" r="4.5"/>
-          </svg>
-          <h3>Analiza</h3>
-          <p>Describe, compara y resume tus datos: supuestos, pruebas, componentes principales y agrupamientos, con figuras listas para publicar.</p>
-        </article>
-        <article class="idea">
-          <svg class="idea-art art-contour" viewBox="0 0 120 120" aria-hidden="true">
-            <path d="M60 22c24 0 44 14 44 36s-18 42-46 42-44-18-44-40 22-38 46-38z"/>
-            <path d="M60 36c16 0 30 10 30 24s-12 28-31 28-30-12-30-27 15-25 31-25z"/>
-            <path d="M60 50c9 0 16 5 16 12s-7 13-17 13-16-6-16-13 8-12 17-12z"/>
-            <circle cx="60" cy="62" r="3.5"/>
-          </svg>
-          <h3>Modela</h3>
-          <p>Ajusta modelos que explican y predicen: diseños experimentales, genética de poblaciones, distribución de especies y escenarios de clima.</p>
-        </article>
-        <article class="idea">
-          <svg class="idea-art art-tree" viewBox="0 0 120 120" aria-hidden="true">
-            <path class="edge" d="M60 22V44M60 44H32V66M60 44H88V66M32 66H18V94M32 66H46V94M88 66V94"/>
-            <circle class="node n1" cx="60" cy="22" r="5"/><circle class="node n2" cx="32" cy="66" r="5"/><circle class="node n3" cx="88" cy="66" r="5"/>
-            <circle class="leaf l1" cx="18" cy="96" r="4"/><circle class="leaf l2" cx="46" cy="96" r="4"/><circle class="leaf l3" cx="88" cy="96" r="4"/>
-          </svg>
-          <h3>Decide</h3>
-          <p>Traduce los resultados en decisiones: qué tratamiento recomendar, qué accesión conservar, dónde sembrar y cuánto invertir.</p>
-        </article>
+  <!-- CAPÍTULOS. Longitud de cada uno: --len (alturas de pantalla de scroll) en el atributo style.
+       Con movimiento y WebGL se fijan y la escena avanza con el scroll; si no, son secciones estáticas con su imagen. -->
+  <section class="ch ch-datos" id="datos" data-ch="1" style="--len:1.9" aria-labelledby="t-datos">
+    <div class="ch-pin">
+      <div class="ch-text">
+        <p class="kicker">01 · Tus datos</p>
+        <h2 class="mono words" id="t-datos"><span class="w" style="--i:0">Todo</span> <span class="w" style="--i:1">empieza</span> <span class="w" style="--i:2">con</span> <span class="w" style="--i:3">una</span> <span class="w" style="--i:4"><em>tabla.</em></span></h2>
+        <p class="ch-lead">Parcelas, accesiones, poblaciones o registros de campo: cada fila es una observación y cada columna, una variable. Las apps leen tus hojas de cálculo tal como las tienes.</p>
+      </div>
+      <div class="ch-visual">
+        <figure class="data-fig">
+          <div class="table-scroll" tabindex="0" role="region" aria-label="Tabla de datos de ejemplo">
+            <table class="data-table">
+              <thead><tr><th scope="col">Parcela</th><th scope="col">Grupo</th><th scope="col">Rend. <small>t/ha</small></th><th scope="col">Altura <small>cm</small></th><th scope="col">Floración <small>días</small></th><th scope="col">P100 <small>g</small></th><th scope="col">Proteína <small>%</small></th></tr></thead>
+              <tbody>
+<tr style="--i:0"><th scope="row">P01</th><td><i class="g gA"></i>A</td><td>7.27</td><td>230</td><td>70</td><td>36.2</td><td>9.0</td></tr>
+<tr style="--i:1"><th scope="row">P02</th><td><i class="g gB"></i>B</td><td>3.93</td><td>148</td><td>77</td><td>29.0</td><td>10.9</td></tr>
+<tr style="--i:2"><th scope="row">P03</th><td><i class="g gC"></i>C</td><td>4.79</td><td>253</td><td>84</td><td>29.6</td><td>9.9</td></tr>
+<tr style="--i:3"><th scope="row">P04</th><td><i class="g gA"></i>A</td><td>5.25</td><td>192</td><td>69</td><td>34.9</td><td>10.1</td></tr>
+<tr style="--i:4"><th scope="row">P05</th><td><i class="g gB"></i>B</td><td>4.73</td><td>186</td><td>80</td><td>28.6</td><td>11.6</td></tr>
+<tr style="--i:5"><th scope="row">P06</th><td><i class="g gC"></i>C</td><td>4.36</td><td>221</td><td>88</td><td>28.5</td><td>10.3</td></tr>
+<tr style="--i:6"><th scope="row">P07</th><td><i class="g gA"></i>A</td><td>5.30</td><td>178</td><td>66</td><td>30.8</td><td>9.8</td></tr>
+<tr style="--i:7"><th scope="row">P08</th><td><i class="g gB"></i>B</td><td>3.00</td><td>159</td><td>79</td><td>27.3</td><td>11.6</td></tr>
+              </tbody>
+            </table>
+          </div>
+          <figcaption>Datos de ejemplo · 8 de 70 parcelas</figcaption>
+        </figure>
+        <img class="ch-still" src="assets/capitulos/datos.webp" alt="Las 70 parcelas de la tabla como una nube de esferas verdes." width="1200" height="800" loading="lazy" decoding="async">
       </div>
     </div>
   </section>
 
-  <section class="apps" id="apps" aria-labelledby="appsTitle">
-    <div class="wrap">
-      <div class="apps-head">
-        <div><p class="kicker">Apps destacadas</p><h2 id="appsTitle" class="h2">Empieza por aquí.</h2></div>
-        <a class="link-arrow" id="allApps" href="aplicaciones.html">Ver todas las apps →</a>
+  <section class="ch ch-analisis" id="analisis" data-ch="2" style="--len:2" aria-labelledby="t-analisis">
+    <div class="ch-pin">
+      <div class="ch-text">
+        <p class="kicker">02 · Análisis</p>
+        <h2 class="mono words" id="t-analisis"><span class="w" style="--i:0">Encuentra</span> <span class="w" style="--i:1">la</span> <span class="w" style="--i:2"><em>estructura.</em></span></h2>
+        <p class="ch-lead">La nube se ordena: los componentes principales resumen cinco variables en dos ejes, las flechas muestran qué variable empuja hacia dónde y los grupos aparecen solos.</p>
+        <div class="stat">
+          <b><span id="varOut">91.6</span> %</b>
+          <span>de la varianza explicada por CP1 y CP2 <small>(valor de estos datos de ejemplo)</small></span>
+        </div>
+        <ul class="legend" aria-label="Grupos">
+          <li><i class="g gA"></i>Grupo A</li><li><i class="g gB"></i>Grupo B</li><li><i class="g gC"></i>Grupo C</li>
+        </ul>
       </div>
-      <div class="cards" id="cards"></div>
+      <div class="ch-visual">
+        <img class="ch-still" src="assets/capitulos/analisis.webp" alt="Biplot de componentes principales: tres grupos de parcelas separados y cinco flechas de variables." width="1200" height="800" loading="lazy" decoding="async">
+      </div>
+    </div>
+  </section>
+
+  <section class="ch ch-modelos" id="modelos" data-ch="3" style="--len:2" aria-labelledby="t-modelos">
+    <div class="ch-pin">
+      <div class="ch-text">
+        <p class="kicker">03 · Modelos</p>
+        <h2 class="mono words" id="t-modelos"><span class="w" style="--i:0">Modela</span> <span class="w" style="--i:1">dónde</span> <span class="w" style="--i:2">puede</span> <span class="w" style="--i:3"><em>crecer.</em></span></h2>
+        <p class="ch-lead">Los registros caen sobre el terreno y el modelo calcula, celda por celda, qué tan idóneo es cada lugar. Las curvas de nivel marcan la altitud; el color, la idoneidad.</p>
+      </div>
+      <div class="ch-visual">
+        <img class="ch-still" src="assets/capitulos/modelos.webp" alt="Terreno en relieve coloreado como mapa de idoneidad, con curvas de nivel y registros sobre las zonas más verdes." width="1200" height="800" loading="lazy" decoding="async">
+      </div>
+    </div>
+  </section>
+
+  <section class="ch ch-decision" id="decision" data-ch="4" style="--len:1.8" aria-labelledby="t-decision">
+    <div class="ch-pin">
+      <div class="ch-text">
+        <p class="kicker">04 · Decisión</p>
+        <h2 class="mono words" id="t-decision"><span class="w" style="--i:0">Del</span> <span class="w" style="--i:1">dato</span> <span class="w" style="--i:2">a</span> <span class="w" style="--i:3">la</span> <span class="w" style="--i:4"><em>decisión.</em></span></h2>
+        <p class="ch-lead">Al final, una figura lista para publicar: con su escala, su leyenda y el método redactado para tu artículo.</p>
+      </div>
+      <div class="ch-visual">
+        <figure class="fig-frame" id="figFrame">
+          <div class="fig-plot" id="figPlot">
+            <img class="ch-still" src="assets/capitulos/decision.webp" alt="Mapa de idoneidad visto desde arriba, con los registros de presencia." width="1200" height="800" loading="lazy" decoding="async">
+            <span class="fig-north" aria-hidden="true">N</span>
+            <span class="fig-scale" aria-hidden="true"><i></i>20 km</span>
+          </div>
+          <div class="fig-foot">
+            <figcaption><b>Figura 1.</b> Idoneidad modelada y registros de presencia <span>(datos de ejemplo)</span>.</figcaption>
+            <div class="fig-legend" aria-hidden="true"><span>0</span><i></i><span>1</span><em>Idoneidad</em></div>
+          </div>
+          <button class="btn btn-solid btn-sm fig-export" id="figExport" type="button">Exportar figura</button>
+        </figure>
+      </div>
+    </div>
+  </section>
+
+  <section class="ch ch-apps" id="apps" data-ch="5" aria-labelledby="t-apps">
+    <div class="gal-pin">
+      <div class="wrap gal-head">
+        <div><p class="kicker">05 · Apps</p><h2 class="mono" id="t-apps">Una app para <em>cada pregunta.</em></h2></div>
+        <a class="link-arrow" id="allApps" href="aplicaciones.html">Ver el catálogo completo →</a>
+      </div>
+      <div class="gal-viewport" id="galViewport" tabindex="0" role="region" aria-label="Galería de apps (desliza o usa las flechas)">
+        <ul class="gal-track" id="galTrack"></ul>
+      </div>
+      <div class="wrap"><div class="gal-progress" aria-hidden="true"><i></i></div></div>
     </div>
   </section>
 
   <section class="figures" aria-label="La suite en cifras">
     <div class="wrap figures-grid">
-      <div><b id="nOnline">14</b><span>apps en línea</span></div>
-      <div><b>100 %</b><span>gratis</span></div>
-      <div><b>0</b><span>instalaciones: corren en el navegador</span></div>
-      <div><b>GPL</b><span>código abierto</span></div>
+      <div><b data-count="14" id="nOnline">14</b><span>apps disponibles en línea</span></div>
+      <div><b data-count="100" data-suffix=" %">100 %</b><span>gratis, sin registro</span></div>
+      <div><b data-count="0">0</b><span>instalaciones: corren en el navegador</span></div>
+      <div><b id="licencia">GPL-3.0</b><span>código abierto</span></div>
     </div>
   </section>
 
   <section class="closing" aria-labelledby="closingTitle">
     <div class="wrap">
       <h2 id="closingTitle">La ciencia de datos, <em>al alcance del campo.</em></h2>
-      <a class="btn btn-solid" href="aplicaciones.html">Explorar apps</a>
+      <a class="btn btn-solid" href="aplicaciones.html">Explorar las apps</a>
     </div>
   </section>
 </main>
@@ -195,11 +323,12 @@
     </nav>
     <div>
       <h2>Licencia y cita</h2>
-      <p>Software libre bajo la <a href="https://www.gnu.org/licenses/gpl-3.0.html" rel="noopener">licencia GPL</a>.</p>
+      <p>Software libre bajo la <a href="https://www.gnu.org/licenses/gpl-3.0.html" rel="noopener">licencia GPL-3.0</a>.</p>
       <p><a href="aplicaciones.html">Cómo citar:</a> cada app tiene su DOI en Zenodo y su cita lista en su ficha.</p>
     </div>
   </div>
   <p class="wrap foot-note">© <span id="year">2026</span> Luis Ángel Barrera-Guzmán.</p>
 </footer>
+<div class="cursor-glow" id="cursorGlow" aria-hidden="true"></div>
 </body>
 </html>
