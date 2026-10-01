@@ -1,5 +1,23 @@
 # Estudio de figuras LABG · cambios
 
+## 1.3.0 · 1 de octubre de 2026
+
+- **La ubicación de la leyenda en las gráficas de todas las apps.** La sección «Leyenda» del inspector ofrece:
+  - ocho lugares dentro de la gráfica;
+  - fuera, a la derecha, o debajo, en fila; el dibujo crece lo justo;
+  - ocultarla;
+  - arrastrarla sobre la figura.
+
+  La leyenda se encuentra marcada por el kit (`data-role="legend"`), con nombre de leyenda o suelta (textos con su muestra). El área de la gráfica sale de `data-plot` o de ejes y rejilla. Ver la guía, sección 9.
+- **Figuras de Python:** `legend: true` en la descripción nativa del puente; `_xp_legend(fig)` mueve la leyenda de matplotlib (StatsPro y BioModellingPro). Debajo, en las columnas que quepan en el ancho pedido.
+- **Sin controles dobles:**
+  - si el editor ✎ de la app maneja esa leyenda, la sección remite a su pestaña «Leyenda»;
+  - si la figura trae su propio control del lugar de la leyenda, remite a ese control.
+- **Nombre de archivo:** la descripción nativa admite `file`. Los mapas de BioModellingPro ya no se llaman todos como la especie: cada uno usa el nombre de su propia exportación («map_clusters_…», «map_bio_1_…»).
+- Los cambios del estudio que tocan atributos (`transform`, `viewBox`, `width`, `height`) se guardan y se deshacen igual que los de estilo.
+- Las ayudas «?» de la app (`.help-badge` y parecidas) ya no aparecen en el inspector como si fueran ajustes de la figura.
+- Los siete mapas de BioModellingPro, comprobados uno por uno: vista previa, PNG, SVG, PDF y GeoTIFF a 85.0 mm, y el mapa vivo intacto.
+
 ## 1.2.0 · 1 de octubre de 2026
 
 - **Mapas en el estudio.** El mapa del bloque 4 de PollinationPro y los mapas interactivos de BioModellingPro se abren en el estudio:

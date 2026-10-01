@@ -1,4 +1,4 @@
-# Estudio de figuras LABG · guía de integración (v1.2.0)
+# Estudio de figuras LABG · guía de integración (v1.3.0)
 
 El estudio abre cualquier figura de una app en una **pantalla dividida**:
 
@@ -191,6 +191,8 @@ Desde la 1.2.0 la descripción admite además estos campos, todos opcionales:
   lift: false,               // la figura no se eleva: el papel muestra solo la vista previa (mapas vivos)
   aspect: () => alto / ancho,                       // la proporción exacta de lo que dibuja la app
   title: () => 'Nombre',                            // el nombre en la barra y en el archivo
+  file: () => 'nombre_de_archivo',                  // el nombre de archivo de la app, si es otro (1.3.0)
+  legend: true,                                     // la app mueve su leyenda adonde la pida el estudio (1.3.0)
   controls: () => ({ node, title: ['…', '…'] }),    // dónde están los controles de la app
 }
 ```
@@ -235,7 +237,7 @@ En tema oscuro, BioModellingPro exportó:
 Los mapas que una app arma con su propio estudio de mapas también se abren en el estudio de figuras. Hoy son dos:
 
 - **PollinationPro:** el mapa del bloque 4, un SVG que dibuja `js/mapstudio.js` con sus ocho pestañas.
-- **BioModellingPro:** los seis mapas interactivos que llevan «Estudio de mapa» (registros, variables, agrupamientos, datos y resultado del modelo, e índices y cultivos agroclimáticos).
+- **BioModellingPro:** los siete mapas interactivos que llevan «Estudio de mapa»: registros (paso 4), variables (paso 5), agrupamientos (paso 8), datos y resultado del modelo (paso 9), e índices agroclimáticos y cultivo (paso 10).
 
 ### Cómo se ven en el estudio
 
@@ -278,7 +280,8 @@ Cada `js/mapstudio.js` agrega su gancho `nativeExport` (encadenado al que ya hub
 | App | Vista previa | PNG 85 mm, 600 ppp | SVG | PDF | GeoTIFF |
 |---|---|---|---|---|---|
 | PollinationPro | 0.3 s | 2008 × 1297 px (85.0 mm) | 85 mm, vectorial | 85.0 × 54.9 mm | 2008 × 1297, EPSG 4326, 600 ppp |
-| BioModellingPro | 0.3–0.7 s | 2008 × 1055 px (85.0 mm) | 85 mm | 85.0 × 44.7 mm | 2008 × 1055, EPSG 3857, 600 ppp |
+| BioModellingPro (registros) | 0.3–0.7 s | 2008 × 1055 px (85.0 mm) | 85 mm | 85.0 × 44.7 mm | 2008 × 1055, EPSG 3857, 600 ppp |
+| BioModellingPro (variables, agrupamientos, datos y resultado del modelo, índices y cultivo) | 1.7–8.4 s | 2008 × 1360 o 2008 × 921 px (85.0 mm) | 85 mm | 85.0 × 57.6 o 85.0 × 39.0 mm | 1004 × 680 o 1004 × 461, EPSG 3857, 300 ppp |
 
 Además:
 
@@ -286,7 +289,65 @@ Además:
 - en tema oscuro, PollinationPro dio fondo blanco con «Blanco», el del tema con «Como se ve» y ninguno con «Transparente»;
 - deshacer y rehacer un control del mapa rehacen la vista previa.
 
-## 9. Lista de comprobación al integrar una app nueva
+## 9. La ubicación de la leyenda (1.3.0)
+
+Cualquier gráfica que tenga una leyenda aparte trae en el inspector la sección **Leyenda**:
+
+- **Dentro de la gráfica:** una cuadrícula de 3 × 3 con ocho lugares. El centro la deja donde la dibujó la app.
+- **Fuera de la gráfica:**
+  - *a la derecha*, centrada en la altura de la gráfica;
+  - *debajo, en fila*, con el título al principio, y en varias filas si no cabe.
+
+  El dibujo crece lo justo para que quepa: `viewBox`, `width` y `height` numéricos, y el rectángulo de fondo si lo hay.
+- **Mostrar la leyenda:** una casilla para ocultarla.
+- **A mano:** la leyenda se arrastra sobre la figura. Cada cambio va al historial y se deshace.
+
+El lugar se guarda por figura, como la paleta y la letra. Se vuelve a poner cada vez que la app redibuja la figura, se ve también en la página y sale así en las exportaciones del estudio y en las de la app.
+
+### Cómo encuentra la leyenda
+
+1. **Marcada por el kit de dibujo** con `data-role="legend"`, la marca del editor ✎ común. Si cada entrada lleva `data-li`, «debajo, en fila» reacomoda las entradas una por una; el marco `data-role="legend-box"` se esconde en la fila.
+2. **Con nombre de leyenda:** un grupo con `legend` en su clase o en su `id`.
+3. **Suelta:** dos o más textos, cada uno con su muestra justo a la izquierda (rectángulo, línea, punto o marca), en columna con el mismo paso o en fila. También toma su título, que va justo encima, y su marco.
+
+   Una celda de un mapa de calor no cuenta: tiene otra igual pegada a la izquierda.
+
+El área de la gráfica se toma de `data-plot="izquierda arriba ancho alto"` en el SVG, la marca del editor común. Si no está, se toma de lo que cubren ejes y rejilla.
+
+**Para quien escriba un kit de dibujo:** marcar la leyenda con `data-role="legend"`, cada entrada con `data-li` y el SVG con `data-plot` da una ubicación exacta.
+
+### Con quién convive
+
+- **El editor ✎ de la app**, acoplado y con la leyenda marcada: él tiene ocho lugares, fila o columna, tamaño y marco. La sección remite a su pestaña «Leyenda» y abre esa pestaña con un botón.
+- **El control propio de la app:** si la figura ya trae uno, como «Posición de la leyenda» en el estudio de gráficas de StatsPro, la sección remite a ese control y lo señala.
+- **Figuras de Python:** la descripción nativa dice `legend: true` y el puente pasa el lugar a Python en `o.legend`. Allí, `_xp_legend(fig)` cambia el lugar de cada leyenda de matplotlib antes de ajustar el tamaño y conserva sus muestras, textos, título y letra:
+  - ocho lugares dentro;
+  - a la derecha;
+  - debajo, en las columnas que quepan en el ancho pedido, a una distancia en puntos;
+  - oculta.
+
+  Se ve en la vista previa y sale así al exportar.
+- **Mapas:** su leyenda se acomoda en su propio estudio de mapas («Elementos»), que el inspector ya refleja.
+
+**Comprobado (1 de octubre de 2026):**
+
+| App | Figura | Leyenda | Resultado |
+|---|---|---|---|
+| PCAPro | gráfico de sedimentación | suelta (líneas y textos de `plots2.js`) | los nueve lugares, fuera a la derecha (el `viewBox` pasa de 910 a 1037), debajo en fila, oculta y de vuelta; arrastre, deshacer y SVG exportado con el nuevo lugar |
+| BreedingPro | plan de cruzamientos | marcada por el kit | con el editor ✎ acoplado remite a su pestaña «Leyenda»; sin él, todos los lugares (a la derecha, de 530 a 684) |
+| StatsPro | figura de Python con tres series | matplotlib | la vista previa la redibuja Python en cada lugar; debajo, en dos columnas que caben en 85 mm |
+| StatsPro | estudio de gráficas | control propio («Posición de la leyenda») | remite a ese control |
+| AgriDesign, EconomicsPro, SciMetricsPro, PhenologyPro, PollinationPro | gráficas del kit, como están publicadas (sin marcas ni editor ✎) | suelta | se encuentra, se mueve y vuelve |
+| ReviewPro | semáforo de sesgo | suelta, en fila | se encuentra, se mueve y vuelve |
+
+En 14 apps (BioModellingPro aparte) se abrió el estudio en las figuras visibles de los primeros bloques, sin un solo error. Las gráficas sin leyenda aparte (cajas, Q–Q, dispersión sin grupos, árboles) no muestran la sección.
+
+Dos falsas leyendas se encontraron y se corrigieron:
+
+- en el diagrama PRISMA de ReviewPro, una flecha entre dos renglones parecía la muestra de dos entradas; ahora un conector con punta de flecha no cuenta y cada entrada necesita su muestra propia;
+- en PhenologyPro, el eje derecho (rayita y número) parecía una leyenda en columna; ahora una rayita de eje no cuenta como muestra y un grupo de puros números con muestras de línea se toma por eje.
+
+## 10. Lista de comprobación al integrar una app nueva
 
 1. Copiar `js/labg-figure-studio.js`, `css/labg-figure-studio.css` y `LICENSES-TERCEROS.md`.
 2. Agregar la línea después de `labg-core.js`.
@@ -299,3 +360,4 @@ Además:
 5. Probar a 1440×900, 1280×720 y 390×844.
 6. Si la app redibuja sus figuras (al cambiar un control, el idioma o el tema), cerrar el estudio y volver a abrirlo con el mismo botón.
 7. Mapas: declarar la descripción nativa en su estudio de mapas (sección 8) y exportar los cinco formatos.
+8. Leyenda: abrir una gráfica con leyenda, probar los lugares de la sección «Leyenda» y arrastrarla. Si el kit la marca (`data-role="legend"`, `data-li`, `data-plot`), el acomodo es exacto.

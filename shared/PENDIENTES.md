@@ -13,6 +13,8 @@ Los dos módulos ya están integrados en las 15 apps de la suite (FloralPro qued
 
 3b. **Navegador e idioma.** Su observador del idioma rehace etiquetas, barra e índice cada vez que una app vuelve a escribir el mismo `lang` (por ejemplo, al traducir un panel). No se cuelga, pero conviene la misma comprobación que tiene el estudio desde la 1.2.0. Se dejó sin tocar porque otra sesión tenía cambios abiertos en el navegador.
 
+3c. **Leyendas marcadas en los kits de dibujo.** El estudio ya acomoda leyendas sueltas, pero las marcas `data-role="legend"`, `data-li` y `data-plot` hacen exacto el acomodo y el editor ✎ común las usa. Están en los kits de seis apps como trabajo sin subir de otra sesión (solo PhenologyPro las tiene publicadas); los dibujos propios de PCAPro (`plots1.js`, `plots2.js`) no las tienen.
+
 4. **Secciones sin título.** Algunos bloques no tienen títulos de sección, así que el índice no aparece:
    - GermplasmPro, bloques 4, 9 y 10;
    - LeafPro, bloques 6 a 8;
@@ -30,4 +32,4 @@ Los dos módulos ya están integrados en las 15 apps de la suite (FloralPro qued
 8. **Pruebas con Playwright.** Están escritas en `shared/tests/`. Las mismas comprobaciones ya se corrieron por CDP en las 15 apps y los 3 tamaños. Correrlas con `npx playwright test` necesita `npm i -D @playwright/test` (no hay npm en esta máquina).
 9. **Versión en inglés de las guías** (`GUIA-INTEGRACION.md`).
 10. **FloralPro**, si se decide integrarla.
-11. **Nuevas versiones de las apps.** Los módulos tienen su propia versión (navegador 1.0.0, estudio 1.2.0). No se publicaron versiones nuevas en Zenodo ni se cambió el DOI de ninguna app (decisión pendiente del autor).
+11. **Nuevas versiones de las apps.** Los módulos tienen su propia versión (navegador 1.0.0, estudio 1.3.0). No se publicaron versiones nuevas en Zenodo ni se cambió el DOI de ninguna app (decisión pendiente del autor).
