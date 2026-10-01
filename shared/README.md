@@ -6,7 +6,7 @@ JavaScript, más su hoja de estilo, sin dependencias ni compilación. Funciona c
 
 | Módulo | Versión | Qué hace | Guía |
 |---|---|---|---|
-| **Estudio de figuras LABG** | 1.3.0 | Abre cualquier figura en pantalla dividida para editarla y exportarla | [figure-studio/GUIA-INTEGRACION.md](figure-studio/GUIA-INTEGRACION.md) |
+| **Estudio de figuras LABG** | 1.3.1 | Abre cualquier figura en pantalla dividida para editarla y exportarla | [figure-studio/GUIA-INTEGRACION.md](figure-studio/GUIA-INTEGRACION.md) |
 | **Navegador LABG** | 1.0.0 | Barra lateral de bloques, índice de secciones, modo enfocado, paleta Ctrl+K y enlaces directos | [navigator/GUIA-INTEGRACION.md](navigator/GUIA-INTEGRACION.md) |
 
 ## Dónde viven
@@ -16,7 +16,7 @@ shared/
   figure-studio/
     labg-figure-studio.js     ← la versión vigente
     labg-figure-studio.css
-    v1.0.0/ … v1.3.0/         ← copia fija de cada versión publicada
+    v1.0.0/ … v1.3.1/         ← copia fija de cada versión publicada
     puentes/labg-pyfig.js     ← puente para las figuras que dibuja Python (StatsPro, BioModellingPro)
   navigator/
     labg-navigator.js

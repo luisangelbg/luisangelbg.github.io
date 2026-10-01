@@ -1,4 +1,4 @@
-# Estudio de figuras LABG · guía de integración (v1.3.0)
+# Estudio de figuras LABG · guía de integración (v1.3.1)
 
 El estudio abre cualquier figura de una app en una **pantalla dividida**:
 
@@ -306,15 +306,23 @@ El lugar se guarda por figura, como la paleta y la letra. Se vuelve a poner cada
 
 ### Cómo encuentra la leyenda
 
-1. **Marcada por el kit de dibujo** con `data-role="legend"`, la marca del editor ✎ común. Si cada entrada lleva `data-li`, «debajo, en fila» reacomoda las entradas una por una; el marco `data-role="legend-box"` se esconde en la fila.
-2. **Con nombre de leyenda:** un grupo con `legend` en su clase o en su `id`.
+1. **Marcada por el kit de dibujo** con `data-role="legend"`, la marca del editor ✎ común. Si cada entrada lleva `data-li`, «debajo, en fila» reacomoda las entradas una por una:
+   - el título va al principio de la fila, y una nota que esté debajo de las entradas (por ejemplo, qué es la elipse), al final;
+   - el marco `data-role="legend-box"` se esconde en la fila;
+   - si el grupo trae algo más que entradas, títulos y marco (una barra de color, por ejemplo), la leyenda baja entera.
+2. **Con nombre de leyenda:** un grupo con `legend` en su clase o en su `id`, o con el atributo `data-legend`.
 3. **Suelta:** dos o más textos, cada uno con su muestra justo a la izquierda (rectángulo, línea, punto o marca), en columna con el mismo paso o en fila. También toma su título, que va justo encima, y su marco.
 
    Una celda de un mapa de calor no cuenta: tiene otra igual pegada a la izquierda.
 
 El área de la gráfica se toma de `data-plot="izquierda arriba ancho alto"` en el SVG, la marca del editor común. Si no está, se toma de lo que cubren ejes y rejilla.
 
-**Para quien escriba un kit de dibujo:** marcar la leyenda con `data-role="legend"`, cada entrada con `data-li` y el SVG con `data-plot` da una ubicación exacta.
+**Para quien escriba un kit de dibujo:** marcar la leyenda con `data-role="legend"`, cada entrada con `data-li` (en su muestra y en su texto) y el SVG con `data-plot` da una ubicación exacta. Además:
+
+- **Una barra de color** (una escala continua, sin entradas) va en un grupo `data-legend="colorbar"`, no `data-role="legend"`. El editor ✎ común solo acomoda leyendas con entradas: con `data-legend` la acomoda el estudio aunque el editor esté acoplado.
+- **Una figura con dos leyendas** (por ejemplo, la barra de color y una clave de líneas) marca con `data-role="legend"` solo la principal: el estudio y el editor toman la primera que encuentran.
+
+Los dibujos propios de PCAPro están marcados así desde la 1.3.1.
 
 ### Con quién convive
 
@@ -360,4 +368,4 @@ Dos falsas leyendas se encontraron y se corrigieron:
 5. Probar a 1440×900, 1280×720 y 390×844.
 6. Si la app redibuja sus figuras (al cambiar un control, el idioma o el tema), cerrar el estudio y volver a abrirlo con el mismo botón.
 7. Mapas: declarar la descripción nativa en su estudio de mapas (sección 8) y exportar los cinco formatos.
-8. Leyenda: abrir una gráfica con leyenda, probar los lugares de la sección «Leyenda» y arrastrarla. Si el kit la marca (`data-role="legend"`, `data-li`, `data-plot`), el acomodo es exacto.
+8. Leyenda: abrir una gráfica con leyenda, probar los lugares de la sección «Leyenda» y arrastrarla. Si el kit la marca (`data-role="legend"`, `data-li`, `data-plot`), el acomodo es exacto. Probar también «Debajo, en fila» con una leyenda que tenga título.

@@ -1,5 +1,11 @@
 # Estudio de figuras LABG · cambios
 
+## 1.3.1 · 1 de octubre de 2026
+
+- **«Debajo, en fila» con leyendas marcadas.** En una leyenda marcada por el kit (`data-role="legend"`), las entradas bajaban a la fila pero el título y las notas se quedaban en su lugar. Ahora el título va al principio de la fila y una nota de debajo de las entradas (por ejemplo, «elipse de concentración 95 %»), al final. Si el grupo trae algo más que entradas, títulos y marco, la leyenda baja entera.
+- **Barras de color.** Un grupo `data-legend` (sin `data-role`) se acomoda en el estudio aunque el editor ✎ común esté acoplado: ese editor solo acomoda leyendas con entradas. Ver la guía, sección 9.
+- Probado con los dibujos propios de PCAPro, que ya marcan sus leyendas (`data-role="legend"`, `data-li`, `data-plot`) y sus barras de color (`data-legend="colorbar"`). Sin el editor ✎ (como en línea), el estudio las mueve a los once lugares y las regresa. Con el editor acoplado, las leyendas con entradas pasan a su pestaña «Leyenda» y las barras de color se quedan en el estudio.
+
 ## 1.3.0 · 1 de octubre de 2026
 
 - **La ubicación de la leyenda en las gráficas de todas las apps.** La sección «Leyenda» del inspector ofrece:
