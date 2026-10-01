@@ -1,40 +1,39 @@
-/* LABG — escena 3D de la portada: el logotipo en tres dimensiones y, con el scroll, la historia
-   «del dato a la decisión» en el mismo lienzo (un solo contexto WebGL, fijo detrás de la página).
+/* LABG — escena 3D de la portada (un solo contexto WebGL, fijo detrás de la página).
 
-   Logotipo (assets/marca/svg/labg-logo.svg): la «A» es un biplot — un origen del que salen dos vectores con
-   punta de flecha y una barra de cinco puntos —; L, B y G son las letras del propio SVG extruidas; detrás, una
-   campana de Gauss con μ y ±σ; debajo, un piso de cuadrícula; alrededor, esferas de datos.
+   Entrada: el logo LABG —idéntico al original: se dibuja como textura desde assets/marca/svg/labg-logo.svg—
+   montado como un medallón con canto dorado, y a su alrededor corrientes de viento en espiral: cintas de oro
+   que giran en anillos inclinados, con ráfagas que viajan por ellas y motas de polvo dorado. Pasan por detrás del
+   medallón y, cuando pasan por delante, se desvanecen al llegar al borde del hexágono: lo envuelven sin taparlo.
+   Todo el movimiento del viento se calcula en la tarjeta gráfica (cero trabajo por cuadro en el procesador).
 
-   Intro (segundos) — tiempos en T:
-     0–0.6 origen · 0.6–1.6 vectores · 1.6–2.4 letras · 2.4–3.2 campana y puntos · 3.2– piso y esferas
+   Intro (segundos, en T): el viento se dibuja desde un extremo, aparece el polvo y un brillo cruza el oro.
 
-   Historia (s, lo publica chapters.js en window.LABG_STORY):
-     0 → 1  el logotipo sube con la página         1 → 2  Datos: cada fila de la tabla se vuelve esferas (la nube)
+   Historia con el scroll (s, de chapters.js en window.LABG_STORY):
+     0 → 1  el medallón sube con la página y el viento se abre y se disipa
+     1 → 2  Datos: cada fila de la tabla se vuelve esferas (la nube)
      2 → 3  Análisis: la nube se ordena en el biplot de componentes principales, con sus ejes y vectores
      3 → 4  Modelos: las esferas caen sobre un terreno que se colorea como mapa de idoneidad
      4 → 5  Decisión: la cámara sube a una vista cenital encuadrada en el marco de la figura
    Los datos son los de assets/js/datos-ejemplo.js: el biplot es el ACP real de esa tabla. */
 
 import * as THREE from 'three';
-import { SVGLoader } from 'three/addons/loaders/SVGLoader.js';
 
-const T = {
-  origin: [0.0, 0.6], vectors: [0.6, 1.6], letters: [1.6, 2.4], gauss: [2.4, 3.2],
-  floor: [3.2, 4.3], spheres: [3.2, 4.6], end: 4.6,
-};
+const T = { wind: [0.0, 1.8], dust: [0.9, 2.2], shine: [1.2, 2.6], end: 2.6 };
 const SPHERES = { desktop: 70, mobile: 38, lite: 24 };
+/* paleta de la marca: oro del logo, negro y grises cálidos */
 const COLORS = {
-  white: 0xffffff, black: 0x08090b, deep: 0x0b2a1d, emerald: 0x3ed68b, light: 0x7bedb5, mint: 0xa2f6cc, dark: 0x0c6a44,
-  gA: 0x3ed68b, gB: 0x0c6a44, gC: 0x7c9a8c, occ: 0x10241a, axis: 0x4a6157,
+  white: 0xffffff, gold: 0xd4a848, goldDark: 0x9c7128, goldText: 0x7d5b14, black: 0x111111,
+  gA: 0xd4a848, gB: 0x1a1a1a, gC: 0x9b9488, occ: 0x111111, axis: 0x5c5750,
 };
-
-/* coordenadas: unidades del SVG (960 × 400) → mundo. Centro de las letras en x ≈ 515 */
-const S = 1 / 100, CX = 515, CY = 170;
-const wx = (x) => (x - CX) * S;
-const wy = (y) => -(y - CY) * S;
-const FLOOR_Y = wy(262);
 /* terreno del capítulo Modelos: 12 × 8 unidades (proporción 3:2, la del marco de la figura) */
 const TERR = { w: 12, d: 8, y: -1.35 };
+
+/* el medallón: 2 unidades de alto, con la geometría del hexágono del logo (assets/marca/geometria.json) */
+const LOGO = { W: 828, H: 946.2, outer: [[414, 0], [828, 232.9], [828, 713.3], [414, 946.2], [0, 713.3], [0, 232.9]] };
+const MED_H = 2.0, MED_K = MED_H / LOGO.H, MED_W = LOGO.W * MED_K;
+const HEX = LOGO.outer.map(([x, y]) => [(x - LOGO.W / 2) * MED_K, (LOGO.H / 2 - y) * MED_K]);   // centrado, y hacia arriba
+/* en el SVG de la entrada (assets/marca/svg/labg-viento.svg) el logo mide 600 de 1000 de alto, centrado */
+const SVG_LOGO_FRAC = 0.6;
 
 const clamp01 = (v) => Math.min(1, Math.max(0, v));
 const span = (t, [a, b]) => clamp01((t - a) / (b - a));
@@ -49,6 +48,7 @@ export async function start({ mode }) {
   const root = document.documentElement;
   const canvas = document.getElementById('heroCanvas');
   const svgPic = document.querySelector('.hero-svg');
+  const heroImg = document.getElementById('heroSvg');
   const skipBtn = document.getElementById('skipIntro');
   const story = window.LABG_STORY || (window.LABG_STORY = { s: 0, fade: 0, rows: [], plot: null });
   const narrow = matchMedia('(max-width: 760px), (pointer: coarse)').matches;
@@ -64,161 +64,237 @@ export async function start({ mode }) {
   renderer.outputColorSpace = THREE.SRGBColorSpace;
 
   const scene = new THREE.Scene();
-  scene.fog = new THREE.FogExp2(COLORS.white, 0.055);
-  const camera = new THREE.PerspectiveCamera(34, 1, 0.1, 160);
+  scene.fog = new THREE.FogExp2(COLORS.white, 0.03);
+  const camera = new THREE.PerspectiveCamera(30, 1, 0.1, 160);
 
-  /* reflejos del metal: el degradado del propio logotipo como cielo alrededor de la escena */
+  /* reflejos del metal: un cielo en bandas de oro, champaña y negro */
   const pmrem = new THREE.PMREMGenerator(renderer);
   const envTex = bandTexture();
   envTex.mapping = THREE.EquirectangularReflectionMapping;
   scene.environment = pmrem.fromEquirectangular(envTex).texture;
   envTex.dispose(); pmrem.dispose();
-  scene.add(new THREE.AmbientLight(0xeafff4, 0.7));
-  const key = new THREE.DirectionalLight(0xdfffee, 1.6); key.position.set(-3, 5, 6); scene.add(key);
-  const rim = new THREE.DirectionalLight(COLORS.emerald, 1.2); rim.position.set(4, 2, -5); scene.add(rim);
+  scene.add(new THREE.AmbientLight(0xfff6e4, 0.75));
+  const key = new THREE.DirectionalLight(0xfff3dc, 1.5); key.position.set(-3, 5, 6); scene.add(key);
+  const rimLight = new THREE.DirectionalLight(0xe6c470, 1.0); rimLight.position.set(4, 2, -5); scene.add(rimLight);
   await frame();
 
-  /* todo lo del logotipo vive en un grupo que sube con la página al empezar el scroll */
-  const logo = new THREE.Group();
-  scene.add(logo);
+  /* ---------- la entrada: medallón + viento ---------- */
+  const hero = new THREE.Group();
+  scene.add(hero);
+  const medal = new THREE.Group();
+  hero.add(medal);
 
-  /* ---------- materiales ---------- */
-  const metal = new THREE.MeshStandardMaterial({ color: 0xffffff, metalness: 0.3, roughness: 0.24, envMapIntensity: 0.75, emissive: 0x000000, emissiveIntensity: 1 });
-  metal.userData.lift = { value: 0 };                   // el degradado viaja con las letras cuando el logotipo sube
-  logoGradient(metal);
-  const glow = (color, intensity) => new THREE.MeshStandardMaterial({ color: COLORS.mint, emissive: color, emissiveIntensity: intensity, roughness: 0.3, metalness: 0.2 });
+  /* aura champaña detrás del medallón */
+  const aura = new THREE.Mesh(new THREE.PlaneGeometry(7.2, 4.6), new THREE.MeshBasicMaterial({ map: radialTexture('rgba(243,223,168,0.85)', 'rgba(255,255,255,0)'), transparent: true, opacity: 0.55, depthWrite: false, fog: false }));
+  aura.position.z = -1.2;
+  hero.add(aura);
 
-  const haloTex = radialTexture('rgba(210,247,228,1)', 'rgba(255,255,255,0)');
-  const backGlow = new THREE.Mesh(new THREE.PlaneGeometry(16, 8), new THREE.MeshBasicMaterial({ map: haloTex, transparent: true, opacity: 0.7, depthWrite: false, fog: false }));
-  backGlow.position.set(0, 0.6, -3.5);
-  logo.add(backGlow);
+  /* el logo como textura: se rasteriza el SVG de la marca al tamaño que pide la pantalla */
+  const logoTex = await logoTexture('assets/marca/svg/labg-logo.svg', narrow ? 1024 : 2048);
+  logoTex.anisotropy = renderer.capabilities.getMaxAnisotropy();
+  const faceMat = new THREE.ShaderMaterial({
+    transparent: true, depthWrite: true, fog: false,
+    uniforms: { map: { value: logoTex }, uShine: { value: -1 }, uOpacity: { value: 1 } },
+    vertexShader: 'varying vec2 vUv; void main(){ vUv = uv; gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0); }',
+    fragmentShader: `
+      uniform sampler2D map; uniform float uShine; uniform float uOpacity; varying vec2 vUv;
+      void main() {
+        vec4 c = texture2D(map, vUv);
+        if (c.a < 0.02) discard;
+        /* brillo que cruza solo lo dorado (no el negro del fondo del hexágono) */
+        float lum = dot(c.rgb, vec3(0.299, 0.587, 0.114));
+        float gold = smoothstep(0.32, 0.55, lum) * step(c.b + 0.04, c.r);
+        float band = exp(-pow((vUv.x * 0.75 + (1.0 - vUv.y) * 0.55 - uShine) * 7.0, 2.0));
+        c.rgb += vec3(1.0, 0.93, 0.74) * band * gold * 0.5;
+        gl_FragColor = vec4(c.rgb, c.a * uOpacity);
+      }`,
+  });
+  const face = new THREE.Mesh(new THREE.PlaneGeometry(MED_W, MED_H), faceMat);
+  face.position.z = 0.001;
+  medal.add(face);
+  /* canto del medallón: el hexágono extruido en oro (se ve al inclinarse) */
+  const hexShape = new THREE.Shape(HEX.map(([x, y]) => new THREE.Vector2(x, y)));
+  const rimGeo = new THREE.ExtrudeGeometry(hexShape, { depth: 0.07, bevelEnabled: true, bevelThickness: 0.012, bevelSize: 0.012, bevelSegments: 2, curveSegments: 1 });
+  rimGeo.translate(0, 0, -0.082);
+  const rimMat = new THREE.MeshStandardMaterial({ color: 0xd9b05c, metalness: 0.85, roughness: 0.28, envMapIntensity: 1.1 });
+  const rim = new THREE.Mesh(rimGeo, rimMat);
+  medal.add(rim);
+  await frame();
 
-  /* ---------- letras L, B y G: los trazos del propio logotipo, extruidos ---------- */
-  const svgText = await fetch('assets/marca/svg/labg-logo.svg').then((r) => { if (!r.ok) throw new Error('logo ' + r.status); return r.text(); });
-  const doc = new DOMParser().parseFromString(svgText, 'image/svg+xml');
-  const letterPaths = [...doc.querySelectorAll('path[fill="url(#lgg)"]')].map((p) => p.getAttribute('d'));
-  if (letterPaths.length !== 3) throw new Error('el logotipo no trae las tres letras esperadas');
-  const loader = new SVGLoader();
-  const letters = [];
-  for (const d of letterPaths) {
-    const data = loader.parse(`<svg xmlns="http://www.w3.org/2000/svg"><path d="${d}" fill="#000" fill-rule="evenodd"/></svg>`);
-    const shapes = data.paths.flatMap((p) => SVGLoader.createShapes(p)).map(cleanShape);
-    const geo = new THREE.ExtrudeGeometry(shapes, { depth: 26, bevelEnabled: true, bevelThickness: 3.2, bevelSize: 1.6, bevelSegments: 3, curveSegments: 1 });
-    geo.scale(S, -S, S);                       // el eje y del SVG apunta hacia abajo
-    flipWinding(geo);
-    geo.computeBoundingBox();
-    const bb = geo.boundingBox;
-    const baseX = (bb.min.x + bb.max.x) / 2, baseY = bb.min.y;   // pivote en la base para «levantarla»
-    geo.translate(-baseX, -baseY, -0.15);
-    const m = new THREE.Mesh(geo, metal);
-    m.position.set(baseX - CX * S, baseY + CY * S, 0);
-    logo.add(m);
-    letters.push(m);
-    await frame();
+  /* ---------- corrientes de viento: cintas en hélice calculadas en la GPU ---------- */
+  const WIND_SCALE = 1 / 300;                  // unidades del SVG de la marca → mundo (el logo mide 600 ↔ 2)
+  const streams = [];
+  for (let k = 0; k < 7; k++) streams.push({ main: true, r0: 352 + k * 50, flat: 0.27 + 0.012 * k, tilt: -0.17 + 0.045 * Math.sin(k * 1.9), phase: 0.6 + k * 0.83, turns: 1.18 + 0.1 * (k % 3), grow: 0.3, rise: (k % 2 ? 1 : -1) * (26 + k * 9), w: 2.5 - k * 0.2, speed: 11 + k * 1.6 });
+  for (let k = 0; k < 6; k++) streams.push({ main: false, r0: 345 + k * 70, flat: 0.25 + 0.02 * k, tilt: -0.12 + 0.05 * Math.sin(k * 2.3 + 1), phase: 2.2 + k * 1.1, turns: 0.95 + 0.12 * (k % 2), grow: 0.24, rise: (k % 2 ? -1 : 1) * 40, w: 0.85, speed: 15 + k * 2 });
+  const SEG = narrow ? 120 : 200;
+  const hexN = [], hexC = [];
+  for (let i = 0; i < 6; i++) {
+    const a = HEX[i], b = HEX[(i + 1) % 6];
+    let nx = b[1] - a[1], ny = -(b[0] - a[0]);
+    const l = Math.hypot(nx, ny); nx /= l; ny /= l;
+    if (nx * a[0] + ny * a[1] < 0) { nx = -nx; ny = -ny; }       // normal hacia fuera
+    hexN.push(new THREE.Vector2(nx, ny)); hexC.push(nx * a[0] + ny * a[1]);
   }
-  letters.sort((a, b) => a.position.x - b.position.x);   // L, B, G
-
-  /* ---------- la A: origen, dos vectores con punta de flecha y la barra de cinco puntos ---------- */
-  const R = 0.107;
-  const O = new THREE.Vector3(wx(400), wy(92), 0);
-  const armEnds = [new THREE.Vector3(wx(334), wy(242), 0), new THREE.Vector3(wx(466), wy(242), 0)];
-  const heads = [
-    [[334, 242, 331.8, 216.6], [334, 242, 354.2, 226.4]],
-    [[466, 242, 445.8, 226.4], [466, 242, 468.2, 216.6]],
-  ];
-  const cylGeo = new THREE.CylinderGeometry(R, R, 1, 20, 1, false);
-  cylGeo.translate(0, 0.5, 0);                // de 0 a 1 en y: se estira desde su inicio
-  const capGeo = new THREE.SphereGeometry(R, 20, 14);
-  const arms = armEnds.map((end) => rod(O, end));
-  const headRods = heads.map((pair) => pair.map(([x1, y1, x2, y2]) => rod(new THREE.Vector3(wx(x1), wy(y1), 0), new THREE.Vector3(wx(x2), wy(y2), 0))));
-  const joints = armEnds.map((e) => { const c = new THREE.Mesh(capGeo, metal); c.position.copy(e); logo.add(c); return c; });
-  const origin = new THREE.Mesh(new THREE.SphereGeometry(0.167, 40, 28), glow(COLORS.emerald, 1.4));
-  origin.position.copy(O);
-  logo.add(origin);
-  const originHalo = new THREE.Sprite(new THREE.SpriteMaterial({ map: radialTexture('rgba(62,214,139,0.45)', 'rgba(62,214,139,0)'), transparent: true, depthWrite: false, fog: false }));
-  originHalo.position.copy(O).add(new THREE.Vector3(0, 0, 0.05));
-  logo.add(originHalo);
-  const dotMats = [], glowSprites = [originHalo];
-  const dotGlowTex = radialTexture('rgba(62,214,139,0.7)', 'rgba(62,214,139,0)');
-  const dots = [359.1, 379.5, 400.0, 420.5, 440.9].map((x) => {
-    const mat = glow(COLORS.emerald, 0.35); dotMats.push(mat);
-    const d = new THREE.Mesh(new THREE.SphereGeometry(0.088, 28, 20), mat);
-    d.position.set(wx(x), wy(188), 0.02);
-    logo.add(d);
-    const gl = new THREE.Sprite(new THREE.SpriteMaterial({ map: dotGlowTex, transparent: true, opacity: 0, depthWrite: false, fog: false }));
-    gl.position.copy(d.position).add(new THREE.Vector3(0, 0, 0.05)); gl.scale.setScalar(0.42);
-    logo.add(gl); glowSprites.push(gl); d.userData.glow = gl;
-    return d;
+  const windUniforms = {
+    uTime: { value: 0 }, uDraw: { value: 0 }, uOut: { value: 0 }, uFade: { value: 1 },
+    uHexN: { value: hexN }, uHexC: { value: hexC }, uMed: { value: new THREE.Vector3() },
+    uDark: { value: new THREE.Color(0x9c7128) }, uLight: { value: new THREE.Color(0xe2bf6a) }, uHead: { value: new THREE.Color(0x8a6418) },
+    uPx: { value: 1 },
+  };
+  const HELIX = `
+    attribute vec4 aS1;   // r0, inclinación hacia la cámara (rad), fase, vueltas
+    attribute vec4 aS2;   // apertura, subida, inclinación en el plano (rad), ancho
+    attribute vec4 aS3;   // velocidad de ráfagas, opacidad, frecuencia de ráfagas, principal (1) o fina (0)
+    uniform float uTime; uniform float uOut;
+    vec3 helix(float u) {
+      float th = aS1.z + (u - 0.5) * aS1.w * 6.2831853 + uTime * 0.06 + uOut * 1.6;
+      float r = aS1.x * (1.0 - aS2.x * 0.5 + aS2.x * u) * (1.0 + uOut * 0.9);
+      vec3 p = vec3(r * cos(th), aS2.y * (u - 0.5), r * sin(th));
+      float cb = cos(aS1.y), sb = sin(aS1.y);
+      p = vec3(p.x, p.y * cb - p.z * sb, p.y * sb + p.z * cb);        // el anillo se inclina hacia quien mira
+      float ct = cos(aS2.z), st = sin(aS2.z);
+      return vec3(p.x * ct - p.y * st, p.x * st + p.y * ct, p.z);       // y se ladea en el plano
+    }`;
+  const HEXFADE = `
+    uniform vec2 uHexN[6]; uniform float uHexC[6]; uniform vec3 uMed;
+    /* distancia con signo al hexágono del medallón (positiva fuera) */
+    float hexSd(vec2 p) { float d = -1e5; for (int i = 0; i < 6; i++) d = max(d, dot(uHexN[i], p) - uHexC[i]); return d; }`;
+  const ribbonMat = new THREE.ShaderMaterial({
+    transparent: true, depthWrite: false, fog: false, side: THREE.DoubleSide,
+    uniforms: windUniforms,
+    vertexShader: `${HELIX}
+      attribute float aU; attribute float aSide;
+      varying float vU; varying float vTaper; varying vec3 vW; varying vec4 vS3; varying float vFront;
+      void main() {
+        vec3 P = helix(aU), Q = helix(aU + 0.003);
+        vec4 w = modelMatrix * vec4(P, 1.0);
+        vec3 tng = normalize(mat3(modelMatrix) * (Q - P));
+        vec3 side = normalize(cross(tng, normalize(cameraPosition - w.xyz)));
+        float taper = smoothstep(0.0, 0.14, aU) * smoothstep(1.0, 0.86, aU);
+        w.xyz += side * aSide * aS2.w * 0.5 * (0.3 + 0.7 * taper);
+        vU = aU; vTaper = taper; vW = w.xyz; vS3 = aS3; vFront = P.z;
+        gl_Position = projectionMatrix * viewMatrix * w;
+      }`,
+    fragmentShader: `${HEXFADE}
+      uniform float uTime; uniform float uDraw; uniform float uOut; uniform float uFade;
+      uniform vec3 uDark; uniform vec3 uLight; uniform vec3 uHead;
+      varying float vU; varying float vTaper; varying vec3 vW; varying vec4 vS3; varying float vFront;
+      void main() {
+        /* ráfaga: una cabeza más intensa con su estela, viajando a lo largo de la corriente */
+        float f = fract(vU * vS3.z - uTime / vS3.x);
+        float gust = pow(1.0 - f, 6.0);
+        float a = vS3.y * (0.28 + 0.95 * gust) * vTaper;
+        /* delante del medallón: se desvanece al entrar en el hexágono (lo envuelve sin taparlo) */
+        if (vFront > 0.0) a *= smoothstep(0.0, 0.16, hexSd(vW.xy - uMed.xy));
+        else a *= 0.62;                                   // la mitad de atrás, más tenue: profundidad
+        a *= 1.0 - smoothstep(uDraw * 1.12 - 0.12, uDraw * 1.12, vU);   // la corriente se dibuja al entrar
+        a *= (1.0 - uOut) * uFade;
+        if (a < 0.003) discard;
+        vec3 col = mix(uDark, uLight, clamp(vW.x * 0.2 + 0.5, 0.0, 1.0));
+        col = mix(col, uHead, gust * 0.55);
+        gl_FragColor = vec4(col, a);
+      }`,
   });
+  {
+    const nV = streams.length * (SEG + 1) * 2;
+    const aU = new Float32Array(nV), aSide = new Float32Array(nV), aS1 = new Float32Array(nV * 4), aS2 = new Float32Array(nV * 4), aS3 = new Float32Array(nV * 4);
+    const idx = [];
+    let v = 0;
+    streams.forEach((s, k) => {
+      const base = v;
+      const S1 = [s.r0 * WIND_SCALE, Math.asin(Math.min(0.9, s.flat)), s.phase, s.turns];
+      const S2 = [s.grow, s.rise * WIND_SCALE, s.tilt, (s.main ? s.w * 1.35 : s.w * 1.2) * WIND_SCALE * 2.2];
+      const period = (s.main ? 380 + (k % 3) * 90 : 520) * WIND_SCALE;
+      const len = 2 * Math.PI * s.r0 * WIND_SCALE * s.turns;
+      const S3 = [s.speed * 0.55, s.main ? 0.85 : 0.5, len / period, s.main ? 1 : 0];
+      for (let i = 0; i <= SEG; i++) {
+        for (const sd of [-1, 1]) {
+          aU[v] = i / SEG; aSide[v] = sd;
+          aS1.set(S1, v * 4); aS2.set(S2, v * 4); aS3.set(S3, v * 4);
+          v++;
+        }
+        if (i < SEG) { const a = base + i * 2; idx.push(a, a + 1, a + 2, a + 1, a + 3, a + 2); }
+      }
+    });
+    const g = new THREE.BufferGeometry();
+    g.setAttribute('aU', new THREE.BufferAttribute(aU, 1));
+    g.setAttribute('aSide', new THREE.BufferAttribute(aSide, 1));
+    g.setAttribute('aS1', new THREE.BufferAttribute(aS1, 4));
+    g.setAttribute('aS2', new THREE.BufferAttribute(aS2, 4));
+    g.setAttribute('aS3', new THREE.BufferAttribute(aS3, 4));
+    g.setAttribute('position', new THREE.BufferAttribute(new Float32Array(nV * 3), 3));   // la posición real sale del sombreador
+    g.setIndex(idx);
+    const ribbons = new THREE.Mesh(g, ribbonMat);
+    ribbons.frustumCulled = false;
+    hero.add(ribbons);
+  }
+  /* polvo de oro: motas que viajan por las corrientes principales */
+  const dustMat = new THREE.ShaderMaterial({
+    transparent: true, depthWrite: false, fog: false,
+    uniforms: windUniforms,
+    vertexShader: `${HELIX}
+      attribute float aU0; attribute float aSpd; attribute float aSize;
+      uniform float uPx;
+      varying vec3 vW; varying float vFront; varying float vU;
+      void main() {
+        float u = fract(aU0 + uTime * aSpd);
+        vec3 P = helix(u);
+        vec4 w = modelMatrix * vec4(P, 1.0);
+        vW = w.xyz; vFront = P.z; vU = u;
+        vec4 mv = viewMatrix * w;
+        gl_Position = projectionMatrix * mv;
+        gl_PointSize = aSize * uPx * (6.0 / -mv.z);
+      }`,
+    fragmentShader: `${HEXFADE}
+      uniform float uDraw; uniform float uOut; uniform float uFade; uniform vec3 uHead;
+      varying vec3 vW; varying float vFront; varying float vU;
+      void main() {
+        vec2 c = gl_PointCoord - 0.5;
+        float r = length(c);
+        float a = smoothstep(0.5, 0.15, r) * 0.9;
+        if (vFront > 0.0) a *= smoothstep(0.0, 0.16, hexSd(vW.xy - uMed.xy)); else a *= 0.6;
+        a *= smoothstep(0.0, 0.1, vU) * smoothstep(1.0, 0.9, vU) * uDraw * (1.0 - uOut) * uFade;
+        if (a < 0.01) discard;
+        gl_FragColor = vec4(uHead, a);
+      }`,
+  });
+  {
+    const mains = streams.filter((s) => s.main);
+    const ND = narrow ? 36 : 64;
+    const aS1 = new Float32Array(ND * 4), aS2 = new Float32Array(ND * 4), aS3 = new Float32Array(ND * 4), aU0 = new Float32Array(ND), aSpd = new Float32Array(ND), aSize = new Float32Array(ND);
+    const rr = mulberry(4242);
+    for (let i = 0; i < ND; i++) {
+      const s = mains[i % mains.length];
+      aS1.set([s.r0 * WIND_SCALE, Math.asin(Math.min(0.9, s.flat)), s.phase, s.turns], i * 4);
+      aS2.set([s.grow, s.rise * WIND_SCALE, s.tilt, 0], i * 4);
+      aS3.set([1, 1, 1, 1], i * 4);
+      aU0[i] = rr(); aSpd[i] = (0.018 + rr() * 0.03); aSize[i] = 2.2 + rr() * 2.8;
+    }
+    const g = new THREE.BufferGeometry();
+    g.setAttribute('position', new THREE.BufferAttribute(new Float32Array(ND * 3), 3));
+    g.setAttribute('aS1', new THREE.BufferAttribute(aS1, 4));
+    g.setAttribute('aS2', new THREE.BufferAttribute(aS2, 4));
+    g.setAttribute('aS3', new THREE.BufferAttribute(aS3, 4));
+    g.setAttribute('aU0', new THREE.BufferAttribute(aU0, 1));
+    g.setAttribute('aSpd', new THREE.BufferAttribute(aSpd, 1));
+    g.setAttribute('aSize', new THREE.BufferAttribute(aSize, 1));
+    const dust = new THREE.Points(g, dustMat);
+    dust.frustumCulled = false;
+    hero.add(dust);
+  }
   await frame();
 
-  /* ---------- campana de Gauss, μ y ±σ ---------- */
-  const gaussD = doc.querySelector('path[stroke="#7BEDB5"]') ? doc.querySelector('path[stroke="#7BEDB5"]').getAttribute('d') : doc.querySelector('path').getAttribute('d');
-  const gpts = loader.parse(`<svg xmlns="http://www.w3.org/2000/svg"><path d="${gaussD}" fill="none" stroke="#000"/></svg>`).paths[0].subPaths[0].getPoints(160);
-  const gcurve = new THREE.CatmullRomCurve3(gpts.map((p) => new THREE.Vector3(wx(p.x), wy(p.y), -0.45)));
-  const gaussGeo = new THREE.TubeGeometry(gcurve, 320, 0.011, 6, false);
-  const gauss = new THREE.Mesh(gaussGeo, new THREE.MeshBasicMaterial({ color: COLORS.dark, transparent: true, opacity: 0.95, fog: false }));
-  const gaussHaloGeo = new THREE.TubeGeometry(gcurve, 320, 0.05, 6, false);
-  const gaussHalo = new THREE.Mesh(gaussHaloGeo, new THREE.MeshBasicMaterial({ color: COLORS.emerald, transparent: true, opacity: 0.18, depthWrite: false, fog: false }));
-  gaussHaloGeo.setDrawRange(0, 0); logo.add(gaussHalo); glowSprites.push(gaussHalo);
-  const gaussCount = gaussGeo.index.count;
-  gaussGeo.setDrawRange(0, 0);
-  logo.add(gauss);
-  await document.fonts.load('italic 72px Fraunces').catch(() => {});
-  const labels = [[160, '−2σ'], [280, '−σ'], [400, 'μ'], [520, '+σ'], [640, '+2σ']].map(([x, txt]) => {
-    const sp = textSprite(txt, { h: 0.25 });
-    sp.position.set(wx(x), wy(282), -0.45);
-    logo.add(sp);
-    return sp;
-  });
-  const dashMat = new THREE.LineDashedMaterial({ color: COLORS.dark, dashSize: 0.03, gapSize: 0.05, transparent: true, opacity: 0, fog: false });
-  const dashTops = { 160: 223.9, 280: 140, 520: 140, 640: 223.9 };
-  Object.entries(dashTops).forEach(([x, top]) => {
-    const g = new THREE.BufferGeometry().setFromPoints([new THREE.Vector3(wx(+x), wy(top), -0.46), new THREE.Vector3(wx(+x), wy(250), -0.46)]);
-    const l = new THREE.Line(g, dashMat); l.computeLineDistances(); logo.add(l);
-  });
-  await frame();
-
-  /* ---------- piso de cuadrícula en perspectiva y la línea de luz que lo barre ---------- */
-  const floor = new THREE.Group();
-  floor.position.set(0, FLOOR_Y, 1.6);
-  const gridPts = [];
-  for (let x = -30; x <= 30; x += 0.6) gridPts.push(x, 0, 0, x, 0, -46);
-  for (let z = 0; z >= -46; z -= 0.6) gridPts.push(-30, 0, z, 30, 0, z);
-  const gridGeo = new THREE.BufferGeometry();
-  gridGeo.setAttribute('position', new THREE.Float32BufferAttribute(gridPts, 3));
-  const gridMat = new THREE.LineBasicMaterial({ color: 0x0c6a44, transparent: true, opacity: 0.2 });
-  floor.add(new THREE.LineSegments(gridGeo, gridMat));
-  const edge = new THREE.Mesh(new THREE.PlaneGeometry(60, 0.02), new THREE.MeshBasicMaterial({ color: COLORS.emerald, transparent: true, opacity: 0.9 }));
-  edge.rotation.x = -Math.PI / 2; edge.position.set(0, 0.001, -1.6); floor.add(edge);
-  const sweep = new THREE.Mesh(new THREE.PlaneGeometry(60, 0.08), new THREE.MeshBasicMaterial({ color: COLORS.emerald, transparent: true, opacity: 0, depthWrite: false }));
-  sweep.rotation.x = -Math.PI / 2; sweep.position.y = 0.004; floor.add(sweep);
-  const shadowTex = radialTexture('rgba(13,31,23,0.35)', 'rgba(13,31,23,0)');
-  [[248, 70], [400, 80], [568, 72], [712, 72]].forEach(([x, rx]) => {
-    const s = new THREE.Mesh(new THREE.PlaneGeometry(rx * 2 * S, 0.3), new THREE.MeshBasicMaterial({ map: shadowTex, transparent: true, depthWrite: false }));
-    s.rotation.x = -Math.PI / 2; s.position.set(wx(x), 0.003, -1.6); floor.add(s);
-  });
-  floor.scale.z = 0.0001;
-  logo.add(floor);
-
-  /* ---------- esferas: en la entrada flotan; después son las parcelas de los datos de ejemplo ---------- */
+  /* ---------- esferas: las parcelas de los datos de ejemplo (aparecen en el capítulo Datos) ---------- */
   const E = window.LABG_EJEMPLO;
   const N = Math.min(E ? E.n : 70, SPHERES[root.dataset.lite === '1' ? 'lite' : tier]);
-  const sphereMat = new THREE.MeshStandardMaterial({ color: 0xffffff, metalness: 0.55, roughness: 0.22, envMapIntensity: 1.2, emissive: COLORS.dark, emissiveIntensity: 0.2 });
+  const sphereMat = new THREE.MeshStandardMaterial({ color: 0xffffff, metalness: 0.62, roughness: 0.26, envMapIntensity: 1.15 });
   const spheres = new THREE.InstancedMesh(new THREE.SphereGeometry(1, 24, 16), sphereMat, N);
   spheres.instanceMatrix.setUsage(THREE.DynamicDrawUsage);
   spheres.frustumCulled = false;
-  const rnd = mulberry(20260929);
-  const baseCol = new THREE.Color(COLORS.emerald), hotCol = new THREE.Color(0xe9fff4), tmpCol = new THREE.Color();
+  const baseCol = new THREE.Color(COLORS.gold), tmpCol = new THREE.Color();
   const groupCols = [new THREE.Color(COLORS.gA), new THREE.Color(COLORS.gB), new THREE.Color(COLORS.gC)];
   const occCol = new THREE.Color(COLORS.occ);
-  const P = [];
-  while (P.length < N) {
-    const p = { x: (rnd() * 2 - 1) * 6.2, y: -0.55 + rnd() * 3.4, z: -7 + rnd() * 8.4, r: 0.03 + Math.pow(rnd(), 2.2) * 0.13, ph: rnd() * Math.PI * 2, sp: 0.25 + rnd() * 0.5, hot: 0 };
-    const inLogo = Math.abs(p.x) < 3.7 && p.y > -0.95 && p.y < 1.25 && p.z > -0.9 && p.z < 1.4;
-    if (!inLogo) P.push(p);
-  }
-  P.forEach((p, i) => spheres.setColorAt(i, baseCol));
+  for (let i = 0; i < N; i++) spheres.setColorAt(i, baseCol);
   scene.add(spheres);
   const dummy = new THREE.Object3D();
   const SZ = narrow ? 0.1 : 0.085;              // tamaño de una parcela en los capítulos
@@ -228,7 +304,6 @@ export async function start({ mode }) {
 
   /* ---------- cámara y composición ---------- */
   let VW = 1, VH = 1, stillMode = false;
-  const view = { dist: 12, lookY: 0.3, baseY: 0.6 };
   const tanH = () => Math.tan(THREE.MathUtils.degToRad(camera.fov / 2));
   function layout() {
     const w = stillMode ? VW : (canvas.clientWidth || innerWidth), h = stillMode ? VH : (canvas.clientHeight || innerHeight);
@@ -236,17 +311,7 @@ export async function start({ mode }) {
     renderer.setSize(w, h, false);
     camera.aspect = w / h;
     camera.updateProjectionMatrix();
-    const t = tanH();
-    const portrait = w / h < 0.8;
-    /* ancho a encuadrar: el logotipo completo en horizontal; las letras más grandes en vertical */
-    const fitW = portrait ? 6.5 : 8.4, fill = portrait ? 0.92 : 0.74;
-    const distW = (fitW / 2) / (t * camera.aspect * fill);
-    const distH = 3.4 / (t * 2 * 0.62);
-    view.dist = Math.max(distW, distH * (portrait ? 0 : 1), 6);
-    const halfH = t * view.dist;
-    view.lookY = 0.55 - (portrait ? 0.14 : 0.31) * halfH;   // el logotipo arriba del centro: el texto ocupa la parte baja
-    view.baseY = view.lookY + 0.25;
-    view.visH = 2 * halfH;
+    windUniforms.uPx.value = renderer.getPixelRatio() * (h / 900);
   }
   layout();
   new ResizeObserver(() => { if (!stillMode) layout(); }).observe(canvas);
@@ -261,9 +326,18 @@ export async function start({ mode }) {
     const t = tanH();
     return Math.max((bw / (2 * t * camera.aspect)) * (VW / Rg.w), (bh / (2 * t)) * (VH / Rg.h));
   }
-  const cams = { hero: mkCam(), d1: mkCam(), d3: mkCam(), d4: mkCam(), out: mkCam(), a: mkCam() };
+  const cams = { hero: mkCam(), d1: mkCam(), d3: mkCam(), d4: mkCam(), out: mkCam() };
   function mkCam() { return { pos: new THREE.Vector3(), look: new THREE.Vector3(), off: new THREE.Vector2() }; }
   function mixCam(a, b, k, out) { out.pos.lerpVectors(a.pos, b.pos, k); out.look.lerpVectors(a.look, b.look, k); out.off.lerpVectors(a.off, b.off, k); return out; }
+  /* la entrada: la cámara encuadra el medallón exactamente donde está el logo del SVG (relevo sin salto) */
+  let heroBox = null;
+  function heroCam() {
+    const r = heroImg && !stillMode ? heroImg.getBoundingClientRect() : null;
+    if (r && r.height > 0) heroBox = { cx: r.left + r.width / 2, cy: r.top + r.height / 2, h: r.height * SVG_LOGO_FRAC };
+    const b = heroBox || { cx: VW / 2, cy: VH * 0.4, h: VH * 0.42 };
+    const d = (MED_H * VH) / (2 * tanH() * b.h);
+    cams.hero.pos.set(0, 0, d); cams.hero.look.set(0, 0, 0); cams.hero.off.set(b.cx - VW / 2, b.cy - VH / 2);
+  }
   function chapterCams() {
     const Rg = region();
     const off = [Rg.cx - VW / 2, Rg.cy - VH / 2];
@@ -280,22 +354,17 @@ export async function start({ mode }) {
     cams.d4.off.set(pl.x + pl.w / 2 - VW / 2, pl.y + pl.h / 2 - VH / 2);
   }
 
-  /* ---------- interacción: parallax (ratón o giroscopio), cursor sobre las esferas ---------- */
+  /* ---------- interacción: parallax (ratón o giroscopio) ---------- */
   const par = { x: 0, y: 0, tx: 0, ty: 0 };
-  const pointer = new THREE.Vector2(9, 9);
-  let pointerMoved = false;
   addEventListener('pointermove', (e) => {
     par.tx = (e.clientX / innerWidth) * 2 - 1;
     par.ty = (e.clientY / innerHeight) * 2 - 1;
-    pointer.set((e.clientX / innerWidth) * 2 - 1, -(e.clientY / innerHeight) * 2 + 1);
-    pointerMoved = true;
   }, { passive: true });
   addEventListener('deviceorientation', (e) => {
     if (e.gamma == null) return;
     par.tx = Math.max(-1, Math.min(1, e.gamma / 30));
     par.ty = Math.max(-1, Math.min(1, (e.beta - 45) / 30));
   }, { passive: true });
-  const raycaster = new THREE.Raycaster();
 
   /* ---------- reloj de la intro ---------- */
   let t0 = performance.now() / 1000;
@@ -319,19 +388,14 @@ export async function start({ mode }) {
   document.addEventListener('visibilitychange', wake);
   addEventListener('scroll', wake, { passive: true });
 
-  /* ---------- calidad adaptativa: si baja de 50 cuadros por segundo, sin halos, menos esferas y menos píxeles ---------- */
+  /* ---------- calidad adaptativa: si baja de 50 cuadros por segundo, menos píxeles ---------- */
   let last = performance.now(), fpsAcc = 0, fpsN = 0, degraded = false;
   function adapt(dt) {
     if (degraded || clock < endT) return;
     fpsAcc += dt; fpsN++;
     if (fpsN === 90) {
       const fps = 90 / fpsAcc;
-      if (fps < 50) {
-        degraded = true;
-        glowSprites.forEach((g) => { g.visible = false; });
-        if (sm < 1) spheres.count = Math.round(N * 0.6);
-        pixelRatio = 1; renderer.setPixelRatio(1); layout();
-      }
+      if (fps < 50) { degraded = true; pixelRatio = 1; renderer.setPixelRatio(1); layout(); }
       fpsAcc = 0; fpsN = 0;
     }
   }
@@ -353,73 +417,30 @@ export async function start({ mode }) {
   function update(now) {
     const t = clock;
     const s = sm;
-    /* origen */
-    const o = easeBack(span(t, T.origin));
-    origin.scale.setScalar(Math.max(0.0001, o));
-    originHalo.scale.setScalar(1.1 * o + 0.12 * Math.sin(now * 1.6) * o);
-    /* vectores y puntas de flecha */
-    const v = easeInOut(span(t, T.vectors));
-    arms.forEach((a) => { a.scale.y = Math.max(0.0001, a.userData.len * v); });
-    const hv = easeOut(span(t, [T.vectors[0] + 0.75, T.vectors[1] + 0.1]));
-    headRods.flat().forEach((h) => { h.scale.y = Math.max(0.0001, h.userData.len * hv); });
-    joints.forEach((j) => j.scale.setScalar(Math.max(0.0001, hv)));
-    /* letras que se levantan desde el piso */
-    letters.forEach((m, i) => {
-      const a = T.letters[0] + i * 0.14, k = span(t, [a, a + 0.56]);
-      m.rotation.x = -Math.PI / 2 * (1 - easeBack(k));
-      m.scale.setScalar(Math.max(0.0001, 0.6 + 0.4 * easeOut(k)));
-      m.visible = k > 0;
-    });
-    /* campana, marcas y latido de los cinco puntos */
-    const g = span(t, [T.gauss[0], T.gauss[1] - 0.1]);
-    gaussGeo.setDrawRange(0, Math.floor(gaussCount * easeInOut(g) / 3) * 3);
-    gaussHaloGeo.setDrawRange(0, Math.floor(gaussHaloGeo.index.count * easeInOut(g) / 3) * 3);
-    const lab = span(t, [T.gauss[0] + 0.4, T.gauss[1]]);
-    labels.forEach((l) => { l.material.opacity = lab * 0.85; });
-    dashMat.opacity = lab * 0.35;
-    dots.forEach((d, i) => {
-      const a = T.gauss[0] + 0.2 + i * 0.1;
-      const intro = span(t, [a, a + 0.25]);
-      d.scale.setScalar(Math.max(0.0001, easeBack(intro)));
-      const wave = Math.max(0, Math.sin((now - i * 0.16) * 1.4)) ** 12;
-      const e = 0.35 + 1.4 * (1 - span(t, [a + 0.25, a + 0.7])) * intro + 1.1 * wave * (t >= endT ? 1 : 0);
-      dotMats[i].emissiveIntensity = e;
-      d.userData.glow.material.opacity = Math.min(1, 0.15 * intro + 0.45 * (e - 0.35));
-    });
-    /* piso y línea de luz */
-    const f = easeOut(span(t, T.floor));
-    floor.scale.z = Math.max(0.0001, f);
-    gridMat.opacity = 0.2 * f;
-    if (t > T.floor[0] + 0.4) {
-      const cyc = ((now * 0.11) % 1);
-      sweep.position.z = 1.6 - cyc * 40;
-      sweep.material.opacity = 0.55 * Math.sin(Math.PI * cyc) * f;
-    }
 
-    /* el logotipo sube con la página mientras la entrada sale de la pantalla */
-    const up = s < 1 ? s : 1;
-    logo.position.y = up * view.visH * 1.08;
-    metal.userData.lift.value = logo.position.y;
-    logo.visible = up < 0.98;
-
-    /* cámara de la entrada: retrocede en la intro con parallax de ±3° */
-    const back = easeInOut(span(t, [T.vectors[0], T.letters[1] + 0.4]));
-    const dist = THREE.MathUtils.lerp(view.dist * 0.82, view.dist, back);
-    const focusY = THREE.MathUtils.lerp(view.lookY + 0.35, view.lookY, back);   /* la A crece arriba, sin tocar el texto */
+    /* ---- la entrada: viento que se dibuja, polvo, brillo y parallax suave ---- */
+    windUniforms.uTime.value = now;
+    windUniforms.uDraw.value = easeOut(span(t, T.wind));
+    windUniforms.uOut.value = easeIn(span(s, [0.05, 0.75]));
+    hero.visible = s < 0.98 && !stillMode;
     par.x += (par.tx - par.x) * 0.05; par.y += (par.ty - par.y) * 0.05;
-    const calm = 1 - span(s, [4.0, 4.4]);                    // en la figura final la cámara se queda quieta
-    const yaw = THREE.MathUtils.degToRad(3) * par.x * calm, pitch = THREE.MathUtils.degToRad(3) * par.y * calm;
-    cams.hero.pos.set(0, focusY + (view.baseY - view.lookY) * back, dist);
-    cams.hero.look.set(0, focusY, 0);
-    cams.hero.off.set(0, 0);
+    medal.rotation.set(-par.y * 0.07, par.x * 0.09, 0);
+    hero.rotation.set(0, par.x * 0.04, 0);
+    /* el brillo cruza el oro al final de la intro y luego cada nueve segundos */
+    const sh = t < endT ? span(t, T.shine) : ((now % 9) / 1.6);
+    faceMat.uniforms.uShine.value = sh <= 1 ? -0.4 + sh * 1.9 : -1;
+    windUniforms.uMed.value.set(0, 0, 0);
 
-    /* cámara de los capítulos */
+    /* cámara de la entrada y de los capítulos */
+    heroCam();
     chapterCams();
     let c;
-    if (s < 1) c = mixCam(cams.hero, cams.d1, easeInOut(span(s, [0.42, 1])), cams.out);
+    if (s < 1) c = mixCam(cams.hero, cams.d1, easeInOut(span(s, [0.45, 1])), cams.out);
     else if (s < 3) c = cams.d1;
     else if (s < 4) c = mixCam(cams.d1, cams.d3, easeInOut(span(s, [3.02, 3.42])), cams.out);
     else c = mixCam(cams.d3, cams.d4, easeInOut(span(s, [4.02, 4.52])), cams.out);
+    const calm = (s < 1 ? 0.35 : 1) * (1 - span(s, [4.0, 4.4]));   // en la figura final la cámara se queda quieta
+    const yaw = THREE.MathUtils.degToRad(3) * par.x * calm, pitch = THREE.MathUtils.degToRad(3) * par.y * calm;
     const rel = vA.subVectors(c.pos, c.look);
     const r = rel.length();
     rel.applyAxisAngle(new THREE.Vector3(0, 1, 0), yaw);
@@ -428,52 +449,45 @@ export async function start({ mode }) {
     camera.lookAt(c.look);
     camera.setViewOffset(VW, VH, -c.off.x, -c.off.y, VW, VH);
     camera.updateMatrixWorld();
-    scene.fog.density = s < 1 ? 0.32 / view.dist : 0.32 / Math.max(view.dist, r * (s > 3 ? 1.6 : 1));
+    scene.fog.density = s < 1 ? 0.004 : 0.32 / Math.max(10, r * (s > 3 ? 1.6 : 1));
     if (s > 0.9 && s < 2.2) rowAnchors();
 
-    /* esferas */
-    const sAppear = span(t, T.spheres);
-    const heroOut = easeIn(span(s, [0.2, 0.62]));
+    /* ---- esferas ---- */
     const cloudSpin = now * 0.12 + (s - 1) * 1.1;
     const grow = easeOut(span(s, [3.0, 3.35]));
+    spheres.visible = s >= 1.2 || stillMode;
     for (let i = 0; i < spheres.count; i++) {
-      const p = P[i], D = H.D[i];
-      let sc;
+      const D = H.D[i];
+      let sc = 0;
+      /* la nube: cada parcela gira despacio alrededor del centro */
+      const ca = Math.cos(cloudSpin), sa = Math.sin(cloudSpin);
+      vC.set(D.cloud.x * ca + D.cloud.z * sa, D.cloud.y + Math.sin(now * 0.6 + D.ph) * 0.05, -D.cloud.x * sa + D.cloud.z * ca);
+      tmpCol.copy(baseCol);
       if (s < 1) {
-        const k = easeBack(clamp01(sAppear * 1.6 - (i / N) * 0.6));
-        dummy.position.set(p.x + Math.sin(now * p.sp * 0.5 + p.ph) * 0.08, p.y + Math.sin(now * p.sp + p.ph) * 0.12 + logo.position.y, p.z);
-        sc = p.r * k * (1 + p.hot * 0.35) * (1 - heroOut);
-        p.hot *= 0.93;
-        tmpCol.copy(baseCol).lerp(hotCol, p.hot);
+        dummy.position.copy(vC); sc = 0;
+      } else if (s < 2) {
+        /* Datos: nacen en su fila de la tabla y vuelan a la nube */
+        const a0 = 1.4 + D.row * 0.045 + D.j * 0.003, kk = easeOut(span(s, [a0, a0 + 0.24]));
+        const an = anchors[D.row];
+        if (an) vB.copy(an).add(D.jit); else vB.set(0, 0, 0);
+        dummy.position.lerpVectors(vB, vC, kk);
+        sc = kk > 0 ? SZ * easeBack(Math.min(1, kk * 2.5)) : 0;
+      } else if (s < 3) {
+        /* Análisis: de la nube al biplot; se tiñen con el color de su grupo */
+        const k2 = easeInOut(span(s, [2.04 + D.j * 0.004, 2.5 + D.j * 0.004]));
+        dummy.position.lerpVectors(vC, D.bip, k2);
+        tmpCol.lerp(groupCols[D.g], span(s, [2.22, 2.52]));
+        sc = SZ;
       } else {
-        /* la nube: cada parcela gira despacio alrededor del centro */
-        const ca = Math.cos(cloudSpin), sa = Math.sin(cloudSpin);
-        vC.set(D.cloud.x * ca + D.cloud.z * sa, D.cloud.y + Math.sin(now * 0.6 + D.ph) * 0.05, -D.cloud.x * sa + D.cloud.z * ca);
-        tmpCol.copy(baseCol);
-        if (s < 2) {
-          /* Datos: nacen en su fila de la tabla y vuelan a la nube */
-          const a0 = 1.4 + D.row * 0.045 + D.j * 0.003, kk = easeOut(span(s, [a0, a0 + 0.24]));
-          const an = anchors[D.row];
-          if (an) vB.copy(an).add(D.jit); else vB.set(0, 0, 0);
-          dummy.position.lerpVectors(vB, vC, kk);
-          sc = kk > 0 ? SZ * easeBack(Math.min(1, kk * 2.5)) : 0;
-        } else if (s < 3) {
-          /* Análisis: de la nube al biplot; se tiñen con el color de su grupo */
-          const k2 = easeInOut(span(s, [2.04 + D.j * 0.004, 2.5 + D.j * 0.004]));
-          dummy.position.lerpVectors(vC, D.bip, k2);
-          tmpCol.lerp(groupCols[D.g], span(s, [2.22, 2.52]));
-          sc = SZ;
-        } else {
-          /* Modelos y Decisión: suben sobre su sitio y caen al terreno */
-          const st = D.fall;
-          const kA = easeInOut(span(s, [3.04 + st, 3.3 + st])), kB = span(s, [3.28 + st, 3.52 + st]);
-          vB.set(D.occ.x, TERR.y + D.occH * grow + SZ * 0.8, D.occ.z);
-          vA.copy(vB); vA.y += 2.6;
-          if (kB > 0) dummy.position.lerpVectors(vA, vB, bounce(kB));
-          else dummy.position.lerpVectors(D.bip, vA, kA);
-          tmpCol.copy(groupCols[D.g]).lerp(occCol, span(s, [3.3, 3.6]));
-          sc = SZ * (1 - 0.25 * span(s, [4.0, 4.4]));
-        }
+        /* Modelos y Decisión: suben sobre su sitio y caen al terreno */
+        const st = D.fall;
+        const kA = easeInOut(span(s, [3.04 + st, 3.3 + st])), kB = span(s, [3.28 + st, 3.52 + st]);
+        vB.set(D.occ.x, TERR.y + D.occH * grow + SZ * 0.8, D.occ.z);
+        vA.copy(vB); vA.y += 2.6;
+        if (kB > 0) dummy.position.lerpVectors(vA, vB, bounce(kB));
+        else dummy.position.lerpVectors(D.bip, vA, kA);
+        tmpCol.copy(groupCols[D.g]).lerp(occCol, span(s, [3.3, 3.6]));
+        sc = SZ * (1 - 0.25 * span(s, [4.0, 4.4]));
       }
       dummy.scale.setScalar(Math.max(0.0001, sc));
       dummy.updateMatrix();
@@ -482,9 +496,8 @@ export async function start({ mode }) {
     }
     spheres.instanceMatrix.needsUpdate = true;
     if (spheres.instanceColor) spheres.instanceColor.needsUpdate = true;
-    sphereMat.emissiveIntensity = s < 3.3 ? 0.2 : 0.2 * (1 - span(s, [3.3, 3.6]));
 
-    /* biplot: ejes, vectores de las variables y sus nombres */
+    /* ---- biplot: ejes, vectores de las variables y sus nombres ---- */
     const out = 1 - span(s, [3.0, 3.2]);
     H.bip.visible = s > 2.05 && s < 3.22;
     if (H.bip.visible) {
@@ -500,7 +513,7 @@ export async function start({ mode }) {
       });
     }
 
-    /* terreno: sube, se colorea como mapa de idoneidad y brillan sus curvas de nivel */
+    /* ---- terreno: sube, se colorea como mapa de idoneidad y brillan sus curvas de nivel ---- */
     H.terr.visible = s > 2.98;
     if (H.terr.visible) {
       const u = H.terrMat.uniforms;
@@ -513,27 +526,18 @@ export async function start({ mode }) {
     }
   }
 
-  function hover() {
-    if (!pointerMoved || clock < T.spheres[0] || sm > 0.2) return;
-    pointerMoved = false;
-    raycaster.setFromCamera(pointer, camera);
-    const hit = raycaster.intersectObject(spheres, false)[0];
-    if (hit && hit.instanceId != null) P[hit.instanceId].hot = 1;
-  }
-
   function loop(ms) {
     if (!shouldRun()) { running = false; return; }
     rafId = requestAnimationFrame(loop);
     const dt = Math.min(0.1, (ms - last) / 1000); last = ms;
     const now = ms / 1000;
-    /* si alguien baja durante la intro, el logotipo se completa de inmediato */
+    /* si alguien baja durante la intro, el viento se completa de inmediato */
     if (clock < endT && (story.s || 0) > 0.02) { t0 -= endT - clock; clock = endT; finishIntro(); }
     if (clock < endT) { clock = now - t0; if (clock >= endT) finishIntro(); }
     /* el scroll mueve la escena con un pequeño retraso: la historia fluye y nunca salta */
     const target = forcedS != null ? forcedS : (story.s || 0);
     sm += (target - sm) * (1 - Math.exp(-dt * 7));
     if (Math.abs(target - sm) < 1e-4) sm = target;
-    hover();
     update(now);
     renderer.render(scene, camera);
     adapt(dt);
@@ -580,18 +584,6 @@ export async function start({ mode }) {
   last = performance.now();
   rafId = requestAnimationFrame(loop);
 
-  /* ---------- piezas ---------- */
-  function rod(a, b) {
-    const m = new THREE.Mesh(cylGeo, metal);
-    const dir = new THREE.Vector3().subVectors(b, a);
-    m.userData.len = dir.length();
-    m.position.copy(a);
-    m.quaternion.setFromUnitVectors(new THREE.Vector3(0, 1, 0), dir.normalize());
-    m.scale.y = 0.0001;
-    logo.add(m);
-    return m;
-  }
-
   /* nube, biplot y terreno; cada parcela sabe su fila, su lugar en el biplot y su sitio en el mapa */
   async function buildStory() {
     const rs = mulberry(7031);
@@ -632,15 +624,16 @@ export async function start({ mode }) {
       fragmentShader: `
         uniform float uReveal; uniform float uLines; uniform float uGlow; uniform float uOpacity; uniform float uEdge;
         varying float vH; varying float vS; varying vec3 vN; varying vec2 vUv; varying float vX;
+        /* idoneidad en la rampa de la marca: papel, champaña, oro, bronce y casi negro */
         vec3 ramp(float s) {
-          vec3 c0 = vec3(0.933, 0.957, 0.941), c1 = vec3(0.635, 0.965, 0.800), c2 = vec3(0.243, 0.839, 0.545), c3 = vec3(0.047, 0.416, 0.267), c4 = vec3(0.020, 0.247, 0.161);
+          vec3 c0 = vec3(0.957, 0.937, 0.894), c1 = vec3(0.945, 0.867, 0.659), c2 = vec3(0.851, 0.682, 0.322), c3 = vec3(0.612, 0.443, 0.157), c4 = vec3(0.227, 0.165, 0.063);
           if (s < 0.35) return mix(c0, c1, s / 0.35);
           if (s < 0.60) return mix(c1, c2, (s - 0.35) / 0.25);
           if (s < 0.82) return mix(c2, c3, (s - 0.60) / 0.22);
           return mix(c3, c4, (s - 0.82) / 0.18);
         }
         void main() {
-          vec3 paper = vec3(0.968, 0.982, 0.973);
+          vec3 paper = vec3(0.976, 0.970, 0.955);
           float front = mix(-7.0, 7.0, uReveal);                       /* el cálculo avanza celda por celda, de oeste a este */
           float fill = smoothstep(vX - 0.8, vX + 0.8, front);
           vec3 col = mix(paper, ramp(vS), fill);
@@ -649,8 +642,8 @@ export async function start({ mode }) {
           float hv = vH * 5.0;
           float d = abs(fract(hv - 0.5) - 0.5) / max(fwidth(hv), 1e-4);
           float line = 1.0 - min(d, 1.0);
-          col = mix(col, vec3(0.047, 0.416, 0.267), line * uLines * 0.55);
-          col += vec3(0.30, 0.90, 0.60) * line * uGlow * 0.35;
+          col = mix(col, vec3(0.353, 0.259, 0.078), line * uLines * 0.55);
+          col += vec3(0.85, 0.68, 0.32) * line * uGlow * 0.3;
           float e = smoothstep(0.0, 0.05, vUv.x) * smoothstep(1.0, 0.95, vUv.x) * smoothstep(0.0, 0.07, vUv.y) * smoothstep(1.0, 0.93, vUv.y);
           gl_FragColor = vec4(col, mix(1.0, e, uEdge) * uOpacity);
         }`,
@@ -693,12 +686,12 @@ export async function start({ mode }) {
     const axY = new THREE.Mesh(new THREE.BoxGeometry(4.8, 0.012, 0.012), axisMat); axY.rotation.z = Math.PI / 2; axY.position.set(0, BY, -0.02);
     bip.add(axX, axY);
     const pct = E ? E.varianza : [0, 0];
-    const lx = textSprite(`CP1 (${pct[0].toFixed(1)} %)`, { font: '600 40px Manrope, system-ui, sans-serif', color: '#4A6157', h: 0.26 });
+    const lx = textSprite(`CP1 (${pct[0].toFixed(1)} %)`, { font: '600 40px Manrope, system-ui, sans-serif', color: '#5C5750', h: 0.26 });
     lx.position.set(3.55, BY - 0.2, 0); lx.center.set(1, 0.5);
-    const ly = textSprite(`CP2 (${pct[1].toFixed(1)} %)`, { font: '600 40px Manrope, system-ui, sans-serif', color: '#4A6157', h: 0.26 });
+    const ly = textSprite(`CP2 (${pct[1].toFixed(1)} %)`, { font: '600 40px Manrope, system-ui, sans-serif', color: '#5C5750', h: 0.26 });
     ly.position.set(0.12, BY + 2.35, 0); ly.center.set(0, 0.5);
     bip.add(lx, ly);
-    const vecMat = new THREE.MeshBasicMaterial({ color: COLORS.dark, fog: false });
+    const vecMat = new THREE.MeshBasicMaterial({ color: COLORS.goldText, fog: false });
     const vGeo = new THREE.CylinderGeometry(0.018, 0.018, 1, 10); vGeo.translate(0, 0.5, 0);
     const hGeo = new THREE.ConeGeometry(0.07, 0.2, 14); hGeo.translate(0, -0.1, 0);
     const vs = 2.55;
@@ -709,13 +702,13 @@ export async function start({ mode }) {
       rodM.quaternion.setFromUnitVectors(new THREE.Vector3(0, 1, 0), dir);
       const head = new THREE.Mesh(hGeo, vecMat);
       head.quaternion.copy(rodM.quaternion);
+      /* la punta vive en un grupo con origen en el centro del biplot y avanza a lo largo del vector */
       const hg = new THREE.Group(); hg.position.set(0, BY, 0.02); hg.add(head);
-      const label = textSprite(E.cols[i].nombre, { font: 'italic 500 44px Fraunces, Georgia, serif', color: '#0C6A44', h: 0.3 });
+      const label = textSprite(E.cols[i].nombre, { font: 'italic 500 44px Fraunces, Georgia, serif', color: '#7D5B14', h: 0.3 });
       label.position.set(dir.x * (len + 0.42), BY + dir.y * (len + 0.3), 0.05);
       bip.add(rodM, hg, label);
       return { rod: rodM, head, dir, len, label };
     });
-    /* la punta de cada flecha vive en un grupo con origen en el centro del biplot y avanza a lo largo del vector */
     await frame();
     /* compilar los sombreadores ahora (con todo visible un instante) y no al llegar a cada capítulo */
     bip.visible = terr.visible = true;
@@ -725,60 +718,26 @@ export async function start({ mode }) {
   }
 }
 
-/* invierte el orden de los vértices de cada triángulo (tras reflejar el eje y) */
-function flipWinding(geo) {
-  if (geo.index) { const ix = geo.index.array; for (let i = 0; i < ix.length; i += 3) { const t = ix[i + 1]; ix[i + 1] = ix[i + 2]; ix[i + 2] = t; } return; }
-  for (const name of Object.keys(geo.attributes)) {
-    const a = geo.attributes[name], n = a.itemSize, arr = a.array;
-    for (let i = 0; i < a.count; i += 3) {
-      for (let k = 0; k < n; k++) { const j1 = (i + 1) * n + k, j2 = (i + 2) * n + k, t = arr[j1]; arr[j1] = arr[j2]; arr[j2] = t; }
-    }
-  }
-}
-
-/* el color del metal es el degradado del logotipo (gradiente «lgg» del SVG, de y = 70 a y = 250),
-   evaluado por altura en cada fragmento; encima quedan los reflejos y el barniz */
-function logoGradient(mat) {
-  const stops = [[70, '#EAFFF4'], [120.4, '#62E6A5'], [160, '#0C6A44'], [181.6, '#A2F6CC'], [250, '#053F29']];
-  mat.onBeforeCompile = (sh) => {
-    stops.forEach(([y, c], i) => { sh.uniforms['uGy' + i] = { value: y }; sh.uniforms['uGc' + i] = { value: new THREE.Color(c) }; });
-    sh.uniforms.uS = { value: S }; sh.uniforms.uCY = { value: CY };
-    sh.vertexShader = sh.vertexShader.replace('#include <common>', '#include <common>\nvarying float vWY;')
-      .replace('#include <project_vertex>', '#include <project_vertex>\nvWY = (modelMatrix * vec4(transformed, 1.0)).y;');
-    const uni = stops.map((_, i) => `uniform float uGy${i}; uniform vec3 uGc${i};`).join('\n');
-    sh.fragmentShader = sh.fragmentShader.replace('#include <common>', `#include <common>
-varying float vWY; uniform float uS; uniform float uCY; uniform float uLift;
-${uni}
-vec3 labgGrad(float y) {
-  if (y <= uGy0) return uGc0;
-  if (y <= uGy1) return mix(uGc0, uGc1, (y - uGy0) / (uGy1 - uGy0));
-  if (y <= uGy2) return mix(uGc1, uGc2, (y - uGy1) / (uGy2 - uGy1));
-  if (y <= uGy3) return mix(uGc2, uGc3, (y - uGy2) / (uGy3 - uGy2));
-  if (y <= uGy4) return mix(uGc3, uGc4, (y - uGy3) / (uGy4 - uGy3));
-  return uGc4;
-}`).replace('vec4 diffuseColor = vec4( diffuse, opacity );', 'vec4 diffuseColor = vec4( labgGrad(uCY - (vWY - uLift) / uS), opacity );')
-      .replace('vec3 totalEmissiveRadiance = emissive;', 'vec3 totalEmissiveRadiance = emissive + labgGrad(uCY - (vWY - uLift) / uS) * 0.2;');
-    sh.uniforms.uLift = mat.userData.lift || (mat.userData.lift = { value: 0 });
-  };
-}
-
-/* contornos sin puntos repetidos: evita cuñas al triangular los huecos */
-function cleanShape(shape) {
-  const { shape: outer, holes } = shape.extractPoints(10);
-  const tidy = (pts) => {
-    const out = pts.filter((p, i) => i === 0 || p.distanceTo(pts[i - 1]) > 1e-4);
-    if (out.length > 2 && out[0].distanceTo(out[out.length - 1]) < 1e-4) out.pop();
-    return out;
-  };
-  const s2 = new THREE.Shape(tidy(outer));
-  s2.holes = holes.map((h) => new THREE.Path(tidy(h)));
-  return s2;
+/* el logo de la marca rasterizado en un lienzo (colores exactos: sin conversión de color en el sombreador) */
+async function logoTexture(src, h) {
+  const img = new Image();
+  img.decoding = 'async';
+  img.src = src;
+  await img.decode();
+  const c = document.createElement('canvas');
+  c.height = h; c.width = Math.round(h * LOGO.W / LOGO.H);
+  c.getContext('2d').drawImage(img, 0, 0, c.width, c.height);
+  const tex = new THREE.CanvasTexture(c);
+  tex.colorSpace = THREE.NoColorSpace;
+  tex.generateMipmaps = true;
+  tex.minFilter = THREE.LinearMipmapLinearFilter;
+  return tex;
 }
 
 function bandTexture() {
   const c = document.createElement('canvas'); c.width = 64; c.height = 256;
   const g = c.getContext('2d'), grd = g.createLinearGradient(0, 0, 0, 256);
-  [[0, '#EAFFF4'], [0.3, '#62E6A5'], [0.47, '#0C6A44'], [0.5, '#08090B'], [0.56, '#0C6A44'], [0.66, '#A2F6CC'], [1, '#053F29']].forEach(([o, col]) => grd.addColorStop(o, col));
+  [[0, '#FFF8E6'], [0.3, '#F1D58E'], [0.47, '#9C7128'], [0.5, '#1A1A1A'], [0.56, '#9C7128'], [0.66, '#F6D985'], [1, '#5A4214']].forEach(([o, col]) => grd.addColorStop(o, col));
   g.fillStyle = grd; g.fillRect(0, 0, 64, 256);
   const tex = new THREE.CanvasTexture(c); tex.colorSpace = THREE.SRGBColorSpace;
   return tex;
@@ -794,7 +753,7 @@ function radialTexture(inner, outer) {
 }
 
 /* texto como sprite: se mide para que el lienzo le quede justo */
-function textSprite(txt, { font = 'italic 64px Fraunces, Georgia, serif', color = '#0C6A44', h = 0.25 } = {}) {
+function textSprite(txt, { font = 'italic 64px Fraunces, Georgia, serif', color = '#7D5B14', h = 0.25 } = {}) {
   const c = document.createElement('canvas');
   let g = c.getContext('2d');
   g.font = font;
@@ -817,8 +776,8 @@ function composeFigure(src, r, done) {
   const g = c.getContext('2d');
   g.fillStyle = '#fff'; g.fillRect(0, 0, W, H);
   g.drawImage(src, r.x, r.y, r.w, r.h, pad.l, pad.t, pw, ph);
-  g.strokeStyle = '#0D1F17'; g.lineWidth = 2; g.strokeRect(pad.l, pad.t, pw, ph);
-  g.fillStyle = '#20352B'; g.font = '500 26px Manrope, system-ui, sans-serif'; g.textAlign = 'center'; g.textBaseline = 'top';
+  g.strokeStyle = '#111111'; g.lineWidth = 2; g.strokeRect(pad.l, pad.t, pw, ph);
+  g.fillStyle = '#2A2A2A'; g.font = '500 26px Manrope, system-ui, sans-serif'; g.textAlign = 'center'; g.textBaseline = 'top';
   for (let i = 0; i <= 6; i++) { const x = pad.l + (pw * i) / 6; g.beginPath(); g.moveTo(x, pad.t + ph); g.lineTo(x, pad.t + ph + 12); g.stroke(); g.fillText(String(i * 20), x, pad.t + ph + 18); }
   g.textAlign = 'right'; g.textBaseline = 'middle';
   for (let i = 0; i <= 4; i++) { const y = pad.t + ph - (ph * i) / 4; g.beginPath(); g.moveTo(pad.l - 12, y); g.lineTo(pad.l, y); g.stroke(); g.fillText(String(i * 20), pad.l - 20, y); }
@@ -827,24 +786,24 @@ function composeFigure(src, r, done) {
   g.save(); g.translate(52, pad.t + ph / 2); g.rotate(-Math.PI / 2); g.fillText('Norte (km)', 0, 0); g.restore();
   /* norte */
   g.fillStyle = 'rgba(255,255,255,.9)'; g.fillRect(pad.l + pw - 78, pad.t + 16, 58, 86);
-  g.fillStyle = '#0D1F17'; g.beginPath(); g.moveTo(pad.l + pw - 49, pad.t + 26); g.lineTo(pad.l + pw - 63, pad.t + 64); g.lineTo(pad.l + pw - 35, pad.t + 64); g.closePath(); g.fill();
+  g.fillStyle = '#111111'; g.beginPath(); g.moveTo(pad.l + pw - 49, pad.t + 26); g.lineTo(pad.l + pw - 63, pad.t + 64); g.lineTo(pad.l + pw - 35, pad.t + 64); g.closePath(); g.fill();
   g.font = '700 26px Manrope, system-ui, sans-serif'; g.fillText('N', pad.l + pw - 49, pad.t + 84);
   /* leyenda */
   const lx = pad.l, ly = pad.t + ph + 130, lw = 420;
   const grd = g.createLinearGradient(lx, 0, lx + lw, 0);
-  [[0, '#EEF4F0'], [0.35, '#A2F6CC'], [0.6, '#3ED68B'], [0.82, '#0C6A44'], [1, '#053F29']].forEach(([o, col]) => grd.addColorStop(o, col));
+  [[0, '#F4EFE4'], [0.35, '#F1DDA8'], [0.6, '#D9AE52'], [0.82, '#9C7128'], [1, '#3A2A10']].forEach(([o, col]) => grd.addColorStop(o, col));
   g.fillStyle = grd; g.fillRect(lx, ly, lw, 22); g.strokeRect(lx, ly, lw, 22);
-  g.fillStyle = '#20352B'; g.font = '500 24px Manrope, system-ui, sans-serif'; g.textAlign = 'left'; g.textBaseline = 'top';
+  g.fillStyle = '#2A2A2A'; g.font = '500 24px Manrope, system-ui, sans-serif'; g.textAlign = 'left'; g.textBaseline = 'top';
   g.fillText('0', lx, ly + 30); g.textAlign = 'right'; g.fillText('1', lx + lw, ly + 30);
   g.textAlign = 'left'; g.font = '600 26px Manrope, system-ui, sans-serif'; g.fillText('Idoneidad', lx + lw + 24, ly - 2);
-  g.fillStyle = '#10241A'; g.beginPath(); g.arc(lx + lw + 40, ly + 44, 9, 0, Math.PI * 2); g.fill();
-  g.fillStyle = '#20352B'; g.font = '500 24px Manrope, system-ui, sans-serif'; g.fillText('Registro de presencia', lx + lw + 60, ly + 32);
-  g.font = '400 26px Manrope, system-ui, sans-serif'; g.fillStyle = '#0D1F17';
+  g.fillStyle = '#111111'; g.beginPath(); g.arc(lx + lw + 40, ly + 44, 9, 0, Math.PI * 2); g.fill();
+  g.fillStyle = '#2A2A2A'; g.font = '500 24px Manrope, system-ui, sans-serif'; g.fillText('Registro de presencia', lx + lw + 60, ly + 32);
+  g.font = '400 26px Manrope, system-ui, sans-serif'; g.fillStyle = '#111111';
   g.fillText('Figura 1. Idoneidad modelada y registros de presencia (datos de ejemplo). Hecha con LABG.', pad.l, ly + 96);
   c.toBlob(done, 'image/png');
 }
 
-/* números pseudoaleatorios con semilla: la misma nube en cada visita */
+/* números pseudoaleatorios con semilla */
 function mulberry(a) {
   return () => { a |= 0; a = (a + 0x6d2b79f5) | 0; let t = Math.imul(a ^ (a >>> 15), 1 | a); t = (t + Math.imul(t ^ (t >>> 7), 61 | t)) ^ t; return ((t ^ (t >>> 14)) >>> 0) / 4294967296; };
 }

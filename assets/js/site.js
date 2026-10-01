@@ -168,7 +168,7 @@
     h.className = "top";
     h.innerHTML = `<div class="wrap">
       <a class="brand" href="index.html">
-        <span class="brand-mark" aria-hidden="true">${esc(C.sitio)}</span>
+        <img class="brand-mark" src="assets/marca/svg/labg-isotipo.svg" alt="" width="35" height="40">
         <span class="brand-text"><b>${esc(C.sitio)} Suite</b><span>${esc(C.subtitulo)}</span></span><span class="sr-only"> (inicio)</span>
       </a>
       <nav class="nav" id="nav" aria-label="Principal">

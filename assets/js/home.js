@@ -24,7 +24,7 @@
     track.innerHTML = pick.map((a) => `
       <li><a class="card" href="apps/${esc(a.id.toLowerCase())}/">
         <img class="card-art" src="assets/ilustraciones/${ARTE[a.id] || 'agave'}.svg" alt="" width="120" height="120" loading="lazy">
-        <img class="card-iso" src="assets/marca/svg/labg-isotipo.svg" alt="" width="26" height="26" loading="lazy">
+        <img class="card-iso" src="assets/marca/svg/labg-isotipo.svg" alt="" width="25" height="28" loading="lazy">
         <h3>${esc(a.nombre)}</h3>
         <p>${esc(a.lema)}</p>
         <span class="card-cat">${esc((CATS[a.categoria] || {}).corto || '')}</span>
