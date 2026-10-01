@@ -118,10 +118,10 @@ window.LABG_APPS = [
   {
     id: "GermplasmPro", nombre: "GermplasmPro",
     lema: "El banco de germoplasma, accesión por accesión",
-    descripcion: "Para el trabajo diario de una colección de recursos fitogenéticos de cualquier especie y forma de conservación: pasaporte MCPD v2.1, control de duplicados, mapas de colecta sin internet, diversidad geográfica, vacíos de colecta, existencias, germinación y regeneración.",
-    categoria: "genetica", estado: "proximamente", version: "", doi: "", licencia: "GPL-3.0",
+    descripcion: "Para el trabajo diario de una colección de recursos fitogenéticos de cualquier especie y forma de conservación —semillas, campo, in vitro, criopreservación e in situ—: pasaporte MCPD v2.1, control de duplicados, mapas de colecta sin internet, diversidad geográfica, vacíos de colecta, colección núcleo, viabilidad, existencias y regeneración, etiquetas con código QR o de barras, e informe con exportación a MCPD y Darwin Core.",
+    categoria: "genetica", estado: "enlinea", version: "1.0.0", doi: "", licencia: "GPL-3.0",
     manualPdf: "", manualMb: 0, manualHtml: false, datos: true,
-    puntos: ["Pasaporte con los descriptores multicultivo MCPD v2.1", "Control de duplicados y etiquetas", "Mapas de colecta y vacíos de colecta", "Semillas, campo, in vitro y criopreservación"],
+    puntos: ["Pasaporte MCPD v2.1 con validación y control de duplicados", "Mapas, diversidad geográfica y vacíos de colecta, sin internet", "Colección núcleo validada y viabilidad proyectada lote por lote", "Etiquetas con QR o Code 128 e informe con MCPD y Darwin Core"],
     destacada: false
   },
   {
@@ -177,6 +177,15 @@ window.LABG_APPS = [
     manualPdf: "SciMetricsPro User's Manual.pdf", manualMb: 26, manualHtml: true, datos: true,
     puntos: ["Lee exportaciones de las principales bases", "Redes de coautoría, cocitación y temas", "Diagrama PRISMA 2020", "Texto metodológico redactado con tus datos"],
     destacada: true
+  },
+  {
+    id: "ReviewPro", nombre: "ReviewPro",
+    lema: "Del montón de artículos a una revisión que se sostiene",
+    descripcion: "Un artículo de revisión de principio a fin, narrativo, exploratorio, sistemático o con meta-análisis: protocolo y registro, cadenas de búsqueda, importación y duplicados, cribado priorizado con acuerdo entre revisores, texto completo y diagrama PRISMA, extracción con calculadora de tamaños del efecto, calidad y riesgo de sesgo con GRADE, meta-análisis multinivel y escritura orientada que liga cada afirmación con su evidencia.",
+    categoria: "ciencia", estado: "enlinea", version: "1.0.0", doi: "", licencia: "GPL-3.0",
+    manualPdf: "ReviewPro User's Manual.pdf", manualMb: 14, manualHtml: true, datos: true,
+    puntos: ["Protocolo con PRISMA-P y plantillas de registro PROSPERO y OSF", "Cribado priorizado, regla de paro y acuerdo entre revisores", "Riesgo de sesgo, GRADE y meta-análisis multinivel de tres niveles", "Escritura orientada con verificador de afirmaciones, informe y paquete"],
+    destacada: false
   },
   {
     id: "PDFPro", nombre: "PDFPro",
