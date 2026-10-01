@@ -4,7 +4,11 @@ Los dos módulos ya están integrados en las 15 apps de la suite (FloralPro qued
 
 ## Prioridad alta
 
-1. **Editor ✎ común (`labg-figedit.js`).** Está en 9 apps sin subir, trabajo de otra sesión. El estudio ya lo acopla dentro del inspector cuando existe; se probó en PCAPro, AgriDesign, BreedingPro, EconomicsPro y ReviewPro. Al subirlo, aparece solo en el estudio de esas apps.
+1. ~~**Editor ✎ común (`labg-figedit.js`).**~~ **Hecho** (1 de octubre de 2026). Está publicado en 9 apps: AgriDesign, BreedingPro, ClusteringPro, EconomicsPro, PCAPro, PollinationPro, PopGeneticsPro, ReviewPro y SciMetricsPro.
+   - Es el mismo módulo en todas, con su autoprueba `tests/figedit-selftest.js` (`FigEditSelfTest(clave)`). Antes de publicarlo pasó 783 comprobaciones sin fallas en figuras reales de las 8 apps nuevas.
+   - El estudio lo acopla dentro del inspector y le deja las leyendas con entradas. Las barras de color se quedan en el estudio.
+   - PollinationPro deja su editor propio (`figedit.js`) por el común. Las ediciones viejas, guardadas con otra clave, no se trasladan.
+   - PhenologyPro conserva su editor propio.
 2. ~~**StatsPro y BioModellingPro (figuras hechas en Python).**~~ **Hecho en la 1.1.0** (1 de octubre de 2026). El puente `labg-pyfig.js` vuelve a dibujar con Python cada figura a las medidas de salida (PNG con ppp, y SVG y PDF vectoriales), con vista previa a tamaño de salida. Ver la guía, sección 7.
 3. ~~**Mapas con su propio estudio.**~~ **Hecho en la 1.2.0** (1 de octubre de 2026). Los mapas de PollinationPro y BioModellingPro abren en el estudio con su vista previa nativa y sus pestañas en el inspector. Exportan por el estudio de mapas de cada app: PNG, SVG, PDF, TIFF y GeoTIFF. Ver la guía, sección 8.
    - **SigmaPro**, en construcción en otra sesión, lleva todavía el estudio 1.0.0. Al integrarla, copiar la versión vigente.
