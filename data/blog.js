@@ -7,6 +7,14 @@
    ===================================================================== */
 window.LABG_BLOG = [
   {
+    slug: "navegador-y-estudio-de-figuras",
+    titulo: "Nuevo en todas las apps: un navegador por bloques y un estudio de figuras",
+    fecha: "2026-10-01",
+    etiquetas: ["Noticias", "Guías"],
+    resumen: "Barra lateral de bloques, índice que sigue tu lectura, búsqueda con Ctrl + K y un estudio a pantalla dividida para dejar cada figura lista para publicar.",
+    apps: ["PCAPro", "PhylogenyPro", "BreedingPro"]
+  },
+  {
     slug: "bienvenida",
     titulo: "Bienvenida a la suite LABG",
     fecha: "2026-09-26",
