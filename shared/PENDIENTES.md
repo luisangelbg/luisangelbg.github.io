@@ -13,9 +13,14 @@ Los dos módulos ya están integrados en las 15 apps de la suite (FloralPro qued
 
 3b. **Navegador e idioma.** Su observador del idioma rehace etiquetas, barra e índice cada vez que una app vuelve a escribir el mismo `lang` (por ejemplo, al traducir un panel). No se cuelga, pero conviene la misma comprobación que tiene el estudio desde la 1.2.0. Se dejó sin tocar porque otra sesión tenía cambios abiertos en el navegador.
 
-3c. **Leyendas marcadas en los kits de dibujo.** El estudio ya acomoda leyendas sueltas, pero las marcas `data-role="legend"`, `data-li` y `data-plot` hacen exacto el acomodo y el editor ✎ común las usa.
-   - **PCAPro: hecho** (1 de octubre de 2026). Sus dibujos propios (`plots1.js` a `plots5.js`, `plots7.js` y `mapas.js`) marcan las leyendas y el área de la gráfica, y sus barras de color van en grupos `data-legend`.
-   - Falta en los kits de seis apps, donde las marcas son trabajo sin subir de otra sesión (solo PhenologyPro las tiene publicadas).
+3c. ~~**Leyendas marcadas en los kits de dibujo.**~~ **Hecho** (1 de octubre de 2026). Con las marcas `data-role="legend"`, `data-li` y `data-plot`, el estudio acomoda la leyenda exactamente y el editor ✎ común las usa.
+   - **Los kits** (`figure.js` o `plotkit.js`) de AgriDesign, BreedingPro, ClusteringPro, EconomicsPro, PollinationPro, PopGeneticsPro y SciMetricsPro ya tienen sus marcas publicadas. Las había preparado la sesión del editor ✎, que todavía no se publica. PhenologyPro y ReviewPro ya las tenían.
+   - **Las leyendas propias** de cada app, fuera del kit, van marcadas igual: las de PCAPro, AgriDesign, BreedingPro, ClusteringPro, PopGeneticsPro, SciMetricsPro, PollinationPro, ReviewPro, PhylogenyPro y BioModellingPro. Las barras de color y las leyendas de tamaño van en grupos `data-legend`.
+   - **Sin marca, por su naturaleza:**
+     - las leyendas en HTML de GermplasmPro, que están fuera de la figura;
+     - las de las figuras de Python de StatsPro y BioModellingPro, que acomoda Python;
+     - las de los mapas;
+     - las claves que son solo texto.
 
 4. **Secciones sin título.** Algunos bloques no tienen títulos de sección, así que el índice no aparece:
    - GermplasmPro, bloques 4, 9 y 10;

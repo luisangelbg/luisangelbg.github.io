@@ -322,7 +322,7 @@ El área de la gráfica se toma de `data-plot="izquierda arriba ancho alto"` en 
 - **Una barra de color** (una escala continua, sin entradas) va en un grupo `data-legend="colorbar"`, no `data-role="legend"`. El editor ✎ común solo acomoda leyendas con entradas: con `data-legend` la acomoda el estudio aunque el editor esté acoplado.
 - **Una figura con dos leyendas** (por ejemplo, la barra de color y una clave de líneas) marca con `data-role="legend"` solo la principal: el estudio y el editor toman la primera que encuentran.
 
-Los dibujos propios de PCAPro están marcados así desde la 1.3.1.
+Las apps de análisis de la suite marcan así sus leyendas, en sus kits y en sus dibujos propios, desde el 1 de octubre de 2026.
 
 ### Con quién convive
 
