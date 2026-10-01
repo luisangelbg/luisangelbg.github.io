@@ -83,8 +83,8 @@ window.LABG_APPS = [
     id: "PhenologyPro", nombre: "PhenologyPro",
     lema: "¿Cuánto calor, cuánta agua y para cuándo?",
     descripcion: "Agroclimatología y fenología de cultivos, de la serie de la estación al informe: control de calidad de los datos, clima del sitio con climograma y heladas, grados-día con seis métodos, evapotranspiración de referencia por FAO-56 Penman–Monteith y cuatro métodos simples, balance hídrico diario de la zona radical, calendario de riego, etapas BBCH calibrables, frío invernal, fotoperiodo, ventana de siembra y escenarios de calentamiento. Todo con escalas de lectura y figuras editables hasta 900 ppp.",
-    categoria: "agronomia", estado: "enlinea", version: "1.0.1", doi: "10.5281/zenodo.23004710", licencia: "GPL-3.0",
-    manualPdf: "PhenologyPro User's Manual.pdf", manualMb: 13, manualHtml: true, datos: true,
+    categoria: "agronomia", estado: "enlinea", version: "1.1.0", doi: "10.5281/zenodo.23004710", licencia: "GPL-3.0",
+    manualPdf: "PhenologyPro User's Manual.pdf", manualMb: 14, manualHtml: true, datos: true,
     puntos: ["Grados-día y etapas BBCH fechadas por tiempo térmico, con calibración", "ETo por FAO-56 Penman–Monteith y cuatro métodos simples, con lo que la estación mida", "Balance hídrico diario, calendario de riego y capacidad de diseño", "Heladas, frío invernal, ventana de siembra y escenarios de +1, +2 y +3 °C"],
     destacada: true
   },
@@ -183,7 +183,7 @@ window.LABG_APPS = [
     lema: "Del montón de artículos a una revisión que se sostiene",
     descripcion: "Un artículo de revisión de principio a fin, narrativo, exploratorio, sistemático o con meta-análisis: protocolo y registro, cadenas de búsqueda, importación y duplicados, cribado priorizado con acuerdo entre revisores, texto completo y diagrama PRISMA, extracción con calculadora de tamaños del efecto, calidad y riesgo de sesgo con GRADE, meta-análisis multinivel y escritura orientada que liga cada afirmación con su evidencia.",
     categoria: "ciencia", estado: "enlinea", version: "1.0.0", doi: "", licencia: "GPL-3.0",
-    manualPdf: "ReviewPro User's Manual.pdf", manualMb: 14, manualHtml: true, datos: true,
+    manualPdf: "ReviewPro User's Manual.pdf", manualMb: 13, manualHtml: true, datos: true,
     puntos: ["Protocolo con PRISMA-P y plantillas de registro PROSPERO y OSF", "Cribado priorizado, regla de paro y acuerdo entre revisores", "Riesgo de sesgo, GRADE y meta-análisis multinivel de tres niveles", "Escritura orientada con verificador de afirmaciones, informe y paquete"],
     destacada: false
   },
