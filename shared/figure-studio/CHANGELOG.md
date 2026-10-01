@@ -1,5 +1,31 @@
 # Estudio de figuras LABG · cambios
 
+## 1.2.0 · 1 de octubre de 2026
+
+- **Mapas en el estudio.** El mapa del bloque 4 de PollinationPro y los mapas interactivos de BioModellingPro se abren en el estudio:
+  - la misma barra (historial, preajustes, exportación en mm y ppp);
+  - la exportación la hace el estudio de mapas de cada app, incluido el GeoTIFF;
+  - sus pestañas aparecen en el inspector.
+
+  Ver la guía, sección 8.
+- **Reabrir una figura redibujada.** Si la app reemplazaba la figura al redibujarla (al cambiar un control, el idioma o el tema), su botón dejaba de abrir el estudio. Pasaba, por ejemplo, con el biplot de PCAPro. Ahora el botón abre la figura que ocupa su lugar, y `open()` también.
+- **Página congelada al abrir algunas figuras.** Venía desde la 1.0.0 y se encontró en PhenologyPro (climograma del bloque 3). Al acoplarse, el editor ✎ propio de esa app vuelve a escribir el mismo idioma en la página; el estudio lo tomaba como un cambio de idioma y volvía a armar el inspector y a acoplar el editor, sin fin. Ahora solo reacciona cuando el idioma cambia de verdad.
+- **Descripción nativa ampliada** con siete campos opcionales: `extra`, `notes`, `studioStyles`, `lift`, `aspect`, `title` y `controls`.
+- **Figuras que no se elevan** (`lift: false`). El papel muestra siempre la vista previa nativa, que también es el «antes» de la comparación y recibe la simulación de daltonismo.
+- **Formatos de la app.** Los que la app agrega aparecen junto a PNG, SVG, PDF y TIFF, cada uno con su nota. El PDF sale del PNG nativo cuando la app no lo dibuja. El GeoTIFF se nombra `…-geo.tif`.
+- **Inspector:**
+  - los paneles con pestañas se reparten en un grupo por pestaña;
+  - las pestañas de un panel único aparecen como fichas;
+  - cada control lleva el subtítulo de su sección;
+  - los botones con título y descripción se leen en dos renglones;
+  - las etiquetas ya no llevan pegado el valor del deslizador («Grosor0.6»);
+  - la búsqueda encuentra también por subtítulo.
+- **Vista previa:**
+  - los controles de la app, deshacer y rehacer la renuevan cuando la figura no se eleva;
+  - mientras se exporta, espera su turno.
+- **Proporción exacta** de lo que dibuja la app (`aspect`): la lectura de píxeles coincide con el archivo.
+- **BioModellingPro:** su perfil nunca se aplicaba porque el nombre de la app es «BioModelling Pro»; la clave ahora es `biomodelling`.
+
 ## 1.1.0 · 1 de octubre de 2026
 
 - **Exportación nativa.** Si la app sabe volver a dibujar una figura, el estudio le pide la figura a las medidas de salida en lugar de ampliar la imagen de la pantalla:

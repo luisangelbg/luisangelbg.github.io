@@ -1,4 +1,4 @@
-# Estudio de figuras LABG · guía de integración (v1.1.0)
+# Estudio de figuras LABG · guía de integración (v1.2.0)
 
 El estudio abre cualquier figura de una app en una **pantalla dividida**:
 
@@ -178,7 +178,24 @@ window.LABG_FIGSTUDIO = Object.assign(window.LABG_FIGSTUDIO || {}, {
 }
 // o = { fmt, wmm, hmm, win, hin, dpi, bg, transparent, light }
 //   hmm/hin = null → el alto que dé la figura; light = true → fondo blanco o transparente
+//   bg = 'white' | 'screen' (como se ve) | 'none' (transparente)
 ```
+
+Desde la 1.2.0 la descripción admite además estos campos, todos opcionales:
+
+```js
+{
+  extra: [['geotiff', ['GeoTIFF', 'GeoTIFF']]],    // formatos además de PNG, SVG, PDF y TIFF
+  notes: { svg: ['nota', 'note'] },                 // una nota por formato (español, inglés)
+  studioStyles: false,       // el estilo lo pone la app: sin paleta ni texto del estudio y sin editor ✎
+  lift: false,               // la figura no se eleva: el papel muestra solo la vista previa (mapas vivos)
+  aspect: () => alto / ancho,                       // la proporción exacta de lo que dibuja la app
+  title: () => 'Nombre',                            // el nombre en la barra y en el archivo
+  controls: () => ({ node, title: ['…', '…'] }),    // dónde están los controles de la app
+}
+```
+
+Si la app no dibuja un formato pero sí el PNG, el estudio arma el TIFF y el PDF con ese PNG, a los ppp exactos. Para una figura sin elevar, también el SVG (con la imagen dentro).
 
 ### El puente de Python: `labg-pyfig.js`
 
@@ -213,7 +230,63 @@ En tema oscuro, BioModellingPro exportó:
 - con «como se ve», la oscura;
 - con fondo transparente, una sin fondo.
 
-## 8. Lista de comprobación al integrar una app nueva
+## 8. Mapas (1.2.0)
+
+Los mapas que una app arma con su propio estudio de mapas también se abren en el estudio de figuras. Hoy son dos:
+
+- **PollinationPro:** el mapa del bloque 4, un SVG que dibuja `js/mapstudio.js` con sus ocho pestañas.
+- **BioModellingPro:** los seis mapas interactivos que llevan «Estudio de mapa» (registros, variables, agrupamientos, datos y resultado del modelo, e índices y cultivos agroclimáticos).
+
+### Cómo se ven en el estudio
+
+- **El mapa no se eleva.** Un mapa interactivo sigue vivo en la página. El papel muestra la vista previa que dibuja el estudio de mapas de la app al tamaño de salida, y se rehace con cada cambio.
+- **El botón de entrada:**
+  - en un mapa interactivo es un control más, debajo del zoom (no tapa la leyenda, el título ni la flecha);
+  - en un mapa SVG va en su esquina, como en cualquier figura.
+- **El inspector refleja el estudio de mapas de la app:**
+  - un grupo por pestaña (Mapa base, Textos y fuentes, Elementos…), con un subtítulo por cada sección de la app (Fondo, Límites, Leyenda…);
+  - si la app rehace un solo panel al cambiar de pestaña, las pestañas aparecen arriba como fichas;
+  - los estilos listos (Publicación, Blanco y negro…) se leen en dos renglones: nombre y descripción;
+  - la búsqueda encuentra también por subtítulo.
+- **Sin estilos del estudio.** Paleta, texto y editor ✎ no aparecen: el estilo del mapa lo pone su propio estudio, que es el que exporta.
+
+### Exportación
+
+La hace el estudio de mapas de cada app, con todo lo que tenga elegido (encuadre, recorte, mapa base, leyenda):
+
+| Formato | PollinationPro | BioModellingPro |
+|---|---|---|
+| PNG | su dibujo, rasterizado a los ppp pedidos | su exportación, con las teselas del mapa base |
+| SVG | vectorial completo | datos y textos como vectores, sin teselas (lo avisa una nota) |
+| GeoTIFF | WGS 84 (EPSG 4326) | Web Mercator (EPSG 3857), sin título ni leyenda salvo que se pidan en su «Exportar» |
+| PDF y TIFF | los arma el estudio con el PNG nativo, a los ppp exactos | igual |
+
+El fondo del estudio se traduce así:
+
+- **Blanco:** blanco en lugar del fondo del tema oscuro o del transparente; un color propio del mapa se respeta.
+- **Como se ve:** el fondo que tenga el mapa.
+- **Transparente:** sin fondo.
+
+En BioModellingPro, la exportación cambia por un momento el tamaño del mapa vivo y luego lo devuelve exactamente a como estaba. Por eso las exportaciones van de una en una.
+
+### Lo que declara cada app
+
+Cada `js/mapstudio.js` agrega su gancho `nativeExport` (encadenado al que ya hubiera) con `lift: false`, `studioStyles: false`, `extra` (GeoTIFF), `aspect`, `title` y `controls`.
+
+**Comprobado (1 de octubre de 2026):**
+
+| App | Vista previa | PNG 85 mm, 600 ppp | SVG | PDF | GeoTIFF |
+|---|---|---|---|---|---|
+| PollinationPro | 0.3 s | 2008 × 1297 px (85.0 mm) | 85 mm, vectorial | 85.0 × 54.9 mm | 2008 × 1297, EPSG 4326, 600 ppp |
+| BioModellingPro | 0.3–0.7 s | 2008 × 1055 px (85.0 mm) | 85 mm | 85.0 × 44.7 mm | 2008 × 1055, EPSG 3857, 600 ppp |
+
+Además:
+
+- el mapa vivo de BioModellingPro quedó con el mismo centro, zoom y tamaño;
+- en tema oscuro, PollinationPro dio fondo blanco con «Blanco», el del tema con «Como se ve» y ninguno con «Transparente»;
+- deshacer y rehacer un control del mapa rehacen la vista previa.
+
+## 9. Lista de comprobación al integrar una app nueva
 
 1. Copiar `js/labg-figure-studio.js`, `css/labg-figure-studio.css` y `LICENSES-TERCEROS.md`.
 2. Agregar la línea después de `labg-core.js`.
@@ -224,3 +297,5 @@ En tema oscuro, BioModellingPro exportó:
    - que deshacer funcione;
    - que exporte a PNG, SVG, PDF y TIFF.
 5. Probar a 1440×900, 1280×720 y 390×844.
+6. Si la app redibuja sus figuras (al cambiar un control, el idioma o el tema), cerrar el estudio y volver a abrirlo con el mismo botón.
+7. Mapas: declarar la descripción nativa en su estudio de mapas (sección 8) y exportar los cinco formatos.

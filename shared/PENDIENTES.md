@@ -6,13 +6,12 @@ Los dos módulos ya están integrados en las 15 apps de la suite (FloralPro qued
 
 1. **Editor ✎ común (`labg-figedit.js`).** Está en 9 apps sin subir, trabajo de otra sesión. El estudio ya lo acopla dentro del inspector cuando existe; se probó en PCAPro, AgriDesign, BreedingPro, EconomicsPro y ReviewPro. Al subirlo, aparece solo en el estudio de esas apps.
 2. ~~**StatsPro y BioModellingPro (figuras hechas en Python).**~~ **Hecho en la 1.1.0** (1 de octubre de 2026). El puente `labg-pyfig.js` vuelve a dibujar con Python cada figura a las medidas de salida (PNG con ppp, y SVG y PDF vectoriales), con vista previa a tamaño de salida. Ver la guía, sección 7.
-3. **Mapas con su propio estudio:**
-   - PollinationPro (`.ms-view`, MapStudio).
-   - BioModellingPro (`.main-map`, en lienzo, con `mstudio`).
-
-   Hoy quedan fuera del estudio porque ya son pantallas divididas. Lo siguiente es registrarlos con `attach()` para que tengan la misma barra (historial, preajustes, exportación en mm), sin perder sus pestañas.
+3. ~~**Mapas con su propio estudio.**~~ **Hecho en la 1.2.0** (1 de octubre de 2026). Los mapas de PollinationPro y BioModellingPro abren en el estudio con su vista previa nativa y sus pestañas en el inspector. Exportan por el estudio de mapas de cada app: PNG, SVG, PDF, TIFF y GeoTIFF. Ver la guía, sección 8.
+   - **SigmaPro**, en construcción en otra sesión, lleva todavía el estudio 1.0.0. Al integrarla, copiar la versión vigente.
 
 ## Prioridad media
+
+3b. **Navegador e idioma.** Su observador del idioma rehace etiquetas, barra e índice cada vez que una app vuelve a escribir el mismo `lang` (por ejemplo, al traducir un panel). No se cuelga, pero conviene la misma comprobación que tiene el estudio desde la 1.2.0. Se dejó sin tocar porque otra sesión tenía cambios abiertos en el navegador.
 
 4. **Secciones sin título.** Algunos bloques no tienen títulos de sección, así que el índice no aparece:
    - GermplasmPro, bloques 4, 9 y 10;
@@ -31,4 +30,4 @@ Los dos módulos ya están integrados en las 15 apps de la suite (FloralPro qued
 8. **Pruebas con Playwright.** Están escritas en `shared/tests/`. Las mismas comprobaciones ya se corrieron por CDP en las 15 apps y los 3 tamaños. Correrlas con `npx playwright test` necesita `npm i -D @playwright/test` (no hay npm en esta máquina).
 9. **Versión en inglés de las guías** (`GUIA-INTEGRACION.md`).
 10. **FloralPro**, si se decide integrarla.
-11. **Nuevas versiones de las apps.** Los módulos tienen su propia versión (1.0.0). No se publicaron versiones nuevas en Zenodo ni se cambió el DOI de ninguna app (decisión pendiente del autor).
+11. **Nuevas versiones de las apps.** Los módulos tienen su propia versión (navegador 1.0.0, estudio 1.2.0). No se publicaron versiones nuevas en Zenodo ni se cambió el DOI de ninguna app (decisión pendiente del autor).
