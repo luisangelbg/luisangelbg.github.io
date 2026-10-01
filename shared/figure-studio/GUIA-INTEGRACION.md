@@ -1,4 +1,4 @@
-# Estudio de figuras LABG · guía de integración (v1.0.0)
+# Estudio de figuras LABG · guía de integración (v1.1.0)
 
 El estudio abre cualquier figura de una app en una **pantalla dividida**:
 
@@ -143,7 +143,77 @@ Todo se escribe en el navegador, sin bibliotecas:
 - Las imágenes de más de 150 megapíxeles (o de más de 16 000 px por lado) se reducen solas, con aviso.
 - Las figuras que ya son imágenes de píxeles (las hechas en Python, los mapas en lienzo) no ganan detalle con más ppp. Para eso está la descarga propia de la app, que se refleja en el inspector.
 
-## 7. Lista de comprobación al integrar una app nueva
+## 7. Exportación nativa: figuras que la app sabe volver a dibujar (1.1.0)
+
+Hay figuras que llegan como imagen de pantalla pero que la app sabe volver a dibujar. Es el caso de las que hace Python con matplotlib en StatsPro y BioModellingPro. Para ellas, el estudio **no amplía la imagen: le pide a la app la figura a las medidas de salida**:
+
+- el ancho y el alto en mm, con el texto a su tamaño en puntos;
+- la resolución;
+- el formato;
+- el fondo.
+
+En SVG y PDF el resultado es vectorial. El TIFF se arma con el PNG nativo.
+
+Mientras el estudio está abierto, una **vista previa a tamaño de salida** se pinta sobre el papel y se rehace al cambiar el tamaño o el fondo. Se puede apagar.
+
+La app lo declara de una de dos formas:
+
+```js
+// para una figura
+LABGFigureStudio.attach(img, { native: descripcion });
+// o para todas, con un gancho que se consulta al abrir el estudio
+window.LABG_FIGSTUDIO = Object.assign(window.LABG_FIGSTUDIO || {}, {
+  nativeExport: rec => (/* ¿sé volver a dibujar rec.el? */ ok ? descripcion : null),
+});
+```
+
+`descripcion` es así:
+
+```js
+{
+  label: 'Python',                      // se muestra: «dibujada de nuevo por Python»
+  formats: ['png', 'svg', 'pdf'],       // lo que la app dibuja por sí misma
+  preview: true,                        // false: sin vista previa (si dibujar es lento)
+  render: (fmt, o) => Blob | 'data:…'   // o una promesa de ellos
+}
+// o = { fmt, wmm, hmm, win, hin, dpi, bg, transparent, light }
+//   hmm/hin = null → el alto que dé la figura; light = true → fondo blanco o transparente
+```
+
+### El puente de Python: `labg-pyfig.js`
+
+Está en `shared/figure-studio/puentes/` y se carga con una línea después de `pyodide-core.js`. Hace tres cosas:
+
+1. **Envuelve `runPy`.** Cada vez que una llamada de Python devuelve una imagen (`data:image/…`, sola o dentro de un objeto o un JSON), el puente recuerda *qué llamada la dibujó*: el código y sus variables.
+2. **Registra el gancho `nativeExport`.** Para esas imágenes ofrece PNG, SVG y PDF.
+3. **Vuelve a ejecutar esa misma llamada al exportar,** dentro de `_xp_run(o, código)`. Ese ayudante de Python pone las medidas de salida en `_XP` y la función que guarda la figura las usa:
+   - en StatsPro es `fig_to_uri` y en BioModellingPro, `fig_to_b64`;
+   - `_xp_fit` lleva la figura al ancho pedido, medido con el recorte ajustado con que se guarda (`bbox_inches='tight'`), en a lo más cuatro pasos;
+   - `savefig` recibe los ppp y `transparent`.
+
+   Nada se calcula de otra forma: es el mismo dibujo con otro papel.
+
+Del lado de Python, cada app necesita en su `PY_SETUP` estas piezas:
+
+- `_XP`, `_xp_relayout`, `_xp_fit`, `_xp_begin`, `_xp_end` y `_xp_run`;
+- que la función que guarda las figuras respete `_XP`.
+
+BioModellingPro además pasa la figura a su aspecto claro (`_UI_LIGHT`) cuando el fondo es blanco o transparente y la página está en tema oscuro.
+
+**Comprobado (1 de octubre de 2026):**
+
+| App | Figura | PNG 85 mm, 600 ppp | SVG / PDF | TIFF 180 mm, 300 ppp | Vista previa |
+|---|---|---|---|---|---|
+| StatsPro | histograma del estudio de gráficas | 85.0 mm | vectoriales, 85.0 mm, texto con la letra incrustada | 180.0 mm | 0.5–1.8 s |
+| BioModellingPro | sedimentación y biplot del ACP | 84.9 mm | vectoriales, 84.9 mm | 179.8 mm | 0.4 s |
+
+En tema oscuro, BioModellingPro exportó:
+
+- con fondo blanco, una figura clara;
+- con «como se ve», la oscura;
+- con fondo transparente, una sin fondo.
+
+## 8. Lista de comprobación al integrar una app nueva
 
 1. Copiar `js/labg-figure-studio.js`, `css/labg-figure-studio.css` y `LICENSES-TERCEROS.md`.
 2. Agregar la línea después de `labg-core.js`.

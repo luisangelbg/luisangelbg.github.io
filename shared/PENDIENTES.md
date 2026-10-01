@@ -5,7 +5,7 @@ Los dos módulos ya están integrados en las 15 apps de la suite (FloralPro qued
 ## Prioridad alta
 
 1. **Editor ✎ común (`labg-figedit.js`).** Está en 9 apps sin subir, trabajo de otra sesión. El estudio ya lo acopla dentro del inspector cuando existe; se probó en PCAPro, AgriDesign, BreedingPro, EconomicsPro y ReviewPro. Al subirlo, aparece solo en el estudio de esas apps.
-2. **StatsPro y BioModellingPro (figuras hechas en Python).** Son imágenes PNG a 170 ppp, así que exportarlas desde el estudio a 600 ppp no agrega detalle. Falta conectar `export.render` a la exportación de Python de cada app (`export_plot` con los ppp elegidos), para que el estudio pida la figura a la resolución correcta.
+2. ~~**StatsPro y BioModellingPro (figuras hechas en Python).**~~ **Hecho en la 1.1.0** (1 de octubre de 2026). El puente `labg-pyfig.js` vuelve a dibujar con Python cada figura a las medidas de salida (PNG con ppp, y SVG y PDF vectoriales), con vista previa a tamaño de salida. Ver la guía, sección 7.
 3. **Mapas con su propio estudio:**
    - PollinationPro (`.ms-view`, MapStudio).
    - BioModellingPro (`.main-map`, en lienzo, con `mstudio`).

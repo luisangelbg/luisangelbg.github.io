@@ -1,5 +1,19 @@
 # Estudio de figuras LABG · cambios
 
+## 1.1.0 · 1 de octubre de 2026
+
+- **Exportación nativa.** Si la app sabe volver a dibujar una figura, el estudio le pide la figura a las medidas de salida en lugar de ampliar la imagen de la pantalla:
+  - lo declara con `attach(el, { native })` o con el gancho `window.LABG_FIGSTUDIO.nativeExport`;
+  - PNG con sus ppp, y SVG y PDF vectoriales;
+  - el TIFF se arma con el PNG nativo;
+  - copiar al portapapeles también usa la figura nativa.
+- **Vista previa a tamaño de salida** sobre el papel. Se rehace al cambiar el tamaño o el fondo y se puede apagar. El alto automático toma la proporción real de la figura nativa.
+- **Puente de Python** (`puentes/labg-pyfig.js`). Recuerda qué llamada de Python dibujó cada imagen y la vuelve a ejecutar con las medidas de salida. Conectado en StatsPro y BioModellingPro.
+- **StatsPro:** su estudio de gráficas (bloque 2) ya abre en el estudio LABG.
+- **Títulos:** se toman del rótulo que está justo antes de la figura.
+- **Controles que la app oculta** porque no aplican: no aparecen en el inspector, que se rehace cuando la app los muestra u oculta.
+- **PNG:** si ya trae su resolución escrita (pHYs), se reescribe en lugar de duplicarla.
+
 ## 1.0.0 · 1 de octubre de 2026
 
 Primera versión.
