@@ -350,9 +350,9 @@ Las apps de análisis de la suite marcan así sus leyendas, en sus kits y en sus
 
 En 14 apps (BioModellingPro aparte) se abrió el estudio en las figuras visibles de los primeros bloques, sin un solo error. Las gráficas sin leyenda aparte (cajas, Q–Q, dispersión sin grupos, árboles) no muestran la sección.
 
-**Más tarde, el mismo día:** las apps de análisis marcan sus leyendas (kits y dibujos propios), y nueve de ellas publican el editor ✎ común. Así queda:
+**Más tarde, el mismo día:** las apps de análisis marcan sus leyendas (kits y dibujos propios), y diez de ellas usan el editor ✎ común. Así queda:
 
-- En esas nueve apps, una leyenda con entradas se acomoda en la pestaña «Leyenda» del editor; la sección del estudio remite a ella.
+- En esas diez apps, una leyenda con entradas se acomoda en la pestaña «Leyenda» del editor; la sección del estudio remite a ella.
 - Las barras de color, las leyendas de tamaño y las leyendas de las apps sin editor se acomodan en el estudio.
 
 Se comprobó en 11 apps con las marcas y sin el editor: cada leyenda se mueve, baja completa a la fila y vuelve. Con el editor, en 8 apps: remite a su pestaña sin errores, y la autoprueba del editor no tuvo fallas.
