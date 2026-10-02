@@ -29,10 +29,11 @@ Los módulos compartidos ya están integrados en las apps de análisis de la sui
 4. ~~**Secciones sin título.**~~ **Hecho** (1 de octubre de 2026, con el navegador 1.0.2):
    - **GermplasmPro:** títulos numerados en los bloques 4, 9 y 10, en los dos idiomas; en el 9 no salen al imprimir. Sus bloques 6, 7 y 8 ya tenían títulos, pero el navegador los juntaba en una sola sección; desde la 1.0.2 los separa.
    - **BioModellingPro:** título «Reglas de depuración» en la primera tarjeta del Bloque 3. En el Bloque 9, los resultados del modelo ya salen como secciones. El Bloque 4 es un solo mapa y se queda sin índice a propósito.
-   - **SigmaPro** recibe el navegador 1.0.2 cuando su sesión cierre el hito en curso.
-5. **SciMetricsPro.** El navegador agrega ruta, modos y paleta, pero respeta sus rutas `#/…` y su menú. Falta:
-   - un índice por pestaña (las secciones viven dentro de `.tab-panel`);
-   - enlaces a una pestaña concreta.
+   - **SigmaPro** recibe el navegador vigente (con lo de la 1.0.2) cuando su sesión cierre el hito en curso.
+5. ~~**SciMetricsPro.**~~ **Hecho en la 1.1.0** (2 de octubre de 2026):
+   - el índice muestra las pestañas de cada módulo y, debajo de la abierta, sus secciones; la ruta y la paleta (Ctrl+K) también las nombran;
+   - la app acepta enlaces a una pestaña (`#/sources/bradford`), la dirección sigue a la pestaña abierta sin llenar el historial y la paleta copia el enlace;
+   - la opción `tabs` es general, pero por ahora solo la usa SciMetricsPro: en las demás apps, las listas de pestañas son piezas pequeñas (un laboratorio, un diálogo), no partes del bloque.
 6. **PDF vectorial.** El PDF del estudio lleva la imagen a la resolución elegida. Un PDF con trazos (desde el SVG) sería más liviano y escalable para las revistas que lo pidan. Mientras tanto, el SVG cubre ese caso.
 7. **Tema oscuro y fondo blanco.** En tema oscuro las figuras usan colores claros. El estudio avisa, pero podría pasar la figura a colores claros solo al exportar si la app expone su tema de figuras (por ejemplo, `FigStyle` o el `theme` de `Fig.mount`).
 
@@ -41,4 +42,4 @@ Los módulos compartidos ya están integrados en las apps de análisis de la sui
 8. **Pruebas con Playwright.** Están escritas en `shared/tests/`. Las mismas comprobaciones ya se corrieron por CDP en las 15 apps y los 3 tamaños. Correrlas con `npx playwright test` necesita `npm i -D @playwright/test` (no hay npm en esta máquina).
 9. **Versión en inglés de las guías** (`GUIA-INTEGRACION.md`).
 10. ~~**FloralPro**, si se decide integrarla.~~ **Descartada** (1 de octubre de 2026). FloralPro y LeafPro son apps educativas y quedan fuera de los módulos de la suite.
-11. **Nuevas versiones de las apps.** Los módulos tienen su propia versión (navegador 1.0.2, estudio 1.3.1, editor ✎ 1.0.0). No se publicaron versiones nuevas en Zenodo ni se cambió el DOI de ninguna app (decisión pendiente del autor).
+11. **Nuevas versiones de las apps.** Los módulos tienen su propia versión (navegador 1.1.0, estudio 1.3.1, editor ✎ 1.0.0). No se publicaron versiones nuevas en Zenodo ni se cambió el DOI de ninguna app (decisión pendiente del autor).

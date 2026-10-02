@@ -1,5 +1,20 @@
 # Navegador LABG · cambios
 
+## 1.1.0 · 2 de octubre de 2026
+
+- **Pestañas dentro de un bloque.** Opción nueva `tabs`: el selector de la lista de pestañas (`[role="tablist"]`) dentro del panel. Sirve cuando un bloque tiene pestañas y la app dibuja solo la abierta. Entonces:
+  - el índice de la derecha muestra las pestañas y, debajo de la abierta, sus secciones. Un clic en otra pestaña la abre con el botón de la propia app y sube hasta las pestañas si quedaron arriba;
+  - la ruta dice *App › Bloque › Pestaña › Sección* (sin la sección si se llama igual que la pestaña). El nombre del bloque es lo último que se recorta;
+  - en pantallas medianas, el botón «Pestañas» abre ese mismo índice;
+  - la paleta (Ctrl+K) tiene un grupo «Pestañas» con las de todos los bloques, si la app las da con `tabsOf`; y la acción «Copiar el enlace a esta pestaña», si la app da `tabLink`;
+  - al cambiar de pestaña, el modo enfocado empieza por su primera sección, y «Contraer todas» solo toca las secciones de la pestaña abierta.
+
+  Opciones `tabsOf`, `goTab` y `tabLink`; API `LABGNavigator.tabs()` y `LABGNavigator.tab(id, bloque)`; evento `tab`.
+- **SciMetricsPro**, la primera app con pestañas en el navegador. Su perfil usa esas opciones con las funciones nuevas de la app (`App.tabs`, `App.goTab` y `App.tabHash`), que también acepta enlaces del tipo `#/sources/bradford`.
+- **La paleta, sin secciones repetidas.** En una app donde todos los bloques comparten un mismo panel (SciMetricsPro), cada título se indexaba una vez por bloque; ahora, una sola vez y en el bloque activo. Los botones de pestaña ya no salen también como controles.
+- Comprobado en SciMetricsPro: enlaces a una pestaña al abrir y al navegar, una pestaña que no existe, clics en la app, en el índice y en el menú «Pestañas», la paleta hacia otro módulo, Atrás, copiar el enlace, inglés, modo enfocado, 1100 px y teléfono, sin errores. Su batería pasa las 328 pruebas en el mismo tiempo que la versión anterior. En las 14 apps de análisis, el inventario de secciones da lo mismo que con la 1.0.2 (126 bloques), y en las que no tienen pestañas, contraer, expandir y la paleta funcionan igual.
+- Copia fija en `v1.1.0/`.
+
 ## 1.0.2 · 1 de octubre de 2026
 
 - **Títulos sueltos dentro de un envoltorio.** Si un envoltorio trae dos o más títulos sueltos del mismo rango (un `#bNBody` con «1 · …», «2 · …»), cada uno abre su sección. Antes, cuando el primero quedaba arriba del envoltorio, el envoltorio entero contaba como una sola sección. Una tarjeta con su `h2` arriba y subtítulos `h3` sigue siendo una sola sección.

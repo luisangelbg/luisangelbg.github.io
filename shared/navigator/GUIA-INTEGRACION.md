@@ -1,4 +1,4 @@
-# Navegador LABG · guía de integración (v1.0.2)
+# Navegador LABG · guía de integración (v1.1.0)
 
 El navegador ordena la navegación de una app en tres niveles, sin tocar sus cálculos ni mover sus nodos.
 
@@ -57,6 +57,8 @@ Los envoltorios sin título (`#resultados`, `#bNBody`) se atraviesan, y una tarj
 
 **Para que un bloque tenga índice** bastan dos partes con título: un `h2`/`h3` (o `.section-title`) arriba de cada una. Si el título no debe imprimirse, basta con darle `no-print`: en pantalla sigue contando.
 
+**Pestañas dentro de un bloque** (opcional, desde la 1.1.0). Si un bloque tiene pestañas y la app dibuja solo la abierta, la opción `tabs` le dice al navegador dónde está su lista (`[role="tablist"]` con botones `[role="tab"]`). El índice muestra entonces las pestañas y, debajo de la abierta, sus secciones; la ruta y la paleta también las nombran. El id de cada pestaña es su `data-tab` o, si no lo tiene, el final del id del botón (`stab-bradford` → `bradford`). Con `tabsOf`, la paleta lista las pestañas de todos los bloques; con `goTab`, abre las de otro bloque; con `tabLink`, copia su enlace. Las apps que no la usan no cambian.
+
 El encabezado del bloque (`.panel-title`, `.blk-title`) y los pies (`.step-footer`, `.next-bar`, `.messages`) no cuentan.
 
 **Estado de cada sección:**
@@ -79,9 +81,11 @@ LABGNavigator.mode('focus');                  // 'doc' | 'focus' (sin argumento:
 LABGNavigator.palette();                      // abre la paleta de comandos
 LABGNavigator.reveal(nodo);                   // muestra la sección (plegada o fuera de vista) que contiene un nodo
 LABGNavigator.blocks();                       // [{ n, label, done, disabled, active }]
-LABGNavigator.sections();                     // [{ id, title, state, head }] del bloque activo
+LABGNavigator.sections();                     // [{ id, title, state, head }] del bloque activo (de su pestaña abierta)
+LABGNavigator.tabs();                         // [{ id, label, active }] del bloque activo, si tiene pestañas
+LABGNavigator.tab('bradford', 'sources');    // abrir una pestaña (sin bloque: la del bloque activo)
 LABGNavigator.refresh();
-LABGNavigator.on('block' | 'section' | 'mode' | 'ready', fn);
+LABGNavigator.on('block' | 'tab' | 'section' | 'mode' | 'ready', fn);
 ```
 
 ## 4. Configuración opcional
@@ -98,10 +102,14 @@ Antes del script, `window.LABG_NAV = { … }`:
 | `sidebar` | `true` | `false` si la app ya tiene menú lateral (SciMetricsPro) |
 | `hash` | `true` | `false` si la app usa la dirección para sus rutas |
 | `noToc` | `[]` | Bloques sin índice de secciones (tienen el suyo) |
+| `tabs` | `null` | Selector de la lista de pestañas dentro del panel (bloques con pestañas) |
+| `tabsOf` | `null` | `n => [{ id, label }]`: las pestañas de cualquier bloque, para la paleta |
+| `goTab` | `null` | `(n, id) => …`: abrir esa pestaña de ese bloque (si no, el navegador cambia de bloque y pulsa la pestaña) |
+| `tabLink` | `null` | `(n, id) => '#…'`: el enlace directo a una pestaña |
 
 Lo propio de cada app de la suite ya viene en el módulo (`PERFILES`):
 
-- **SciMetricsPro:** conserva su menú lateral y sus rutas `#/…`; el navegador agrega índice, modo enfocado y paleta.
+- **SciMetricsPro:** conserva su menú lateral y sus rutas `#/…`; el navegador agrega índice, modo enfocado y paleta. Desde la 1.1.0, con sus pestañas: la app da sus nombres (`App.tabs`), cómo abrirlas (`App.goTab`) y su enlace (`#/módulo/pestaña`, `App.tabHash`).
 - **LeafPro:** el atlas (bloque 5) conserva su índice de categorías.
 
 ## 5. Enlaces directos
@@ -112,6 +120,7 @@ El formato es `#b3/varianza-explicada`. Usa el mismo `#bN` que ya leían Germpla
 - Leer otra sección solo la **actualiza**, sin llenar el historial.
 - Si la app reescribe la dirección al cambiar de bloque, el navegador repone la entrada anterior antes de agregar la nueva.
 - «Copiar el enlace a esta sección» está en la paleta.
+- En una app con sus propias rutas y pestañas (SciMetricsPro, `hash: false`), el enlace lo escribe la app: `#/sources/bradford`. La dirección sigue a la pestaña abierta sin llenar el historial, y la paleta tiene «Copiar el enlace a esta pestaña».
 
 ## 6. Teclado y accesibilidad
 
