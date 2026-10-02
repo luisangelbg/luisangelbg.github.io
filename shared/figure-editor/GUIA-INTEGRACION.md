@@ -105,7 +105,7 @@ Son las mismas marcas que usa el Estudio de figuras para acomodar la leyenda (gu
 | `strip(svg)`, `applyTo(svg, clave)`, `bakeString(texto, clave)` | para exportar (sección 4) |
 | `textsOf(svg)`, `seriesOf(svg)`, `legendOf(svg)`, `axisTitles(svg)` | lo que el editor lee de una figura |
 
-`FigEdit.__labg` vale `true`: así lo reconoce el Estudio de figuras para acoplarlo.
+`FigEdit.__labg` vale `true`: así lo reconoce el Estudio de figuras para acoplarlo. `FigEdit.version` dice su versión (`'1.0.0'`), que también está en la cabecera del archivo.
 
 ## 6. Con el Estudio de figuras LABG
 

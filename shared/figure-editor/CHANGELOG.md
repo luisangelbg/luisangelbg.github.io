@@ -12,5 +12,6 @@ Primera versión publicada como módulo común. Nació del editor propio de Phen
 - **Se acopla** dentro del inspector del Estudio de figuras LABG y recibe de él las leyendas con entradas.
 - **Autoprueba:** `tests/figedit-selftest.js` (`FigEditSelfTest(clave)`).
 - **Está en 10 apps:** AgriDesign, BreedingPro, ClusteringPro, EconomicsPro, PCAPro, PhenologyPro, PollinationPro, PopGeneticsPro, ReviewPro y SciMetricsPro.
-  - El archivo es idéntico en todas; su huella MD5 es `193a1a4e4100acdd0b203bd329b34ab8`.
+  - El archivo es idéntico en todas; su huella MD5 es `9e1ec8be5da3054e9956f0a70b6aeeca`.
+  - Lleva su número de versión adentro, como el Navegador y el Estudio: en la cabecera y en `FigEdit.version`. Se agregó el mismo día, sin cambiar nada más.
   - PhenologyPro y PollinationPro dejaron su editor propio por este.
