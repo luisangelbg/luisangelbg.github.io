@@ -25,7 +25,7 @@ La hoja de estilo (`css/labg-figure-studio.css`) se carga sola. Con esa línea:
 |---|---|---|
 | La figura en el escenario | Se **eleva a la capa superior** del navegador (Popover API). El nodo **no se mueve** del documento. | Los estilos de la app, sus oyentes y el código que la redibuja siguen igual. Si la app la reemplaza (`innerHTML`, `Fig.mount`), el estudio encuentra la nueva. |
 | Los controles de la app | Se **reflejan** en el inspector. Cada cambio se escribe en el control original y se avisa con sus eventos (`input`, `change`, `click`). | Muchas apps escuchan en la tarjeta o el bloque. Mover un control rompería esos oyentes, y algunas reescriben sus controles al recalcular. |
-| Editor fino ✎ y panel de estilo global | Si la app trae `window.FigEdit` o `window.FigStyle`, sus paneles se **acoplan** dentro del inspector mientras el estudio está abierto. | Se aprovecha lo que ya existe, sin duplicarlo. |
+| Editor fino ✎ y panel de estilo global | Si la app trae `window.FigEdit` o `window.FigStyle`, sus paneles se **acoplan** dentro del inspector mientras el estudio está abierto. El editor ✎ común tiene su propia guía: [../figure-editor/GUIA-INTEGRACION.md](../figure-editor/GUIA-INTEGRACION.md). | Se aprovecha lo que ya existe, sin duplicarlo. |
 | Navegadores sin Popover API | La figura se presta al escenario y vuelve a su lugar al cerrar. | Mejora progresiva. |
 
 **Qué entra al inspector, en este orden:**

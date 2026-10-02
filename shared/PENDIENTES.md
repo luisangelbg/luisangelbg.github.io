@@ -5,7 +5,7 @@ Los dos módulos ya están integrados en las 15 apps de la suite (FloralPro qued
 ## Prioridad alta
 
 1. ~~**Editor ✎ común (`labg-figedit.js`).**~~ **Hecho** (1 de octubre de 2026). Está publicado en 10 apps: AgriDesign, BreedingPro, ClusteringPro, EconomicsPro, PCAPro, PhenologyPro, PollinationPro, PopGeneticsPro, ReviewPro y SciMetricsPro.
-   - Es el mismo módulo en todas, con su autoprueba `tests/figedit-selftest.js` (`FigEditSelfTest(clave)`). Antes de publicarlo pasó 783 comprobaciones sin fallas en figuras reales de las 8 apps nuevas.
+   - Es el mismo módulo en todas. Su fuente está en `shared/figure-editor/`, con guía, registro de cambios y copia fija `v1.0.0/`. Su autoprueba es `tests/figedit-selftest.js` (`FigEditSelfTest(clave)`). Antes de publicarlo pasó 783 comprobaciones sin fallas en figuras reales de las 8 apps nuevas.
    - El estudio lo acopla dentro del inspector y le deja las leyendas con entradas. Las barras de color se quedan en el estudio.
    - PollinationPro deja su editor propio (`figedit.js`) por el común. Las ediciones viejas, guardadas con otra clave, no se trasladan.
    - PhenologyPro también deja su editor propio, del que nació el común. Guarda con la misma clave y el mismo formato, así que sus ediciones se conservan. Sus 424 pruebas y la autoprueba común pasan.
