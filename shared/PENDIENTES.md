@@ -15,7 +15,7 @@ Los módulos compartidos ya están integrados en las apps de análisis de la sui
 
 ## Prioridad media
 
-3b. ~~**Navegador e idioma.**~~ **Hecho en la 1.0.1** (1 de octubre de 2026). El observador del idioma ya solo reacciona cuando el idioma cambia de verdad, como el del estudio. Está en las 14 apps de análisis y en LABG-Design. A **SigmaPro** se le copia cuando su sesión cierre el Hito 1.8.
+3b. ~~**Navegador e idioma.**~~ **Hecho en la 1.0.1** (1 de octubre de 2026). El observador del idioma ya solo reacciona cuando el idioma cambia de verdad, como el del estudio. Está en las 15 apps de análisis y en LABG-Design. SigmaPro lo recibió al cerrar su Hito 1.8, en un commit aparte.
 
 3c. ~~**Leyendas marcadas en los kits de dibujo.**~~ **Hecho** (1 de octubre de 2026). Con las marcas `data-role="legend"`, `data-li` y `data-plot`, el estudio acomoda la leyenda exactamente y el editor ✎ común las usa.
    - **Los kits** (`figure.js` o `plotkit.js`) de AgriDesign, BreedingPro, ClusteringPro, EconomicsPro, PollinationPro, PopGeneticsPro y SciMetricsPro ya tienen sus marcas publicadas. Las había preparado la sesión del editor ✎, que todavía no se publica. PhenologyPro y ReviewPro ya las tenían.
