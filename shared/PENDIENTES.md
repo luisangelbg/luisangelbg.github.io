@@ -11,7 +11,7 @@ Los dos módulos ya están integrados en las 15 apps de la suite (FloralPro qued
    - PhenologyPro también deja su editor propio, del que nació el común. Guarda con la misma clave y el mismo formato, así que sus ediciones se conservan. Sus 424 pruebas y la autoprueba común pasan.
 2. ~~**StatsPro y BioModellingPro (figuras hechas en Python).**~~ **Hecho en la 1.1.0** (1 de octubre de 2026). El puente `labg-pyfig.js` vuelve a dibujar con Python cada figura a las medidas de salida (PNG con ppp, y SVG y PDF vectoriales), con vista previa a tamaño de salida. Ver la guía, sección 7.
 3. ~~**Mapas con su propio estudio.**~~ **Hecho en la 1.2.0** (1 de octubre de 2026). Los mapas de PollinationPro y BioModellingPro abren en el estudio con su vista previa nativa y sus pestañas en el inspector. Exportan por el estudio de mapas de cada app: PNG, SVG, PDF, TIFF y GeoTIFF. Ver la guía, sección 8.
-   - **SigmaPro**, en construcción en otra sesión, lleva todavía el estudio 1.0.0. Al integrarla, copiar la versión vigente.
+   - **SigmaPro**, en construcción en otra sesión, ya lleva el estudio 1.3.1 y el editor ✎ común (1 de octubre de 2026). Su sesión los guarda con su próximo commit. Faltan las marcas del kit en sus gráficas y sus colores como atributos del SVG; están previstos para su Hito 1.11.
 
 ## Prioridad media
 
