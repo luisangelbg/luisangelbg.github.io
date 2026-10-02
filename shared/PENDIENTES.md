@@ -26,11 +26,10 @@ Los módulos compartidos ya están integrados en las apps de análisis de la sui
      - las de los mapas;
      - las claves que son solo texto.
 
-4. **Secciones sin título.** Algunos bloques no tienen títulos de sección, así que el índice no aparece:
-   - GermplasmPro, bloques 4, 9 y 10;
-   - parte de BioModellingPro.
-
-   Ponerles un `h2`/`h3` (o `data-labg-section`) les daría índice y modo enfocado.
+4. ~~**Secciones sin título.**~~ **Hecho** (1 de octubre de 2026, con el navegador 1.0.2):
+   - **GermplasmPro:** títulos numerados en los bloques 4, 9 y 10, en los dos idiomas; en el 9 no salen al imprimir. Sus bloques 6, 7 y 8 ya tenían títulos, pero el navegador los juntaba en una sola sección; desde la 1.0.2 los separa.
+   - **BioModellingPro:** título «Reglas de depuración» en la primera tarjeta del Bloque 3. En el Bloque 9, los resultados del modelo ya salen como secciones. El Bloque 4 es un solo mapa y se queda sin índice a propósito.
+   - **SigmaPro** recibe el navegador 1.0.2 cuando su sesión cierre el hito en curso.
 5. **SciMetricsPro.** El navegador agrega ruta, modos y paleta, pero respeta sus rutas `#/…` y su menú. Falta:
    - un índice por pestaña (las secciones viven dentro de `.tab-panel`);
    - enlaces a una pestaña concreta.
@@ -42,4 +41,4 @@ Los módulos compartidos ya están integrados en las apps de análisis de la sui
 8. **Pruebas con Playwright.** Están escritas en `shared/tests/`. Las mismas comprobaciones ya se corrieron por CDP en las 15 apps y los 3 tamaños. Correrlas con `npx playwright test` necesita `npm i -D @playwright/test` (no hay npm en esta máquina).
 9. **Versión en inglés de las guías** (`GUIA-INTEGRACION.md`).
 10. ~~**FloralPro**, si se decide integrarla.~~ **Descartada** (1 de octubre de 2026). FloralPro y LeafPro son apps educativas y quedan fuera de los módulos de la suite.
-11. **Nuevas versiones de las apps.** Los módulos tienen su propia versión (navegador 1.0.1, estudio 1.3.1, editor ✎ 1.0.0). No se publicaron versiones nuevas en Zenodo ni se cambió el DOI de ninguna app (decisión pendiente del autor).
+11. **Nuevas versiones de las apps.** Los módulos tienen su propia versión (navegador 1.0.2, estudio 1.3.1, editor ✎ 1.0.0). No se publicaron versiones nuevas en Zenodo ni se cambió el DOI de ninguna app (decisión pendiente del autor).

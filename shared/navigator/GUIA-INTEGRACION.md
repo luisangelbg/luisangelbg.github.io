@@ -1,4 +1,4 @@
-# Navegador LABG · guía de integración (v1.0.1)
+# Navegador LABG · guía de integración (v1.0.2)
 
 El navegador ordena la navegación de una app en tres niveles, sin tocar sus cálculos ni mover sus nodos.
 
@@ -53,7 +53,9 @@ Se detecta sola en cada bloque:
 - una **tarjeta con título** (`.card` con su `h2`/`h3`, aunque esté en `.card-head`, `.results-header` o `.chart-head`);
 - un **título suelto con lo que le sigue** (`h2.section-title` + hermanos, como en el Inicio de varias apps).
 
-Los envoltorios sin título (`#resultados`, `#bNBody`) se atraviesan, y una tarjeta grande con subtarjetas se abre en sus partes.
+Los envoltorios sin título (`#resultados`, `#bNBody`) se atraviesan, y una tarjeta grande con subtarjetas se abre en sus partes. Si un envoltorio trae dos o más títulos sueltos del mismo rango (`h3` «1 · …», «2 · …»), cada uno abre su sección aunque el primero quede arriba; una tarjeta con su `h2` y subtítulos `h3` sigue siendo una sola.
+
+**Para que un bloque tenga índice** bastan dos partes con título: un `h2`/`h3` (o `.section-title`) arriba de cada una. Si el título no debe imprimirse, basta con darle `no-print`: en pantalla sigue contando.
 
 El encabezado del bloque (`.panel-title`, `.blk-title`) y los pies (`.step-footer`, `.next-bar`, `.messages`) no cuentan.
 
