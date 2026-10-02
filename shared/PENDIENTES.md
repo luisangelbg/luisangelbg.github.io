@@ -1,6 +1,6 @@
 # Pendientes priorizados (después de la v1.0.0)
 
-Los dos módulos ya están integrados en las 15 apps de la suite (FloralPro quedó fuera, como en las rondas anteriores). Esto es lo que falta, de lo más importante a lo menos.
+Los módulos compartidos ya están integrados en las apps de análisis de la suite. LeafPro y FloralPro son apps educativas y quedan fuera: LeafPro conserva lo que ya tenía, sin más cambios, y FloralPro no los lleva. Esto es lo que falta, de lo más importante a lo menos.
 
 ## Prioridad alta
 
@@ -28,7 +28,6 @@ Los dos módulos ya están integrados en las 15 apps de la suite (FloralPro qued
 
 4. **Secciones sin título.** Algunos bloques no tienen títulos de sección, así que el índice no aparece:
    - GermplasmPro, bloques 4, 9 y 10;
-   - LeafPro, bloques 6 a 8;
    - parte de BioModellingPro.
 
    Ponerles un `h2`/`h3` (o `data-labg-section`) les daría índice y modo enfocado.
@@ -42,5 +41,5 @@ Los dos módulos ya están integrados en las 15 apps de la suite (FloralPro qued
 
 8. **Pruebas con Playwright.** Están escritas en `shared/tests/`. Las mismas comprobaciones ya se corrieron por CDP en las 15 apps y los 3 tamaños. Correrlas con `npx playwright test` necesita `npm i -D @playwright/test` (no hay npm en esta máquina).
 9. **Versión en inglés de las guías** (`GUIA-INTEGRACION.md`).
-10. **FloralPro**, si se decide integrarla.
-11. **Nuevas versiones de las apps.** Los módulos tienen su propia versión (navegador 1.0.0, estudio 1.3.1). No se publicaron versiones nuevas en Zenodo ni se cambió el DOI de ninguna app (decisión pendiente del autor).
+10. ~~**FloralPro**, si se decide integrarla.~~ **Descartada** (1 de octubre de 2026). FloralPro y LeafPro son apps educativas y quedan fuera de los módulos de la suite.
+11. **Nuevas versiones de las apps.** Los módulos tienen su propia versión (navegador 1.0.0, estudio 1.3.1, editor ✎ 1.0.0). No se publicaron versiones nuevas en Zenodo ni se cambió el DOI de ninguna app (decisión pendiente del autor).
