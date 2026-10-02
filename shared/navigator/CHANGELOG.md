@@ -1,5 +1,11 @@
 # Navegador LABG · cambios
 
+## 1.0.1 · 1 de octubre de 2026
+
+- **El idioma, solo si cambia de verdad.** El observador del atributo `lang` rehacía etiquetas, barra lateral e índice cada vez que una app volvía a escribir el mismo idioma; por ejemplo, al traducir un panel. Ahora guarda el idioma vigente y reacciona solo cuando cambia, igual que el Estudio de figuras desde la 1.2.0.
+- Comprobado en las 14 apps de análisis: reescribir el mismo `lang` cinco veces ya no cambia nada en el navegador (antes eran unos 320 cambios), y al pasar a otro idioma traduce igual que antes.
+- Copia fija en `v1.0.1/`.
+
 ## 1.0.0 · 1 de octubre de 2026
 
 Primera versión.

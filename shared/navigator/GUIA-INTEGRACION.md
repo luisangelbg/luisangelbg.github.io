@@ -1,4 +1,4 @@
-# Navegador LABG · guía de integración (v1.0.0)
+# Navegador LABG · guía de integración (v1.0.1)
 
 El navegador ordena la navegación de una app en tres niveles, sin tocar sus cálculos ni mover sus nodos.
 

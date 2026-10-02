@@ -7,7 +7,7 @@ JavaScript, más su hoja de estilo, sin dependencias ni compilación. Funciona c
 | Módulo | Versión | Qué hace | Guía |
 |---|---|---|---|
 | **Estudio de figuras LABG** | 1.3.1 | Abre cualquier figura en pantalla dividida para editarla y exportarla | [figure-studio/GUIA-INTEGRACION.md](figure-studio/GUIA-INTEGRACION.md) |
-| **Navegador LABG** | 1.0.0 | Barra lateral de bloques, índice de secciones, modo enfocado, paleta Ctrl+K y enlaces directos | [navigator/GUIA-INTEGRACION.md](navigator/GUIA-INTEGRACION.md) |
+| **Navegador LABG** | 1.0.1 | Barra lateral de bloques, índice de secciones, modo enfocado, paleta Ctrl+K y enlaces directos | [navigator/GUIA-INTEGRACION.md](navigator/GUIA-INTEGRACION.md) |
 | **Editor ✎ LABG** | 1.0.0 | Un panel por figura (botón ✎): títulos, ejes, series, leyenda, textos y anotaciones, como un programa de gráficas | [figure-editor/GUIA-INTEGRACION.md](figure-editor/GUIA-INTEGRACION.md) |
 
 ## Dónde viven
@@ -22,7 +22,7 @@ shared/
   navigator/
     labg-navigator.js
     labg-navigator.css
-    v1.0.0/
+    v1.0.0/ v1.0.1/
   figure-editor/
     labg-figedit.js           ← la versión vigente (trae su propia hoja de estilo)
     v1.0.0/
@@ -47,8 +47,8 @@ Para actualizar una app se copian los cuatro archivos desde esta carpeta.
 **Desde el portal** (páginas en línea que no son de la suite; sin conexión no cargan):
 
 ```html
-<script src="https://luisangelbg.github.io/shared/figure-studio/v1.0.0/labg-figure-studio.js" defer></script>
-<script src="https://luisangelbg.github.io/shared/navigator/v1.0.0/labg-navigator.js" defer></script>
+<script src="https://luisangelbg.github.io/shared/figure-studio/v1.3.1/labg-figure-studio.js" defer></script>
+<script src="https://luisangelbg.github.io/shared/navigator/v1.0.1/labg-navigator.js" defer></script>
 ```
 
 Si un módulo no carga o algo falla al arrancar, la app sigue igual que antes, con su barra
