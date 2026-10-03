@@ -40,6 +40,8 @@ Los módulos compartidos ya están integrados en las apps de análisis de la sui
    - GermplasmPro era la única app que fijaba sus colores al dibujar. Ahora sus figuras usan variables del tema, y sus descargas e informe salen en claro;
    - las imágenes de píxeles (lienzo) siguen como se ven, con aviso.
 
+7b. **Letras de los módulos sin conexión.** Las hojas de estilo del navegador y del estudio piden tres archivos de letra (IBM Plex Sans 500 y 600, e IBM Plex Serif 600, en .woff2) al portal, en `https://luisangelbg.github.io/assets/fonts/`, también cuando la app se abre con doble clic. Sin internet no se rompe nada, porque se usa la letra de respaldo. Para que ninguna app haga peticiones fuera del equipo, cada una tendría que llevar su copia de esas letras, con su licencia (OFL), y las hojas tendrían que apuntar a esa copia (anotado el 3 de octubre de 2026).
+
 ## Prioridad baja
 
 8. **Pruebas con Playwright.** Están escritas en `shared/tests/`. Las mismas comprobaciones ya se corrieron por CDP en las 15 apps y los 3 tamaños. Correrlas con `npx playwright test` necesita `npm i -D @playwright/test` (no hay npm en esta máquina).
