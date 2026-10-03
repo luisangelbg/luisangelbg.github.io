@@ -1,5 +1,30 @@
 # Estudio de figuras LABG · cambios
 
+## 1.5.0 · 3 de octubre de 2026
+
+- **PDF vectorial.** El PDF de una figura SVG sale con trazos y texto, no como imagen: se amplía sin perder nitidez, pesa poco y el texto se puede buscar y copiar. En «Tamaño y exportación», la fila nueva **PDF** ofrece «Vectorial» (por omisión) o «Imagen», que es el PDF de antes, a la resolución elegida. Con «Vectorial», la resolución no aplica y el nombre del archivo ya no lleva los ppp.
+- **Cómo se escribe.** El estudio toma lo que el navegador ya resolvió (los estilos calculados, la transformación de cada elemento y la posición de cada carácter) y lo escribe con los operadores de PDF, sin bibliotecas. Reproduce:
+  - rectángulos (también redondeados), círculos, elipses, líneas, polígonos y trazados con curvas y arcos;
+  - recortes (`clip-path`), marcadores (las flechas), degradados lineales y radiales, tramas (`<pattern>`), SVG anidados e imágenes dentro del SVG;
+  - transparencias, también la de un grupo entero, y los modos de fusión;
+  - líneas punteadas, extremos y uniones, relleno par-impar y el halo del texto (`paint-order: stroke`).
+- **Lo que no pasa:** los filtros (sombras, desenfoques), las máscaras y el HTML dentro del SVG (`foreignObject`). Si una figura los usa, el aviso de la exportación lo dice. Ninguna figura de la suite los usa hoy.
+- **El texto** va con las letras estándar de PDF, como en el dispositivo `pdf()` de R: sans (para system-ui, Segoe UI, Arial…), serif y mono, con negrita y cursiva. No se incrustan, porque todo lector de PDF las trae. Además:
+  - cada tramo de texto ocupa exactamente el ancho y la posición que tiene en la pantalla;
+  - el griego y los signos (λ, β, σ, χ, ⊗, ∝, →) van con la letra Symbol; el signo menos, ≤, ≥, √, Δ y las letras de Europa central, con los glifos que las letras estándar traen fuera de su codificación;
+  - los subíndices y superíndices de Unicode (₁, ₑ, ⁻, ᵗ) se escriben con la letra normal, más chica, arriba o abajo; las letras con un acento que no traen (ŷ, ĝ, x̄), con el acento encima;
+  - un carácter que ninguna de esas letras trae (♀, ♂, ▼) va como una imagen pequeña de ese carácter, del color del texto.
+- Con la app en tema oscuro y «Colores: Del tema claro», el PDF vectorial también sale en claros.
+- Las figuras que dibuja la app (Python en StatsPro y BioModellingPro, el PDF propio de SigmaPro) siguen con su propio PDF, y los mapas y las figuras de lienzo, como imagen. Para ellas no aparece la fila «PDF».
+- **API:** `LABGFigureStudio.toPDF(svg, { wmm, hmm, bg, light, title })` devuelve el PDF vectorial de cualquier figura SVG de la app (ver la guía, sección 11).
+- **Comprobado** con las 263 figuras SVG que el estudio encuentra en 13 apps:
+  - ningún error al convertir, y ningún aviso de Poppler al leerlas;
+  - pesan 5 KB en la mediana (la más grande, de 259 KB, es una nube de casi 3 700 puntos) y se escriben en 6 ms en la mediana;
+  - dibujadas con Poppler y comparadas con la imagen que exporta el estudio, difieren mucho en el 0.3 % de los píxeles en la mediana (3.6 % como máximo). Lo que cambia es el dibujo de las letras y el ajuste de las líneas finas a los píxeles, no la geometría;
+  - el visor de PDF del navegador las dibuja igual, y el texto se extrae con sus acentos y su griego;
+  - en tema oscuro, PCAPro, PhenologyPro y GermplasmPro dan el mismo PDF que en claro.
+- Copia fija en `v1.5.0/`.
+
 ## 1.4.0 · 2 de octubre de 2026
 
 - **Tema oscuro al exportar.** Con la app en tema oscuro, la sección «Tamaño y exportación» trae una opción nueva, **Colores**: «Del tema claro» (por omisión) o «Como se ven». Con «Del tema claro»:

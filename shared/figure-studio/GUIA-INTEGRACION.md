@@ -1,4 +1,4 @@
-# Estudio de figuras LABG · guía de integración (v1.4.0)
+# Estudio de figuras LABG · guía de integración (v1.5.0)
 
 El estudio abre cualquier figura de una app en una **pantalla dividida**:
 
@@ -69,6 +69,7 @@ LABGFigureStudio.isOpen();
 LABGFigureStudio.figures();         // [{ el, key, title, library }] de toda la app
 LABGFigureStudio.refresh();         // vuelve a buscar figuras (lo hace solo al cambiar el DOM)
 LABGFigureStudio.on('export', d => console.log(d.name, d.size));   // 'open' | 'close' | 'change' | 'export' | 'ready'
+LABGFigureStudio.toPDF(svg, { wmm: 170, bg: '#ffffff' })           // PDF vectorial de una figura SVG (1.5.0): Promise de { blob, notes }
 ```
 
 También se emiten eventos del DOM en `document`: `labg-figure-studio:open`, `:close`, `:change`, `:export` y `:ready`.
@@ -136,7 +137,7 @@ Todo se escribe en el navegador, sin bibliotecas:
 - **SVG:** los estilos calculados quedan escritos dentro, para que se vea igual fuera de la app. Lleva el tamaño en mm.
 - **PNG:** con su resolución en el trozo `pHYs`.
 - **TIFF:** RGB o RGBA de 8 bits, comprimido (*deflate* con predictor horizontal), con `XResolution`/`YResolution` en ppp.
-- **PDF:** una página del tamaño exacto de la figura, con la imagen a la resolución elegida. El fondo transparente se guarda como máscara.
+- **PDF:** de una figura SVG, vectorial: trazos y texto (sección 11). Con «PDF: Imagen» (y para las figuras de lienzo), una página del tamaño exacto de la figura con la imagen a la resolución elegida; el fondo transparente se guarda como máscara.
 
 **Límites:**
 
@@ -387,7 +388,41 @@ Con la app en tema oscuro, la sección «Tamaño y exportación» muestra **Colo
 - a las imágenes de píxeles (lienzo, PNG), de las que el estudio avisa;
 - a lo que dibuja la app con su exportación nativa (Python, mapas, el PDF de SigmaPro): eso lo resuelve la app.
 
-## 11. Lista de comprobación al integrar una app nueva
+## 11. PDF vectorial (1.5.0)
+
+Con «PDF: Vectorial» (por omisión), el PDF de una figura SVG lleva trazos y texto. El estudio no vuelve a dibujar la figura: escribe lo que el navegador ya resolvió.
+
+- **Geometría:** cada elemento con su transformación completa (`getScreenCTM()`), así que da igual si la app usa `transform`, CSS, SVG anidados o `viewBox`.
+- **Estilos:** los calculados (`getComputedStyle`), como en el SVG exportado. Con la app en tema oscuro y colores «Del tema claro», se leen con el tema claro puesto un instante (sección 10).
+- **Texto:** la posición de cada carácter (`getStartPositionOfChar`, `getExtentOfChar`), con su ancla, su línea de base y su `baseline-shift`. Cada tramo se escribe con la letra estándar de PDF que corresponde (sans, serif o mono, con negrita y cursiva) y se ajusta al ancho que tiene en la pantalla.
+
+**Qué reproduce:** figuras básicas y trazados (con arcos y curvas), recortes, marcadores, degradados lineales y radiales, tramas, transparencias (de un elemento o de un grupo), modos de fusión, punteados, halos de texto e imágenes dentro del SVG.
+
+**Qué no:**
+
+- filtros, máscaras y `foreignObject`: si la figura los usa, el aviso de la exportación lo dice. Para una figura así, exportar en PNG o TIFF, o en «PDF: Imagen»;
+- `<use>`: los elementos que dibuja no pasan al PDF (ninguna app lo usa);
+- el texto no lleva la letra de la pantalla, sino la estándar de PDF más parecida. Si la figura necesita su letra exacta, el SVG la nombra.
+
+**Letras.** Las letras estándar de PDF no se incrustan: todo lector de PDF las trae, como pasa con el `pdf()` de R. Si una revista exige letras incrustadas, se pueden incrustar después con el lector de PDF (en las opciones de impresión a PDF o de verificación previa).
+
+**Caracteres:**
+
+- griego y signos matemáticos: con la letra Symbol;
+- el signo menos, ≤, ≥, √, Δ y las letras de Europa central: con los glifos que las letras estándar traen aparte (se asignan con `/Differences`);
+- subíndices y superíndices de Unicode (₁, ⁻): la letra normal, más chica, arriba o abajo;
+- letras con acento que esas letras no traen (ŷ, x̄): la letra y su acento encima;
+- cualquier otro (♀, ▼, emojis): una imagen pequeña del carácter, del color del texto.
+
+**Desde la app:** `LABGFigureStudio.toPDF(svg, opciones)` devuelve una promesa de `{ blob, notes }`:
+
+- `wmm` y `hmm`: el tamaño de la página en mm. Si falta `hmm`, sale de la proporción del `viewBox`;
+- `bg`: el color del fondo, o `null` para dejarlo transparente;
+- `light: true`: los colores del tema claro aunque la app esté en oscuro;
+- `title`: el título del documento;
+- `notes`: lo que no pasó (`filter`, `mask`, `html`, `use`, `image`, `glyph-img`…).
+
+## 12. Lista de comprobación al integrar una app nueva
 
 1. Copiar `js/labg-figure-studio.js`, `css/labg-figure-studio.css` y `LICENSES-TERCEROS.md`.
 2. Agregar la línea después de `labg-core.js`.
@@ -402,3 +437,4 @@ Con la app en tema oscuro, la sección «Tamaño y exportación» muestra **Colo
 7. Mapas: declarar la descripción nativa en su estudio de mapas (sección 8) y exportar los cinco formatos.
 8. Leyenda: abrir una gráfica con leyenda, probar los lugares de la sección «Leyenda» y arrastrarla. Si el kit la marca (`data-role="legend"`, `data-li`, `data-plot`), el acomodo es exacto. Probar también «Debajo, en fila» con una leyenda que tenga título.
 9. Tema oscuro: con la app en oscuro, abrir una figura. La vista previa debe verse en claros, y así debe exportarse. Si no cambia, la app fija sus colores al dibujar (sección 10).
+10. PDF vectorial: exportar una figura en «PDF: Vectorial» y abrirla en un lector de PDF. Debe verse como el PNG, y su texto se debe poder seleccionar. Si el aviso de la exportación dice que algo no pasó, la figura usa filtros, máscaras o HTML (sección 11).

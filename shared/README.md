@@ -6,7 +6,7 @@ JavaScript, más su hoja de estilo, sin dependencias ni compilación. Funciona c
 
 | Módulo | Versión | Qué hace | Guía |
 |---|---|---|---|
-| **Estudio de figuras LABG** | 1.4.0 | Abre cualquier figura en pantalla dividida para editarla y exportarla | [figure-studio/GUIA-INTEGRACION.md](figure-studio/GUIA-INTEGRACION.md) |
+| **Estudio de figuras LABG** | 1.5.0 | Abre cualquier figura en pantalla dividida para editarla y exportarla | [figure-studio/GUIA-INTEGRACION.md](figure-studio/GUIA-INTEGRACION.md) |
 | **Navegador LABG** | 1.1.0 | Barra lateral de bloques, índice de secciones, modo enfocado, paleta Ctrl+K y enlaces directos | [navigator/GUIA-INTEGRACION.md](navigator/GUIA-INTEGRACION.md) |
 | **Editor ✎ LABG** | 1.0.0 | Un panel por figura (botón ✎): títulos, ejes, series, leyenda, textos y anotaciones, como un programa de gráficas | [figure-editor/GUIA-INTEGRACION.md](figure-editor/GUIA-INTEGRACION.md) |
 
@@ -17,7 +17,7 @@ shared/
   figure-studio/
     labg-figure-studio.js     ← la versión vigente
     labg-figure-studio.css
-    v1.0.0/ … v1.4.0/         ← copia fija de cada versión publicada
+    v1.0.0/ … v1.5.0/         ← copia fija de cada versión publicada
     puentes/labg-pyfig.js     ← puente para las figuras que dibuja Python (StatsPro, BioModellingPro)
   navigator/
     labg-navigator.js
@@ -47,7 +47,7 @@ Para actualizar una app se copian los cuatro archivos desde esta carpeta.
 **Desde el portal** (páginas en línea que no son de la suite; sin conexión no cargan):
 
 ```html
-<script src="https://luisangelbg.github.io/shared/figure-studio/v1.4.0/labg-figure-studio.js" defer></script>
+<script src="https://luisangelbg.github.io/shared/figure-studio/v1.5.0/labg-figure-studio.js" defer></script>
 <script src="https://luisangelbg.github.io/shared/navigator/v1.1.0/labg-navigator.js" defer></script>
 ```
 
