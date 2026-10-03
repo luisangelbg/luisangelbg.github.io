@@ -1,4 +1,4 @@
-# Estudio de figuras LABG · guía de integración (v1.3.1)
+# Estudio de figuras LABG · guía de integración (v1.4.0)
 
 El estudio abre cualquier figura de una app en una **pantalla dividida**:
 
@@ -362,7 +362,32 @@ Dos falsas leyendas se encontraron y se corrigieron:
 - en el diagrama PRISMA de ReviewPro, una flecha entre dos renglones parecía la muestra de dos entradas; ahora un conector con punta de flecha no cuenta y cada entrada necesita su muestra propia;
 - en PhenologyPro, el eje derecho (rayita y número) parecía una leyenda en columna; ahora una rayita de eje no cuenta como muestra y un grupo de puros números con muestras de línea se toma por eje.
 
-## 10. Lista de comprobación al integrar una app nueva
+## 10. Tema oscuro al exportar (1.4.0)
+
+Con la app en tema oscuro, la sección «Tamaño y exportación» muestra **Colores**:
+
+- **Del tema claro** (por omisión): la figura se ve y se exporta como en el tema claro de la app, en SVG, PNG, TIFF, PDF y al copiarla. La app sigue en oscuro.
+- **Como se ven:** tal como está en pantalla, para fondos oscuros (diapositivas). Con fondo blanco, el estudio avisa que el texto claro casi no se lee.
+
+**Cómo lo hace:**
+
+- Al exportar, lee los estilos con `data-theme="light"` puesto en `<html>` un instante, dentro de la misma tarea: no se pinta nada y no se lanza `themechange`.
+- En la vista previa, pone los valores claros de las variables del tema (las que cambian entre oscuro y claro) en el envoltorio de la figura elevada, solo mientras está en el estudio.
+- Necesita el tema de la suite: `:root[data-theme="dark"] { … }` y `@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) { … } }`.
+
+**Lo que pide a la app:** que los colores de la figura salgan del tema al pintarse, no al dibujarse.
+
+- En el SVG, variables del tema: `fill="var(--text)"`, `stroke="var(--grid)"` o reglas de CSS.
+- Para mezclar dos colores del tema, `color-mix(in srgb, var(--a) 40%, var(--b))`. El estudio la escribe como `rgb()`.
+- No leer el color con `getComputedStyle` para escribir el valor fijo: así la figura se queda en oscuro. Era el caso de GermplasmPro, que ahora usa `B4.paint(nombre)`.
+- Las descargas y los informes propios de la app, con colores fijos del tema claro: dibujar con `data-theme="light"` puesto, como hace `B4.forFile(fn)` en GermplasmPro.
+
+**No aplica:**
+
+- a las imágenes de píxeles (lienzo, PNG), de las que el estudio avisa;
+- a lo que dibuja la app con su exportación nativa (Python, mapas, el PDF de SigmaPro): eso lo resuelve la app.
+
+## 11. Lista de comprobación al integrar una app nueva
 
 1. Copiar `js/labg-figure-studio.js`, `css/labg-figure-studio.css` y `LICENSES-TERCEROS.md`.
 2. Agregar la línea después de `labg-core.js`.
@@ -376,3 +401,4 @@ Dos falsas leyendas se encontraron y se corrigieron:
 6. Si la app redibuja sus figuras (al cambiar un control, el idioma o el tema), cerrar el estudio y volver a abrirlo con el mismo botón.
 7. Mapas: declarar la descripción nativa en su estudio de mapas (sección 8) y exportar los cinco formatos.
 8. Leyenda: abrir una gráfica con leyenda, probar los lugares de la sección «Leyenda» y arrastrarla. Si el kit la marca (`data-role="legend"`, `data-li`, `data-plot`), el acomodo es exacto. Probar también «Debajo, en fila» con una leyenda que tenga título.
+9. Tema oscuro: con la app en oscuro, abrir una figura. La vista previa debe verse en claros, y así debe exportarse. Si no cambia, la app fija sus colores al dibujar (sección 10).

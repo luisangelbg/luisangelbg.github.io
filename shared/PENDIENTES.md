@@ -11,7 +11,7 @@ Los módulos compartidos ya están integrados en las apps de análisis de la sui
    - PhenologyPro también deja su editor propio, del que nació el común. Guarda con la misma clave y el mismo formato, así que sus ediciones se conservan. Sus 424 pruebas y la autoprueba común pasan.
 2. ~~**StatsPro y BioModellingPro (figuras hechas en Python).**~~ **Hecho en la 1.1.0** (1 de octubre de 2026). El puente `labg-pyfig.js` vuelve a dibujar con Python cada figura a las medidas de salida (PNG con ppp, y SVG y PDF vectoriales), con vista previa a tamaño de salida. Ver la guía, sección 7.
 3. ~~**Mapas con su propio estudio.**~~ **Hecho en la 1.2.0** (1 de octubre de 2026). Los mapas de PollinationPro y BioModellingPro abren en el estudio con su vista previa nativa y sus pestañas en el inspector. Exportan por el estudio de mapas de cada app: PNG, SVG, PDF, TIFF y GeoTIFF. Ver la guía, sección 8.
-   - **SigmaPro**, en construcción en otra sesión, ya lleva el estudio 1.3.1 y el editor ✎ común (1 de octubre de 2026). Sus gráficas (`js/interfaz/graficas.js`) ya llevan las marcas del kit: área, rangos, ejes, rejilla, números, títulos y la leyenda de la gráfica de interacción. Sus colores también van ya en el SVG, como atributos con las variables del tema. Antes iban por clases CSS, que les ganaban a los cambios del editor. Ahora la pestaña Series los encuentra y la autoprueba del editor pasa completa. Su sesión guarda todo esto con su próximo commit.
+   - **SigmaPro**, en construcción en otra sesión, ya lleva el estudio 1.4.0 y el editor ✎ común (1 de octubre de 2026). Sus gráficas (`js/interfaz/graficas.js`) ya llevan las marcas del kit: área, rangos, ejes, rejilla, números, títulos y la leyenda de la gráfica de interacción. Sus colores también van ya en el SVG, como atributos con las variables del tema. Antes iban por clases CSS, que les ganaban a los cambios del editor. Ahora la pestaña Series los encuentra y la autoprueba del editor pasa completa. Su sesión guarda todo esto con su próximo commit.
 
 ## Prioridad media
 
@@ -35,11 +35,14 @@ Los módulos compartidos ya están integrados en las apps de análisis de la sui
    - la app acepta enlaces a una pestaña (`#/sources/bradford`), la dirección sigue a la pestaña abierta sin llenar el historial y la paleta copia el enlace;
    - la opción `tabs` es general, pero por ahora solo la usa SciMetricsPro: en las demás apps, las listas de pestañas son piezas pequeñas (un laboratorio, un diálogo), no partes del bloque.
 6. **PDF vectorial.** El PDF del estudio lleva la imagen a la resolución elegida. Un PDF con trazos (desde el SVG) sería más liviano y escalable para las revistas que lo pidan. Mientras tanto, el SVG cubre ese caso.
-7. **Tema oscuro y fondo blanco.** En tema oscuro las figuras usan colores claros. El estudio avisa, pero podría pasar la figura a colores claros solo al exportar si la app expone su tema de figuras (por ejemplo, `FigStyle` o el `theme` de `Fig.mount`).
+7. ~~**Tema oscuro y fondo blanco.**~~ **Hecho en el estudio 1.4.0** (2 de octubre de 2026):
+   - con la app en tema oscuro, el estudio exporta por omisión con los colores del tema claro (opción «Colores»), y la vista previa los muestra;
+   - GermplasmPro era la única app que fijaba sus colores al dibujar. Ahora sus figuras usan variables del tema, y sus descargas e informe salen en claro;
+   - las imágenes de píxeles (lienzo) siguen como se ven, con aviso.
 
 ## Prioridad baja
 
 8. **Pruebas con Playwright.** Están escritas en `shared/tests/`. Las mismas comprobaciones ya se corrieron por CDP en las 15 apps y los 3 tamaños. Correrlas con `npx playwright test` necesita `npm i -D @playwright/test` (no hay npm en esta máquina).
 9. **Versión en inglés de las guías** (`GUIA-INTEGRACION.md`).
 10. ~~**FloralPro**, si se decide integrarla.~~ **Descartada** (1 de octubre de 2026). FloralPro y LeafPro son apps educativas y quedan fuera de los módulos de la suite.
-11. **Nuevas versiones de las apps.** Los módulos tienen su propia versión (navegador 1.1.0, estudio 1.3.1, editor ✎ 1.0.0). No se publicaron versiones nuevas en Zenodo ni se cambió el DOI de ninguna app (decisión pendiente del autor).
+11. **Nuevas versiones de las apps.** Los módulos tienen su propia versión (navegador 1.1.0, estudio 1.4.0, editor ✎ 1.0.0). No se publicaron versiones nuevas en Zenodo ni se cambió el DOI de ninguna app (decisión pendiente del autor).

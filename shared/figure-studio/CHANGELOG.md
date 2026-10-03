@@ -1,5 +1,19 @@
 # Estudio de figuras LABG · cambios
 
+## 1.4.0 · 2 de octubre de 2026
+
+- **Tema oscuro al exportar.** Con la app en tema oscuro, la sección «Tamaño y exportación» trae una opción nueva, **Colores**: «Del tema claro» (por omisión) o «Como se ven». Con «Del tema claro»:
+  - la figura se ve en el estudio con los colores del tema claro, y así sale en SVG, PNG, TIFF, PDF y al copiarla. La app sigue en oscuro;
+  - para exportar, el estudio lee los estilos con `data-theme="light"` puesto un instante, sin pintar nada ni lanzar `themechange`. Para la vista previa, pone sobre la figura elevada los valores claros de las variables del tema, solo mientras está en el estudio;
+  - vale para lo que dibuja el estudio. Lo que dibuja la app (Python, los mapas, el PDF de SigmaPro) ya sale en claro por su cuenta.
+- Funciona con las figuras que toman sus colores del tema (variables CSS). En una medición de 255 figuras SVG de 12 apps, 103 cambian así con el tema y 102 ya eran claras siempre. Las únicas que se quedaban en oscuro eran 8 de GermplasmPro, que ahora también siguen al tema (ver la guía, sección 10).
+- **Colores mezclados.** Un color hecho con `color-mix()` se escribe como `rgb()` al exportar, porque los programas de dibujo no leen `color(srgb …)`. El estudio también lo reconoce como color de serie.
+- Comprobado:
+  - en tema claro, el SVG exportado es idéntico al de la 1.3.1 (tres figuras de PCAPro) y la opción «Colores» no aparece;
+  - en tema oscuro, en ClusteringPro, PopGeneticsPro, PhylogenyPro, BreedingPro, PhenologyPro, GermplasmPro y SigmaPro, el texto pasa de claro a oscuro en la vista previa y en los archivos. «Como se ven» regresa al oscuro y, al cerrar, no queda nada en la figura;
+  - StatsPro sigue exportando sus figuras de Python en claro.
+- Copia fija en `v1.4.0/`.
+
 ## 1.3.1 · 1 de octubre de 2026
 
 - **«Debajo, en fila» con leyendas marcadas.** En una leyenda marcada por el kit (`data-role="legend"`), las entradas bajaban a la fila pero el título y las notas se quedaban en su lugar. Ahora el título va al principio de la fila y una nota de debajo de las entradas (por ejemplo, «elipse de concentración 95 %»), al final. Si el grupo trae algo más que entradas, títulos y marco, la leyenda baja entera.
