@@ -29,7 +29,7 @@ Los módulos compartidos ya están integrados en las apps de análisis de la sui
 4. ~~**Secciones sin título.**~~ **Hecho** (1 de octubre de 2026, con el navegador 1.0.2):
    - **GermplasmPro:** títulos numerados en los bloques 4, 9 y 10, en los dos idiomas; en el 9 no salen al imprimir. Sus bloques 6, 7 y 8 ya tenían títulos, pero el navegador los juntaba en una sola sección; desde la 1.0.2 los separa.
    - **BioModellingPro:** título «Reglas de depuración» en la primera tarjeta del Bloque 3. En el Bloque 9, los resultados del modelo ya salen como secciones. El Bloque 4 es un solo mapa y se queda sin índice a propósito.
-   - **SigmaPro** recibe el navegador vigente (con lo de la 1.0.2) cuando su sesión cierre el hito en curso.
+   - **SigmaPro** recibió el navegador 1.1.0 (con lo de la 1.0.2) al cerrar su Hito 1.11, en un commit aparte (2 de octubre de 2026). Sus 8 bloques conservan las mismas secciones.
 5. ~~**SciMetricsPro.**~~ **Hecho en la 1.1.0** (2 de octubre de 2026):
    - el índice muestra las pestañas de cada módulo y, debajo de la abierta, sus secciones; la ruta y la paleta (Ctrl+K) también las nombran;
    - la app acepta enlaces a una pestaña (`#/sources/bradford`), la dirección sigue a la pestaña abierta sin llenar el historial y la paleta copia el enlace;
