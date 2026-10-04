@@ -35,15 +35,6 @@ window.LABG_CATEGORIAS = {
 
 window.LABG_APPS = [
   {
-    id: "LABGStat", nombre: "LABG Stat",
-    lema: "Estadística completa, sin salir de tu navegador",
-    descripcion: "119 métodos estadísticos en 14 áreas, desde la limpieza de datos hasta modelos mixtos, series de tiempo, supervivencia y evaluación sensorial. Cada análisis entrega la tabla, una figura editable, una lectura en lenguaje claro y un párrafo listo para el artículo.",
-    categoria: "estadistica", estado: "proximamente", version: "1.2.0", doi: "", licencia: "AGPL-3.0",
-    manualPdf: "", manualMb: 0, manualHtml: false, datos: true,
-    puntos: ["119 métodos en 14 áreas", "Interpretación en lenguaje claro de cada resultado", "Párrafo de resultados con estadístico, gl, p y tamaño del efecto", "Motor de cálculo incluido: no se conecta a internet"],
-    destacada: true
-  },
-  {
     id: "PCAPro", nombre: "PCAPro",
     lema: "Análisis de componentes principales guiado",
     descripcion: "Preparación de datos, supuestos, extracción, rotación, mapas factoriales e interpretación, hasta un informe listo para publicar. Incluye además AC, ACM, FAMD, AFM y agrupamiento HCPC sobre las coordenadas factoriales.",
@@ -185,15 +176,6 @@ window.LABG_APPS = [
     categoria: "ciencia", estado: "enlinea", version: "1.0.0", doi: "", licencia: "GPL-3.0",
     manualPdf: "ReviewPro User's Manual.pdf", manualMb: 13, manualHtml: true, datos: true,
     puntos: ["Protocolo con PRISMA-P y plantillas de registro PROSPERO y OSF", "Cribado priorizado, regla de paro y acuerdo entre revisores", "Riesgo de sesgo, GRADE y meta-análisis multinivel de tres niveles", "Escritura orientada con verificador de afirmaciones, informe y paquete"],
-    destacada: false
-  },
-  {
-    id: "PDFPro", nombre: "PDFPro",
-    lema: "Tus PDF, completos, sin pagar licencias",
-    descripcion: "Lector y editor de PDF con un motor propio basado en la norma ISO 32000: lee, busca, anota, organiza páginas, edita texto e imágenes, llena formularios y protege con contraseña. Nada sale de tu computadora.",
-    categoria: "ciencia", estado: "proximamente", version: "", doi: "", licencia: "GPL-3.0",
-    manualPdf: "", manualMb: 0, manualHtml: false, datos: false,
-    puntos: ["Leer, buscar y anotar", "Unir, dividir y reordenar páginas", "Editar texto e imágenes", "Formularios y contraseñas"],
     destacada: false
   }
 ];
