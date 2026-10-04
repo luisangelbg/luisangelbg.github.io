@@ -1,5 +1,11 @@
 # Navegador LABG · cambios
 
+## 1.1.2 · 3 de octubre de 2026
+
+- **Sin letras de otros ni peticiones a internet.** La hoja de estilo ya no declara «LABG Sans» ni «LABG Serif» (IBM Plex, que se pedían al portal de la suite). La interfaz va con la letra de palo seco del sistema y los títulos de bloque con la de remates, que es lo que ya se veía sin conexión. Así, una app abierta con doble clic no hace ninguna petición fuera del equipo y no lleva tipografías de terceros. CladisticsPro ya lo hacía así.
+- Comprobado en las 14 apps de análisis abiertas con doble clic (en 11, también con el estudio abierto en una figura): ninguna petición fuera del equipo; antes eran tres por app, una por archivo de letra. La barra lateral, la ruta y la ayuda se ven bien con las letras del sistema, en escritorio y en teléfono.
+- Copia fija en `v1.1.2/`.
+
 ## 1.1.1 · 3 de octubre de 2026
 
 - **Los botones flotantes ya no tapan «Siguiente».** «Último cambio» y «Volver arriba» viven en la esquina inferior derecha, justo donde cada app pone el botón «Siguiente» de su pie de bloque; al llegar al final de la página quedaban encima de él. Ahora, cuando un pie visible (`.step-footer` o `.next-bar`) entra en pantalla, los flotantes suben lo necesario para quedar 10 px por encima, y vuelven a su lugar al subir la página. El ajuste se recalcula con el desplazamiento y al cambiar el tamaño de la ventana, y nunca sube más de media pantalla. Lo reportó el autor en CladisticsPro.

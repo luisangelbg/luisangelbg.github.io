@@ -1,5 +1,13 @@
 # Estudio de figuras LABG · cambios
 
+## 1.5.1 · 3 de octubre de 2026
+
+- **Sin letras de otros ni peticiones a internet.** La hoja de estilo ya no declara «LABG Sans» ni «LABG Serif» (IBM Plex, que se pedían al portal de la suite). La interfaz va con la letra de palo seco del sistema y los títulos con la de remates, que es lo que ya se veía sin conexión. Así, una app abierta con doble clic no hace ninguna petición fuera del equipo y no lleva tipografías de terceros.
+- En «Texto y líneas», la familia tipográfica ya no ofrece «LABG Sans (de la suite)»: sin esa letra era igual a «Sans». Las figuras y los preajustes guardados con ella pasan a «Sans», también los que se importan de un archivo.
+- Las demás figuras se exportan igual que antes, y el PDF vectorial sigue con las letras estándar de PDF.
+- Comprobado en PhylogenyPro: una figura y un preajuste propio guardados con «LABG Sans» se abren en «Sans», la figura se dibuja con la letra del sistema aun antes de abrir el estudio y el menú ya no ofrece la opción. Ninguna de las 14 apps de análisis pide ya letras fuera del equipo.
+- Copia fija en `v1.5.1/`.
+
 ## 1.5.0 · 3 de octubre de 2026
 
 - **PDF vectorial.** El PDF de una figura SVG sale con trazos y texto, no como imagen: se amplía sin perder nitidez, pesa poco y el texto se puede buscar y copiar. En «Tamaño y exportación», la fila nueva **PDF** ofrece «Vectorial» (por omisión) o «Imagen», que es el PDF de antes, a la resolución elegida. Con «Vectorial», la resolución no aplica y el nombre del archivo ya no lleva los ppp.

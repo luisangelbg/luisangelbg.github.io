@@ -69,5 +69,5 @@ SOFTWARE.
 
 ## Letras
 
-La interfaz del navegador y del estudio usa las letras de la suite, «LABG Sans» y «LABG Serif».
-Viven en `assets/fonts/` de este sitio; su origen y su licencia (SIL Open Font License 1.1) están en `assets/fonts/AVISO-TERCEROS.txt`.
+Desde el navegador 1.1.2 y el estudio 1.5.1, los módulos usan las letras del sistema: no traen letras de otros ni las piden a internet.
+Las letras de las páginas de este sitio (IBM Plex, SIL Open Font License 1.1) viven en `assets/fonts/`, con su origen y su licencia en `assets/fonts/AVISO-TERCEROS.txt`.

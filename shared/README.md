@@ -6,8 +6,8 @@ JavaScript, más su hoja de estilo, sin dependencias ni compilación. Funciona c
 
 | Módulo | Versión | Qué hace | Guía |
 |---|---|---|---|
-| **Estudio de figuras LABG** | 1.5.0 | Abre cualquier figura en pantalla dividida para editarla y exportarla | [figure-studio/GUIA-INTEGRACION.md](figure-studio/GUIA-INTEGRACION.md) |
-| **Navegador LABG** | 1.1.0 | Barra lateral de bloques, índice de secciones, modo enfocado, paleta Ctrl+K y enlaces directos | [navigator/GUIA-INTEGRACION.md](navigator/GUIA-INTEGRACION.md) |
+| **Estudio de figuras LABG** | 1.5.1 | Abre cualquier figura en pantalla dividida para editarla y exportarla | [figure-studio/GUIA-INTEGRACION.md](figure-studio/GUIA-INTEGRACION.md) |
+| **Navegador LABG** | 1.1.2 | Barra lateral de bloques, índice de secciones, modo enfocado, paleta Ctrl+K y enlaces directos | [navigator/GUIA-INTEGRACION.md](navigator/GUIA-INTEGRACION.md) |
 | **Efectos LABG** | 1.0.0 | Las esperas sobre el panel de resultados, con la animación de cada app; la aparición escalonada de los resultados, microanimaciones y el botón «Animaciones» | [fx/GUIA-INTEGRACION.md](fx/GUIA-INTEGRACION.md) · [demostración](fx/demo.html) |
 | **Editor ✎ LABG** | 1.0.0 | Un panel por figura (botón ✎): títulos, ejes, series, leyenda, textos y anotaciones, como un programa de gráficas | [figure-editor/GUIA-INTEGRACION.md](figure-editor/GUIA-INTEGRACION.md) |
 
@@ -18,12 +18,12 @@ shared/
   figure-studio/
     labg-figure-studio.js     ← la versión vigente
     labg-figure-studio.css
-    v1.0.0/ … v1.5.0/         ← copia fija de cada versión publicada
+    v1.0.0/ … v1.5.1/         ← copia fija de cada versión publicada
     puentes/labg-pyfig.js     ← puente para las figuras que dibuja Python (StatsPro, BioModellingPro)
   navigator/
     labg-navigator.js
     labg-navigator.css
-    v1.0.0/ v1.0.1/ v1.0.2/ v1.1.0/
+    v1.0.0/ v1.0.1/ v1.0.2/ v1.1.0/ v1.1.1/ v1.1.2/
   fx/
     labg-fx.js                ← la versión vigente
     labg-fx.css
@@ -54,8 +54,8 @@ Para actualizar una app se copian los cuatro archivos desde esta carpeta.
 **Desde el portal** (páginas en línea que no son de la suite; sin conexión no cargan):
 
 ```html
-<script src="https://luisangelbg.github.io/shared/figure-studio/v1.5.0/labg-figure-studio.js" defer></script>
-<script src="https://luisangelbg.github.io/shared/navigator/v1.1.0/labg-navigator.js" defer></script>
+<script src="https://luisangelbg.github.io/shared/figure-studio/v1.5.1/labg-figure-studio.js" defer></script>
+<script src="https://luisangelbg.github.io/shared/navigator/v1.1.2/labg-navigator.js" defer></script>
 <script src="https://luisangelbg.github.io/shared/fx/v1.0.0/labg-fx.js" data-app="pcapro" defer></script>
 ```
 
@@ -66,8 +66,9 @@ de bloques y sus menús de siempre. Es mejora progresiva.
 
 - **Colores:** oro y negro de la marca LABG. Los fondos, textos y bordes salen de los tokens de
   `labg-base.css`, así que siguen el tema claro u oscuro de cada app.
-- **Letras:** «LABG Serif» en los títulos de bloque y «LABG Sans» en la interfaz, servidas desde el
-  portal. Sin red se usan las del sistema.
+- **Letras:** las del sistema: la de remates en los títulos de bloque y la de palo seco en la
+  interfaz. Los módulos no traen letras de otros ni las piden a internet (desde el navegador 1.1.2
+  y el estudio 1.5.1).
 - **Íconos:** de línea fina (Lucide, ISC; ver `LICENSES-TERCEROS.md`).
 
 ## Versiones

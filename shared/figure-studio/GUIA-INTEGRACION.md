@@ -1,4 +1,4 @@
-# Estudio de figuras LABG · guía de integración (v1.5.0)
+# Estudio de figuras LABG · guía de integración (v1.5.1)
 
 El estudio abre cualquier figura de una app en una **pantalla dividida**:
 
