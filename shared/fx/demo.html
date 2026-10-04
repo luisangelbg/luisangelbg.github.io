@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Efectos LABG — demostración</title>
+<style>
+  :root {
+    --bg: #f6f7fb; --bg-soft: #eef1f6; --card-bg: #ffffff; --text: #1d2433; --text-muted: #5d6679;
+    --border: #dfe3ec; --border-strong: #a7afc0; --primary: #2a4a94; --primary-text: #2a4a94; --accent: #b76a17;
+    --success: #2f8f4a; --success-text: #1d6b34; --danger: #c43a2f; --danger-text: #a82c22; --info: #3b6fd8;
+    --r-lg: 14px; --ease: cubic-bezier(.2, .7, .2, 1);
+    --shadow: 0 6px 22px rgba(15, 23, 42, .10); --shadow-lg: 0 18px 50px rgba(15, 23, 42, .22);
+    --fs-xs: 12px; --fs-sm: 13px; --fs-md: 15px;
+    color-scheme: light;
+  }
+  :root[data-theme="dark"] {
+    --bg: #0f141d; --bg-soft: #1a2130; --card-bg: #161d2a; --text: #e8ecf3; --text-muted: #9aa5b8;
+    --border: #2a3345; --border-strong: #4a556b; --primary: #8fa8ea; --primary-text: #a9bdf0; --accent: #eba95c;
+    --success: #5cc27a; --success-text: #7fd497; --danger: #f07166; --danger-text: #f59189; --info: #7aa2ff;
+    --shadow: 0 6px 22px rgba(0, 0, 0, .35); --shadow-lg: 0 18px 50px rgba(0, 0, 0, .5);
+    color-scheme: dark;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --bg: #0f141d; --bg-soft: #1a2130; --card-bg: #161d2a; --text: #e8ecf3; --text-muted: #9aa5b8;
+      --border: #2a3345; --border-strong: #4a556b; --primary: #8fa8ea; --primary-text: #a9bdf0; --accent: #eba95c;
+      --success: #5cc27a; --success-text: #7fd497; --danger: #f07166; --danger-text: #f59189; --info: #7aa2ff;
+      --shadow: 0 6px 22px rgba(0, 0, 0, .35); --shadow-lg: 0 18px 50px rgba(0, 0, 0, .5);
+      color-scheme: dark;
+    }
+  }
+  * { box-sizing: border-box; }
+  body { margin: 0; background: var(--bg); color: var(--text); font: 15px/1.5 system-ui, -apple-system, "Segoe UI", Roboto, sans-serif; }
+  .topbar { position: sticky; top: 0; z-index: 50; background: var(--card-bg); border-bottom: 1px solid var(--border); }
+  .topbar-row { max-width: 1180px; margin: 0 auto; padding: 10px 16px; display: flex; align-items: center; gap: 12px; }
+  .brand { font-weight: 700; font-size: 17px; }
+  .brand small { font-weight: 500; color: var(--text-muted); }
+  .top-tools { margin-left: auto; display: flex; align-items: center; gap: 8px; }
+  .icon-btn { width: 34px; height: 34px; padding: 0; border-radius: 50%; display: inline-flex; align-items: center; justify-content: center;
+    border: 1px solid var(--border-strong); background: var(--bg-soft); color: var(--text); cursor: pointer; }
+  .icon-btn:hover { border-color: var(--primary); color: var(--primary-text); }
+  .icon-btn svg { width: 18px; height: 18px; }
+  .theme-btn .moon { display: none; }
+  :root[data-theme="dark"] .theme-btn .sun { display: none; }
+  :root[data-theme="dark"] .theme-btn .moon { display: block; }
+  .seg { display: inline-flex; border: 1px solid var(--border-strong); border-radius: 999px; overflow: hidden; }
+  .seg button { border: 0; background: transparent; color: var(--text); padding: 5px 10px; font: inherit; font-size: 13px; cursor: pointer; }
+  .seg button[aria-pressed="true"] { background: var(--primary); color: #fff; }
+  main { max-width: 1180px; margin: 0 auto; padding: 16px; }
+  h1 { font-size: 24px; margin: 12px 0 4px; }
+  h2 { font-size: 19px; margin: 28px 0 8px; }
+  p.lead { color: var(--text-muted); margin: 0 0 12px; max-width: 70ch; }
+  .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 12px; }
+  .app-card { --primary: var(--pl); --accent: var(--al); background: var(--card-bg); border: 1px solid var(--border); border-radius: var(--r-lg); padding: 12px; text-align: center; }
+  :root[data-theme="dark"] .app-card { --primary: var(--pd); --accent: var(--ad); }
+  @media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) .app-card { --primary: var(--pd); --accent: var(--ad); } }
+  .app-card .stage { position: relative; width: 120px; height: 120px; margin: 0 auto 6px; }
+  .app-card b { display: block; color: var(--primary); }
+  .app-card span { display: block; font-size: 13px; color: var(--text-muted); }
+  .step-panel { background: var(--card-bg); border: 1px solid var(--border); border-radius: var(--r-lg); padding: 16px; min-height: 520px; }
+  .row { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; margin-bottom: 10px; }
+  .btn { font: inherit; font-size: 14px; padding: 7px 14px; border-radius: 999px; border: 1px solid var(--primary); background: var(--primary); color: #fff; cursor: pointer; }
+  :root[data-theme="dark"] .btn { color: #0f141d; }
+  .btn-secondary { background: transparent; color: var(--primary-text); }
+  :root[data-theme="dark"] .btn-secondary { color: var(--primary-text); }
+  .btn-sm { padding: 5px 12px; font-size: 13px; }
+  select { font: inherit; padding: 6px 8px; border-radius: 8px; border: 1px solid var(--border-strong); background: var(--card-bg); color: var(--text); }
+  .results { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 10px; margin-top: 14px; }
+  .card { background: var(--bg-soft); border: 1px solid var(--border); border-radius: 12px; padding: 12px 14px; }
+  .card h3 { margin: 0 0 4px; font-size: 15px; }
+  .card p { margin: 0; font-size: 13px; color: var(--text-muted); }
+  table { border-collapse: collapse; width: 100%; max-width: 520px; font-size: 14px; }
+  th, td { border-bottom: 1px solid var(--border); padding: 6px 10px; text-align: left; }
+  details { background: var(--card-bg); border: 1px solid var(--border); border-radius: 12px; padding: 10px 14px; max-width: 520px; }
+  summary { cursor: pointer; font-weight: 600; }
+  .note { font-size: 13px; color: var(--text-muted); }
+  .stepper { display: none; }
+</style>
+</head>
+<body>
+<header class="topbar">
+  <div class="topbar-row">
+    <span class="brand">Efectos LABG <small>· demostración del módulo labg-fx</small></span>
+    <div class="top-tools">
+      <div class="seg" role="group" aria-label="Idioma / Language"><button type="button" data-lang="es" aria-pressed="true">ES</button><button type="button" data-lang="en" aria-pressed="false">EN</button></div>
+      <button type="button" class="icon-btn theme-btn" id="themeBtn" title="Cambiar el tema" aria-label="Cambiar el tema">
+        <svg class="sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="4.2"/><path d="M12 2v2.5M12 19.5V22M2 12h2.5M19.5 12H22M4.9 4.9l1.8 1.8M17.3 17.3l1.8 1.8M4.9 19.1l1.8-1.8M17.3 6.7l1.8-1.8"/></svg>
+        <svg class="moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 14.5A8.5 8.5 0 1 1 9.5 4a7 7 0 0 0 10.5 10.5z"/></svg>
+      </button>
+    </div>
+  </div>
+  <nav class="stepper"><button type="button" class="step-btn active" data-step="1">1</button></nav>
+</header>
+<main id="main">
+  <h1>Efectos LABG</h1>
+  <p class="lead">Las esperas de la suite, con la animación propia de cada app, sobre el panel de resultados. El botón con destellos de la barra de arriba apaga o enciende las animaciones en todas las apps; con «reducir movimiento» del sistema, la espera muestra solo un círculo que gira.</p>
+
+  <h2>Las animaciones de cada app</h2>
+  <div class="grid" id="scenes"></div>
+
+  <h2>La espera sobre el panel</h2>
+  <section class="step-panel active" id="panel-1">
+    <div class="row">
+      <label for="esc">Animación:</label> <select id="esc"></select>
+    </div>
+    <div class="row">
+      <button type="button" class="btn" data-run="corta">Corta (0,2 s): no se ve</button>
+      <button type="button" class="btn" data-run="pasos">Con 4 pasos</button>
+      <button type="button" class="btn" data-run="libre">Sin pasos (3 s)</button>
+      <button type="button" class="btn" data-run="ocupada">Con la página ocupada (2 s)</button>
+      <button type="button" class="btn btn-secondary" data-run="error">Con error</button>
+      <button type="button" class="btn btn-secondary" data-run="cancelar">Con Cancelar (10 s)</button>
+      <button type="button" class="btn btn-secondary" data-run="flotante">Sin panel a la vista</button>
+    </div>
+    <p class="note">«Con la página ocupada» calcula sin ceder el paso durante dos segundos: la animación y la barra indeterminada siguen moviéndose porque el navegador las anima aparte. Al terminar, los resultados de abajo entran escalonados.</p>
+    <div class="results" id="results"></div>
+  </section>
+
+  <h2>Microanimaciones</h2>
+  <div class="row">
+    <button type="button" class="btn">Botón</button>
+    <button type="button" class="btn btn-secondary">Otro botón</button>
+    <button type="button" class="icon-btn" title="Botón con ícono" aria-label="Botón con ícono"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M5 12h14M12 5v14"/></svg></button>
+  </div>
+  <details><summary>Un panel que se abre</summary><p>Su contenido entra con un desvanecido de 200 ms.</p></details>
+  <p></p>
+  <table><thead><tr><th>Accesión</th><th>Especie</th><th>Altitud (m)</th></tr></thead>
+    <tbody><tr><td>MEX-ZM-0001</td><td>Zea mays</td><td>2250</td></tr><tr><td>MEX-PV-0002</td><td>Phaseolus vulgaris</td><td>1890</td></tr><tr><td>MEX-CA-0003</td><td>Capsicum annuum</td><td>1460</td></tr></tbody></table>
+</main>
+<script>
+  /* el tema y el idioma de la demostración */
+  document.getElementById('themeBtn').addEventListener('click', () => {
+    const h = document.documentElement, dark = h.getAttribute('data-theme') === 'dark' || (!h.getAttribute('data-theme') && matchMedia('(prefers-color-scheme: dark)').matches);
+    h.setAttribute('data-theme', dark ? 'light' : 'dark');
+  });
+  document.querySelectorAll('[data-lang]').forEach(b => b.addEventListener('click', () => {
+    document.documentElement.lang = b.dataset.lang;
+    document.querySelectorAll('[data-lang]').forEach(x => x.setAttribute('aria-pressed', String(x === b)));
+  }));
+</script>
+<script src="labg-fx.js" data-app="pcapro"></script>
+<script>
+  /* nombre, escena, descripción y colores (claro y oscuro: primario y acento) de cada app */
+  const APPS = [
+    ['PCAPro', 'pcapro', 'Nube de puntos que gira y se proyecta sobre dos ejes', '#5b3fd6', '#0d9488', '#8b6ff2', '#2dd4bf'],
+    ['ClusteringPro', 'clusteringpro', 'Puntos que se agrupan y toman el color de su grupo', '#4f46a5', '#e0803c', '#8f86e8', '#eea062'],
+    ['PopGeneticsPro', 'popgeneticspro', 'Hélice de alelos que se recombinan', '#146b7a', '#d9603f', '#45b6c8', '#f0846a'],
+    ['PhylogenyPro', 'phylogenypro', 'Árbol que se ramifica desde la raíz', '#2a4a94', '#b76a17', '#8fa8ea', '#eba95c'],
+    ['PhenologyPro', 'phenologypro', 'Brote que crece por etapas', '#1f6f9f', '#d8901c', '#5db3e6', '#f0b449'],
+    ['PollinationPro', 'pollinationpro', 'Polen que viaja entre dos flores', '#2e7d4f', '#d99a1e', '#70c48a', '#f0b449'],
+    ['AgriDesign', 'agridesign', 'Parcelas que se ordenan en bloques', '#2f7d4f', '#c8842a', '#5fbf85', '#e0a24e'],
+    ['SciMetricsPro', 'scimetricspro', 'Barras y red de citas que se forman', '#1d5bb0', '#e39b2d', '#6ea8f5', '#f0b453'],
+    ['BioModelling Pro', 'biomodellingpro', 'Curva logística que se traza', '#1f7a4d', '#cf6a24', '#57c98a', '#f0a05a'],
+    ['EconomicsPro', 'economicspro', 'Oferta y demanda que convergen', '#145e4e', '#b06e0c', '#4fb99b', '#eab54a'],
+    ['BreedingPro', 'breedingpro', 'La cruza de dos progenitores', '#5e2e8c', '#b86f06', '#b892ea', '#f0b43c'],
+    ['StatsPro', 'statspro', 'Histograma que se acomoda en una campana', '#3b5bdb', '#4c72b0', '#5c7cfa', '#7b9bd1'],
+    ['GermplasmPro', 'germplasmpro', 'Semillas que entran a los cajones del banco', '#6b4a8f', '#c5761c', '#be98e2', '#f0a44e'],
+    ['ReviewPro', 'reviewpro', 'Documentos que pasan por el embudo PRISMA', '#33539e', '#d97a2b', '#8ea6ff', '#f2a15e'],
+    ['SigmaPro', 'sigmapro', 'Histograma y campana (la de StatsPro)', '#7d5b14', '#9c7128', '#d4a848', '#f1dda8'],
+    ['CladisticsPro', 'cladisticspro', 'Árbol que se ramifica (el de PhylogenyPro)', '#9a3b26', '#1f7a72', '#e58a6b', '#5cc6bb'],
+  ];
+  const grid = document.getElementById('scenes'), sel = document.getElementById('esc');
+  APPS.forEach(([name, key, desc, pl, al, pd, ad]) => {
+    const c = document.createElement('div');
+    c.className = 'app-card'; c.dataset.scene = key;
+    c.style.cssText = '--pl:' + pl + ';--al:' + al + ';--pd:' + pd + ';--ad:' + ad;
+    const st = document.createElement('div'); st.className = 'stage'; c.appendChild(st);
+    LABGfx.scene(key, st);
+    c.insertAdjacentHTML('beforeend', '<b>' + name + '</b><span>' + desc + '</span>');
+    grid.appendChild(c);
+    const o = document.createElement('option'); o.value = key; o.textContent = name; sel.appendChild(o);
+  });
+  /* el panel toma los colores de la app elegida */
+  const panel = document.getElementById('panel-1');
+  const paint = () => { const a = APPS.find(x => x[1] === sel.value); panel.style.cssText = '--primary:' + a[3] + ';--accent:' + a[4]; };
+  sel.addEventListener('change', paint); paint();
+  const wait = ms => new Promise(r => setTimeout(r, ms));
+  const busy = ms => { const t = performance.now(); let x = 0; while (performance.now() - t < ms) x += Math.sqrt(x + 1); return x; };
+  let nres = 0;
+  const results = n => {
+    const box = document.getElementById('results'); box.textContent = '';
+    for (let i = 0; i < n; i++) box.insertAdjacentHTML('beforeend', '<div class="card"><h3>Resultado ' + (++nres) + '</h3><p>Una tarjeta que dibujó el cálculo. Entra escalonada, 60 ms después de la anterior.</p></div>');
+  };
+  const RUN = {
+    async corta() { const L = LABGfx.loading; L.start({ titulo: 'Cálculo rápido', escena: sel.value }); await wait(200); results(3); await L.done(); },
+    async pasos() {
+      const L = LABGfx.loading;
+      L.start({ titulo: 'Calculando el análisis…', mensaje: 'Preparando los datos…', pasos: 4, escena: sel.value });
+      for (const t of ['Centrando y escalando…', 'Calculando componentes…', 'Rotando la solución…', 'Dibujando las figuras…']) { L.step(t); await wait(900); }
+      results(6); await L.done();
+    },
+    async libre() { const L = LABGfx.loading; L.start({ titulo: 'Remuestreando…', mensaje: '1000 réplicas', escena: sel.value }); await wait(3000); results(4); await L.done(); },
+    async ocupada() {
+      const L = LABGfx.loading; L.start({ titulo: 'Cálculo pesado', mensaje: 'La página está ocupada; la animación sigue', escena: sel.value });
+      await LABGfx.nextPaint(); busy(2000); results(5); await L.done();
+    },
+    async error() { const L = LABGfx.loading; L.start({ titulo: 'Ajustando el modelo…', escena: sel.value }); await wait(1500); L.fail('La matriz no es invertible: hay variables repetidas.'); },
+    async cancelar() {
+      const L = LABGfx.loading; let stop = false;
+      const w = L.start({ titulo: 'Simulación larga', mensaje: 'Pulsa Cancelar o Escape', escena: sel.value, cancelar: () => { stop = true; } });
+      for (let i = 0; i < 50 && !stop; i++) { w.update(i / 50, 'Réplica ' + (i * 20) + ' de 1000'); await wait(200); }
+      if (!stop) { results(3); await L.done(); }
+    },
+    async flotante() { const L = LABGfx.loading; L.start({ titulo: 'Sin panel a la vista', mensaje: 'La espera sale como tarjeta al centro', escena: sel.value, panel: false }); await wait(2500); await L.done(); },
+  };
+  document.querySelectorAll('[data-run]').forEach(b => b.addEventListener('click', () => RUN[b.dataset.run]()));
+  window.demo = RUN;
+</script>
+</body>
+</html>

@@ -8,6 +8,7 @@ JavaScript, más su hoja de estilo, sin dependencias ni compilación. Funciona c
 |---|---|---|---|
 | **Estudio de figuras LABG** | 1.5.0 | Abre cualquier figura en pantalla dividida para editarla y exportarla | [figure-studio/GUIA-INTEGRACION.md](figure-studio/GUIA-INTEGRACION.md) |
 | **Navegador LABG** | 1.1.0 | Barra lateral de bloques, índice de secciones, modo enfocado, paleta Ctrl+K y enlaces directos | [navigator/GUIA-INTEGRACION.md](navigator/GUIA-INTEGRACION.md) |
+| **Efectos LABG** | 1.0.0 | Las esperas sobre el panel de resultados, con la animación de cada app; la aparición escalonada de los resultados, microanimaciones y el botón «Animaciones» | [fx/GUIA-INTEGRACION.md](fx/GUIA-INTEGRACION.md) · [demostración](fx/demo.html) |
 | **Editor ✎ LABG** | 1.0.0 | Un panel por figura (botón ✎): títulos, ejes, series, leyenda, textos y anotaciones, como un programa de gráficas | [figure-editor/GUIA-INTEGRACION.md](figure-editor/GUIA-INTEGRACION.md) |
 
 ## Dónde viven
@@ -23,6 +24,11 @@ shared/
     labg-navigator.js
     labg-navigator.css
     v1.0.0/ v1.0.1/ v1.0.2/ v1.1.0/
+  fx/
+    labg-fx.js                ← la versión vigente
+    labg-fx.css
+    demo.html                 ← las animaciones de todas las apps y esperas de prueba
+    v1.0.0/
   figure-editor/
     labg-figedit.js           ← la versión vigente (trae su propia hoja de estilo)
     v1.0.0/
@@ -39,6 +45,7 @@ sin conexión, porque las apps se abren con doble clic.
 <script src="js/labg-core.js"></script>
 <script src="js/labg-figure-studio.js" defer></script>
 <script src="js/labg-navigator.js" defer></script>
+<script src="js/labg-fx.js" data-app="pcapro" defer></script>
 ```
 
 Cada script carga solo su hoja de estilo (`css/labg-*.css`), así que basta una línea por módulo.
@@ -49,6 +56,7 @@ Para actualizar una app se copian los cuatro archivos desde esta carpeta.
 ```html
 <script src="https://luisangelbg.github.io/shared/figure-studio/v1.5.0/labg-figure-studio.js" defer></script>
 <script src="https://luisangelbg.github.io/shared/navigator/v1.1.0/labg-navigator.js" defer></script>
+<script src="https://luisangelbg.github.io/shared/fx/v1.0.0/labg-fx.js" data-app="pcapro" defer></script>
 ```
 
 Si un módulo no carga o algo falla al arrancar, la app sigue igual que antes, con su barra

@@ -48,6 +48,8 @@ Los módulos compartidos ya están integrados en las apps de análisis de la sui
 
 7b. **Letras de los módulos sin conexión.** Las hojas de estilo del navegador y del estudio piden tres archivos de letra (IBM Plex Sans 500 y 600, e IBM Plex Serif 600, en .woff2) al portal, en `https://luisangelbg.github.io/assets/fonts/`, también cuando la app se abre con doble clic. Sin internet no se rompe nada, porque se usa la letra de respaldo. Para que ninguna app haga peticiones fuera del equipo, cada una tendría que llevar su copia de esas letras, con su licencia (OFL), y las hojas tendrían que apuntar a esa copia (anotado el 3 de octubre de 2026).
 
+7c. **Efectos LABG en SigmaPro y CladisticsPro.** El módulo (`shared/fx/`, 1.0.0) está en las 14 apps de análisis desde el 3 de octubre de 2026. SigmaPro y CladisticsPro se construyen en otras sesiones: lo integran con una línea después de la del navegador (`data-app="sigmapro"` usa la animación del histograma y la campana; `data-app="cladisticspro"`, la del árbol), cuando sus sesiones lo decidan.
+
 ## Prioridad baja
 
 8. **Pruebas con Playwright.** Están escritas en `shared/tests/`. Las mismas comprobaciones ya se corrieron por CDP en las 15 apps y los 3 tamaños. Correrlas con `npx playwright test` necesita `npm i -D @playwright/test` (no hay npm en esta máquina).
