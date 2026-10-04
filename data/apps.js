@@ -143,6 +143,15 @@ window.LABG_APPS = [
     destacada: false
   },
   {
+    id: "CladisticsPro", nombre: "CladisticsPro",
+    lema: "Caracteres, homología y árboles",
+    descripcion: "Cladística con caracteres morfológicos, de la matriz al cladograma diagnosticado: matriz con enunciados y estados, polimorfismos, inaplicables, continuos e imágenes de cada taxón; los árboles más parsimoniosos por búsqueda exacta, TBR y ratchet; pesos implícitos y sucesivos; cada cambio dibujado sobre su rama y el cladograma editable con el ratón; apoyo de Bremer y remuestreos; consensos, taxones comodín y pruebas de hipótesis.",
+    categoria: "biogeografia", estado: "enlinea", version: "1.0.0", doi: "10.5281/zenodo.23147012", licencia: "GPL-3.0",
+    manualPdf: "CladisticsPro User's Manual.pdf", manualMb: 13, manualHtml: true, datos: true,
+    puntos: ["Matriz morfológica con inaplicables, continuos e imágenes", "Búsqueda exacta, TBR, ratchet y pesos implícitos", "Cada cambio sobre su rama, editable con el ratón", "Bremer, remuestreos, consensos y pruebas de hipótesis"],
+    destacada: false
+  },
+  {
     id: "FloralPro", nombre: "FloralPro",
     lema: "La flor, verticilo por verticilo",
     descripcion: "Para enseñar y aprender la estructura de la flor: fórmulas y diagramas florales, la flor en 3D y en corte, un atlas de verticilos, 82 familias de angiospermas con énfasis en México, clave interactiva, autoevaluación y modo clase.",

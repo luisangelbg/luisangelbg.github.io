@@ -15,7 +15,7 @@
     PCAPro: 'pasiflora', AgriDesign: 'planta-jitomate', PhenologyPro: 'manzano', EconomicsPro: 'aguacate',
     BreedingPro: 'chile', BioModellingPro: 'pinonero', ClusteringPro: 'orquidea', PopGeneticsPro: 'uva',
     PollinationPro: 'flor-calabaza', SciMetricsPro: 'chayote-2', GermplasmPro: 'maiz', LeafPro: 'cafe', FloralPro: 'loto',
-    AnalizaR: 'jitomate', PhylogenyPro: 'papilio',
+    AnalizaR: 'jitomate', PhylogenyPro: 'papilio', CladisticsPro: 'dalia',
   };
   const art = (a) => `assets/ilustraciones/${ARTE[a.id] || 'agave'}.svg`;
   const ficha = (a) => `apps/${a.id.toLowerCase()}/`;
@@ -27,7 +27,7 @@
     ['Multivariado', { PCAPro: 'ACP, AC, ACM, AFDM y AFM', ClusteringPro: 'Agrupamientos y su validación' }],
     ['Experimentos y campo', { AgriDesign: 'Diseños, ANOVA y comparación de medias', PhenologyPro: 'Grados-día, ETo y balance hídrico' }],
     ['Genética', { BreedingPro: 'Cruzas, heredabilidad y selección', PopGeneticsPro: 'Diversidad, F_ST, AMOVA y estructura', GermplasmPro: 'Vacíos de colecta y colección núcleo' }],
-    ['Espacio y evolución', { BioModellingPro: 'Distribución de especies y clima', PollinationPro: 'Flor y polinizador en el mapa', PhylogenyPro: 'Alineamiento, árboles y fechado' }],
+    ['Espacio y evolución', { BioModellingPro: 'Distribución de especies y clima', PollinationPro: 'Flor y polinizador en el mapa', PhylogenyPro: 'Alineamiento, árboles y fechado', CladisticsPro: 'Parsimonia con caracteres morfológicos' }],
     ['Decisión y literatura', { EconomicsPro: 'VAN, TIR y riesgo', SciMetricsPro: 'Bibliometría y redes de autores' }],
   ];
   const item = (a, line) => `<li><a href="${ficha(a)}"><img src="${art(a)}" alt="" width="34" height="34" loading="lazy"><b>${esc(a.nombre)}${tag(a)}</b><span>${esc(line)}</span></a></li>`;
