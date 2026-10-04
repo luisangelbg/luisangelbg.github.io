@@ -1,5 +1,11 @@
 # Navegador LABG · cambios
 
+## 1.1.1 · 3 de octubre de 2026
+
+- **Los botones flotantes ya no tapan «Siguiente».** «Último cambio» y «Volver arriba» viven en la esquina inferior derecha, justo donde cada app pone el botón «Siguiente» de su pie de bloque; al llegar al final de la página quedaban encima de él. Ahora, cuando un pie visible (`.step-footer` o `.next-bar`) entra en pantalla, los flotantes suben lo necesario para quedar 10 px por encima, y vuelven a su lugar al subir la página. El ajuste se recalcula con el desplazamiento y al cambiar el tamaño de la ventana, y nunca sube más de media pantalla. Lo reportó el autor en CladisticsPro.
+- Comprobado en las 17 apps con navegador (las 16 de la suite y CladisticsPro), en 1280 px y en teléfono (390 px), con «Último cambio» visible y la página al final: ningún botón del pie queda debajo de los flotantes. Sin errores de consola.
+- Copia fija en `v1.1.1/`.
+
 ## 1.1.0 · 2 de octubre de 2026
 
 - **Pestañas dentro de un bloque.** Opción nueva `tabs`: el selector de la lista de pestañas (`[role="tablist"]`) dentro del panel. Sirve cuando un bloque tiene pestañas y la app dibuja solo la abierta. Entonces:

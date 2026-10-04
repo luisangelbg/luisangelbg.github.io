@@ -1,4 +1,4 @@
-# Navegador LABG · guía de integración (v1.1.0)
+# Navegador LABG · guía de integración (v1.1.1)
 
 El navegador ordena la navegación de una app en tres niveles, sin tocar sus cálculos ni mover sus nodos.
 
@@ -25,7 +25,7 @@ El navegador ordena la navegación de una app en tres niveles, sin tocar sus cá
 
 - Ruta *App › Bloque › Sección*, con el título del bloque en «LABG Serif».
 - Contraer y expandir secciones, una o todas, con memoria.
-- Botones flotantes para volver arriba y a lo último que se editó.
+- Botones flotantes para volver arriba y a lo último que se editó; cuando el pie del bloque (`.step-footer`, `.next-bar`) entra en pantalla, suben por encima de él para no tapar «Siguiente».
 - Enlaces directos `#bN/seccion` que respetan Atrás y Adelante.
 - «Ir al paso pendiente» cuando un bloque espera un paso anterior.
 - Ayuda en contexto con `?`.
