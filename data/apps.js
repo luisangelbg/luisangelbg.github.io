@@ -146,7 +146,7 @@ window.LABG_APPS = [
     id: "CladisticsPro", nombre: "CladisticsPro",
     lema: "Caracteres, homología y árboles",
     descripcion: "Cladística con caracteres morfológicos, de la matriz al cladograma diagnosticado: matriz con enunciados y estados, polimorfismos, inaplicables, continuos e imágenes de cada taxón; los árboles más parsimoniosos por búsqueda exacta, TBR y ratchet; pesos implícitos y sucesivos; cada cambio dibujado sobre su rama y el cladograma editable con el ratón; apoyo de Bremer y remuestreos; consensos, taxones comodín y pruebas de hipótesis.",
-    categoria: "biogeografia", estado: "enlinea", version: "1.0.0", doi: "10.5281/zenodo.23147012", licencia: "GPL-3.0",
+    categoria: "biogeografia", estado: "enlinea", version: "1.0.1", doi: "10.5281/zenodo.23147012", licencia: "GPL-3.0",
     manualPdf: "CladisticsPro User's Manual.pdf", manualMb: 13, manualHtml: true, datos: true,
     puntos: ["Matriz morfológica con inaplicables, continuos e imágenes", "Búsqueda exacta, TBR, ratchet y pesos implícitos", "Cada cambio sobre su rama, editable con el ratón", "Bremer, remuestreos, consensos y pruebas de hipótesis"],
     destacada: false
@@ -173,7 +173,7 @@ window.LABG_APPS = [
     id: "SciMetricsPro", nombre: "SciMetricsPro",
     lema: "De tu búsqueda bibliográfica a un artículo bibliométrico",
     descripcion: "Importa las exportaciones de las bases de datos, une duplicados, normaliza autores, instituciones y países, calcula los indicadores clásicos, dibuja las estructuras conceptual, intelectual y social y registra una revisión sistemática PRISMA 2020.",
-    categoria: "ciencia", estado: "enlinea", version: "1.0.1", doi: "10.5281/zenodo.22879993", licencia: "GPL-3.0",
+    categoria: "ciencia", estado: "proximamente", version: "1.0.1", doi: "10.5281/zenodo.22879993", licencia: "GPL-3.0",
     manualPdf: "SciMetricsPro User's Manual.pdf", manualMb: 26, manualHtml: true, datos: true,
     puntos: ["Lee exportaciones de las principales bases", "Redes de coautoría, cocitación y temas", "Diagrama PRISMA 2020", "Texto metodológico redactado con tus datos"],
     destacada: true
