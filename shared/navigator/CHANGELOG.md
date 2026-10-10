@@ -1,5 +1,16 @@
 # Navegador LABG · cambios
 
+## 1.1.3 · 9 de octubre de 2026
+
+- **El nombre de los botones de búsqueda lleva lo que se ve en ellos** (WCAG 2.5.3, «la etiqueta en el nombre»). Los dos botones que abren la paleta muestran la tecla «Ctrl K», pero su nombre accesible no la traía tal cual: el de la barra lateral se llamaba «Buscar», y el de la barra de contexto, «Buscar en la app (Ctrl+K)», con un «+» que no está en la tecla. Quien maneja la app con la voz dice lo que ve, y eso tiene que estar en el nombre. Ahora:
+  - el de la barra lateral se llama «Buscar Ctrl K» («Search Ctrl K»);
+  - el de la barra de contexto, «Buscar en la app (Ctrl K)» («Search the app (Ctrl K)»), y su descripción emergente dice lo mismo.
+
+  El nombre se arma con el texto de la tecla del propio botón, así que no puede volver a quedar distinto de lo que se ve. Los botones se ven y se usan igual, y miden lo mismo. El de «Ayuda» no cambia: su tecla es un signo («?»), no un texto.
+- Lo midió Lighthouse 12 en SigmaPro (auditoría `label-content-name-mismatch`). Comprobado con esa misma regla de axe-core 4.13 en las 23 apps que llevan el navegador, en español y en inglés, con la barra lateral abierta y contraída y en los dos modos de lectura: antes fallaban los dos botones en 22 apps y el de la barra de contexto en SciMetricsPro, que no tiene barra lateral; ahora, ninguno. Lighthouse 12.8 en SigmaPro, en escritorio, ya no la marca en Inicio, Fundamentos, la Suite ni Validación. Las reglas de WCAG 2.1 A y AA sobre lo que pinta el navegador y el auditor de la suite (1280 y 390 px) dan lo mismo que con la 1.1.2.
+- Para quien mantenga el módulo: la regla de axe-core cuenta también el texto marcado con `aria-hidden`, de modo que ocultar la tecla a los lectores de pantalla no la cumple; y entre «Buscar» y la tecla tiene que haber un espacio en el marcado (no se ve, porque el botón es flex).
+- Copia fija en `v1.1.3/`.
+
 ## 1.1.2 · 3 de octubre de 2026
 
 - **Sin letras de otros ni peticiones a internet.** La hoja de estilo ya no declara «LABG Sans» ni «LABG Serif» (IBM Plex, que se pedían al portal de la suite). La interfaz va con la letra de palo seco del sistema y los títulos de bloque con la de remates, que es lo que ya se veía sin conexión. Así, una app abierta con doble clic no hace ninguna petición fuera del equipo y no lleva tipografías de terceros. CladisticsPro ya lo hacía así.

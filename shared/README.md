@@ -7,7 +7,7 @@ JavaScript, más su hoja de estilo, sin dependencias ni compilación. Funciona c
 | Módulo | Versión | Qué hace | Guía |
 |---|---|---|---|
 | **Estudio de figuras LABG** | 1.5.1 | Abre cualquier figura en pantalla dividida para editarla y exportarla | [figure-studio/GUIA-INTEGRACION.md](figure-studio/GUIA-INTEGRACION.md) |
-| **Navegador LABG** | 1.1.2 | Barra lateral de bloques, índice de secciones, modo enfocado, paleta Ctrl+K y enlaces directos | [navigator/GUIA-INTEGRACION.md](navigator/GUIA-INTEGRACION.md) |
+| **Navegador LABG** | 1.1.3 | Barra lateral de bloques, índice de secciones, modo enfocado, paleta Ctrl+K y enlaces directos | [navigator/GUIA-INTEGRACION.md](navigator/GUIA-INTEGRACION.md) |
 | **Efectos LABG** | 1.0.0 | Las esperas sobre el panel de resultados, con la animación de cada app; la aparición escalonada de los resultados, microanimaciones y el botón «Animaciones» | [fx/GUIA-INTEGRACION.md](fx/GUIA-INTEGRACION.md) · [demostración](fx/demo.html) |
 | **Editor ✎ LABG** | 1.0.0 | Un panel por figura (botón ✎): títulos, ejes, series, leyenda, textos y anotaciones, como un programa de gráficas | [figure-editor/GUIA-INTEGRACION.md](figure-editor/GUIA-INTEGRACION.md) |
 
@@ -23,7 +23,7 @@ shared/
   navigator/
     labg-navigator.js
     labg-navigator.css
-    v1.0.0/ v1.0.1/ v1.0.2/ v1.1.0/ v1.1.1/ v1.1.2/
+    v1.0.0/ v1.0.1/ v1.0.2/ v1.1.0/ v1.1.1/ v1.1.2/ v1.1.3/
   fx/
     labg-fx.js                ← la versión vigente
     labg-fx.css
@@ -55,7 +55,7 @@ Para actualizar una app se copian los cuatro archivos desde esta carpeta.
 
 ```html
 <script src="https://luisangelbg.github.io/shared/figure-studio/v1.5.1/labg-figure-studio.js" defer></script>
-<script src="https://luisangelbg.github.io/shared/navigator/v1.1.2/labg-navigator.js" defer></script>
+<script src="https://luisangelbg.github.io/shared/navigator/v1.1.3/labg-navigator.js" defer></script>
 <script src="https://luisangelbg.github.io/shared/fx/v1.0.0/labg-fx.js" data-app="pcapro" defer></script>
 ```
 

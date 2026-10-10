@@ -1,4 +1,4 @@
-# Navegador LABG · guía de integración (v1.1.2)
+# Navegador LABG · guía de integración (v1.1.3)
 
 El navegador ordena la navegación de una app en tres niveles, sin tocar sus cálculos ni mover sus nodos.
 
@@ -138,6 +138,7 @@ El formato es `#b3/varianza-explicada`. Usa el mismo `#bN` que ya leían Germpla
 - Ruta como `nav` con `ol`.
 - Paleta con el patrón de *combobox* + `listbox` (`aria-activedescendant`).
 - Fichas del modo enfocado con `role="tab"`.
+- El nombre accesible de cada botón contiene el texto que se ve en él (WCAG 2.5.3); en los de búsqueda, también la tecla «Ctrl K» (desde la 1.1.3).
 - Foco visible en oro y todo operable sin ratón.
 - Con `prefers-reduced-motion` no hay desplazamiento suave ni animaciones.
 - Al imprimir no aparece nada del navegador y todas las secciones se ven.
