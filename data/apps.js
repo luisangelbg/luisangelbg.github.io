@@ -164,7 +164,7 @@ window.LABG_APPS = [
     id: "LeafPro", nombre: "LeafPro",
     lema: "La hoja, carácter por carácter",
     descripcion: "Morfología de la hoja para el aula: partes, haz y envés con un corte anatómico interactivo, filotaxia con simulador del ángulo de oro, un atlas de más de 140 términos ilustrados y un constructor de hojas con descripción botánica.",
-    categoria: "botanica", estado: "proximamente", version: "1.2.0", doi: "", licencia: "GPL-3.0",
+    categoria: "botanica", estado: "enlinea", version: "1.2.0", doi: "", licencia: "GPL-3.0",
     manualPdf: "", manualMb: 0, manualHtml: false, datos: false,
     puntos: ["Corte anatómico interactivo", "Atlas de más de 140 términos ilustrados", "Constructor de hojas con descripción redactada", "Autoevaluación generativa y modo clase"],
     destacada: false
