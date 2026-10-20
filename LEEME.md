@@ -29,6 +29,27 @@ Queda en **https://luisangelbg.github.io/** y cada app sigue en su dirección ac
 - `scripts/check-links.mjs` comprueba que apps, manuales y DOI respondan; si algo se rompe el workflow falla y GitHub te avisa por correo.
 - Buscador: **Ctrl+K** (o la lupa) busca en apps, publicaciones y blog. `aplicaciones.html?q=texto` abre el catálogo ya filtrado.
 
+## Español e inglés
+
+El sitio se escribe en español y se traduce al vuelo, igual que las aplicaciones de la suite.
+
+- El conmutador **ES | EN** vive en la barra. La elección se guarda (`labg.lang`) y viaja a las apps:
+  los enlaces de *Abrir* llevan `?lang=`, que PCAPro entiende y las demás ignoran sin daño.
+  Quien llega con el navegador en inglés ve el sitio en inglés sin tocar nada.
+- `assets/js/dic.js` es el diccionario: **la clave es el texto en español** tal como aparece en la
+  página. Si falta una traducción se ve el español, no un hueco.
+- `assets/js/i18n.js` recorre el árbol ya dibujado y cambia textos y atributos; un observador repite
+  la pasada sobre lo que se dibuja después (paneles, tarjetas, sugerencias). Por eso **casi nunca hay
+  que tocar el código** para traducir algo nuevo: basta con añadir su renglón al diccionario.
+- Lo único que sí se traduce desde el código son las cadenas con una cifra o un nombre dentro. Su
+  clave lleva `{llaves}` y se rellena con `L.fmt(...)`.
+- Lo que **no** se traduce, a propósito: los nombres de las apps, los de personas e instituciones,
+  los títulos de los artículos publicados y las revistas donde salieron, los DOI y las versiones.
+  Una cita nombra una obra concreta; traducirla impediría encontrarla.
+- Las entradas del blog sí tienen versión propia: `blog/entradas/en/<slug>.md`. Si falta, se muestra
+  la española.
+- Para comprobarlo: abre cualquier página con `?lang=en` y busca texto que haya quedado en español.
+
 ## Mantenerlo — todo se edita en `data/`
 
 | Quiero… | Archivo |
@@ -38,6 +59,8 @@ Queda en **https://luisangelbg.github.io/** y cada app sigue en su dirección ac
 | Escribir en el blog | Crea `blog/entradas/<slug>.md` (Markdown: títulos, párrafos, listas, citas, negritas, cursivas, código, enlaces e imágenes) y agrega su bloque en `data/blog.js` |
 | Agregar una publicación | `data/publicaciones.js` |
 | Cambiar nombre, ORCID, correo, formulario | `data/config.js` |
+| Traducir al inglés un texto nuevo | `assets/js/dic.js`: un renglón con el español como clave |
+| Traducir una entrada del blog | `blog/entradas/en/<slug>.md`, con el mismo nombre que la española |
 
 El software con DOI aparece solo en *Publicaciones* (se toma de `apps.js`).
 

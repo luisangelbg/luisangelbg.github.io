@@ -18,7 +18,9 @@
     const n = $('#nOnline'); if (n && online.length) { n.dataset.count = online.length; n.textContent = online.length; }
     const lic = [...new Set(online.map((a) => a.licencia).filter(Boolean))];
     const l = $('#licencia'); if (l && lic.length === 1) l.textContent = lic[0];
-    const all = $('#allApps'); if (all && online.length) all.textContent = `Ver las ${online.length} apps →`;
+    const L = window.LABG_I18N || null;
+    const all = $('#allApps');
+    if (all && online.length) all.textContent = L ? L.fmt('Ver las {n} apps →', { n: online.length }) : `Ver las ${online.length} apps →`;
     if (!track || !online.length) return;
     const pick = online.filter((a) => a.destacada).concat(online.filter((a) => !a.destacada));
     track.innerHTML = pick.map((a) => `

@@ -65,6 +65,8 @@ ${preloadImg ? `<link rel="preload" href="${preloadImg}" as="image" fetchpriorit
 <link rel="stylesheet" href="assets/css/site.css">
 <script type="application/ld+json">${JSON.stringify(jsonld)}</script>
 <script>try{var t=localStorage.getItem("labg-tema");if(t==="dark"||t==="light")document.documentElement.setAttribute("data-theme",t)}catch(e){}document.documentElement.classList.add("js")</script>
+<script src="assets/js/dic.js"></script>
+<script src="assets/js/i18n.js"></script>
 <script defer src="data/config.js"></script>
 <script defer src="data/apps.js"></script>
 <script defer src="data/publicaciones.js"></script>

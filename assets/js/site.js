@@ -14,7 +14,7 @@
 
   /* ---------- Enlaces de cada app ---------- */
   const U = {
-    app: (a) => `${C.base}/${a.id}/`,
+    app: (a) => (L ? L.conIdioma(`${C.base}/${a.id}/`) : `${C.base}/${a.id}/`),
     repo: (a) => `${C.github}/${a.id}`,
     zip: (a) => `${C.github}/${a.id}/archive/refs/heads/main.zip`,
     pdf: (a) => a.manualPdf ? `${C.base}/${a.id}/manual/${encodeURIComponent(a.manualPdf)}` : "",
@@ -24,6 +24,10 @@
     post: (p) => `blog/${p.slug}/`,
     shot: (a) => `assets/apps/${a.id}.webp`
   };
+  const L = window.LABG_I18N || null;          /* motor bilingüe del portal */
+  const t = (s) => (L ? L.t(s) : s);           /* traduce al idioma elegido */
+  /* las cadenas con cifras dentro: la clave trae {llaves} que se rellenan aquí */
+  const fmt = (s, d) => (L ? L.fmt(s, d) : String(s).replace(/\{(\w+)\}/g, (m, k) => (k in d ? d[k] : m)));
   const online = (a) => a.estado === "enlinea";
   /* apps traducidas: se anuncian con una insignia y pueden abrirse en inglés */
   const bilingue = (a) => Array.isArray(a.idiomas) && a.idiomas.includes("en");
@@ -178,11 +182,13 @@
         ${NAV.map(([href, label, key]) => `<a href="${href}"${key === cur ? ' aria-current="page"' : ""}>${label}</a>`).join("")}
       </nav>
       <div class="top-tools">
+        ${L ? L.conmutador() : ""}
         <button class="icon-btn search-btn" type="button" id="searchBtn" aria-label="Buscar en el sitio" aria-keyshortcuts="Control+K /" title="Buscar (Ctrl+K)">${I.search}<span class="search-label">Buscar</span><kbd class="search-kbd" aria-hidden="true"></kbd></button>
         <button class="icon-btn theme-btn" type="button" id="themeBtn">${I.moon}${I.sun}</button>
         <button class="icon-btn menu-btn" type="button" id="menuBtn" aria-label="Abrir el menú" aria-controls="nav" aria-expanded="false">${I.menu}</button>
       </div></div>`;
     const ph = $("#hdr"); if (ph) ph.replaceWith(h); else document.body.prepend(h);
+    if (L) L.enlazar(h);
     $("#themeBtn").addEventListener("click", toggleTheme);
     paintTheme();
     $("#searchBtn").addEventListener("click", openSearch);
@@ -214,7 +220,7 @@
         <div class="foot-about">
           <p class="foot-name">${esc(C.sitio)} Suite</p>
           <p class="foot-desc">Aplicaciones científicas libres para la investigación y la docencia en ciencias agrícolas y biológicas. Corren en el navegador y tus datos no salen de tu computadora.</p>
-          <p class="foot-count">${APPS.length} aplicaciones · ${APPS.filter(online).length} en línea · ${APPS.filter((a) => a.doi).length} con DOI</p>
+          <p class="foot-count">${fmt("{n} aplicaciones · {online} en línea · {doi} con DOI", { n: APPS.length, online: APPS.filter(online).length, doi: APPS.filter((a) => a.doi).length })}</p>
         </div>
         <nav aria-labelledby="ft-sitio"><h2 class="foot-h" id="ft-sitio">Sitio</h2><ul>${NAV.map(([h, l]) => `<li><a href="${h}">${l}</a></li>`).join("")}</ul></nav>
         <nav aria-labelledby="ft-areas"><h2 class="foot-h" id="ft-areas">Áreas</h2><ul>${areas}</ul></nav>
@@ -275,15 +281,17 @@
   document.addEventListener("click", (e) => {
     const b = e.target.closest("[data-cite-id]"); if (!b) return;
     const a = APPS.find((x) => x.id === b.dataset.citeId);
-    if (a) copy(citation(a), `Cita de ${a.nombre} copiada`);
+    if (a) copy(citation(a), fmt("Cita de {app} copiada", { app: a.nombre }));
   });
   /* Año de la cita: el campo «anio» de la app en data/apps.js; si falta, el
      año de publicación de la suite (C.anioCita, 2026 por omisión). */
   const yearOf = (a) => a.anio || C.anioCita || 2026;
   function citation(a) {
-    const v = a.version ? ` (Versión ${a.version})` : "";
+    /* la cita sigue el idioma en que se está leyendo el sitio: el registro de
+       Zenodo guarda el título en inglés, y el lema es texto propio de la suite */
+    const v = a.version ? ` (${t("Versión")} ${a.version})` : "";
     const where = a.doi ? `Zenodo. ${U.doi(a.doi)}` : `${U.repo(a)}`;
-    return `${C.autorCita} (${yearOf(a)}). ${a.nombre}: ${a.lema}${v} [Software]. ${where}`;
+    return `${C.autorCita} (${yearOf(a)}). ${a.nombre}: ${t(a.lema)}${v} [Software]. ${where}`;
   }
   function bibtex(a) {
     const key = norm(C.autor.split(" ").slice(-1)[0]).replace(/[^a-z]/g, "") + yearOf(a) + norm(a.id).replace(/[^a-z0-9]/g, "");
@@ -413,7 +421,7 @@
         grid.innerHTML = list.length ? list.map(card).join("")
           : `<div class="empty" style="grid-column:1/-1"><p><b>Ninguna aplicación coincide.</b></p><p>Prueba con otra palabra, otra área o «Todas» en disponibilidad.</p><p style="margin-top:14px"><button class="btn btn-ghost btn-sm" type="button" id="clearFilters">Quitar los filtros</button></p></div>`;
         grid.classList.remove("fade-swap"); void grid.offsetWidth; grid.classList.add("fade-swap");
-        cnt.textContent = `${list.length} de ${APPS.length} aplicaciones`;
+        cnt.textContent = fmt("{n} de {total} aplicaciones", { n: list.length, total: APPS.length });
         sync();
       }
       draw();
@@ -453,7 +461,6 @@
             <p>${esc(a.descripcion)}</p>
             <div class="hero-actions">
               ${online(a) ? `<a class="btn btn-primary" href="${U.app(a)}" target="_blank" rel="noopener">Abrir ${esc(a.nombre)} ${I.arrow}${NEW}</a>` : `<span class="btn btn-ghost" aria-disabled="true">Disponible próximamente</span>`}
-              ${online(a) && bilingue(a) ? `<a class="btn btn-ghost" href="${U.app(a)}?lang=en" target="_blank" rel="noopener" lang="en">Open in English ${I.arrow}${NEW}</a>` : ""}
               ${online(a) && a.manualPdf ? `<a class="btn btn-ghost" href="${U.pdf(a)}" target="_blank" rel="noopener">${I.doc} Manual PDF${NEW}</a>` : ""}
               <a class="btn btn-ghost" href="${U.ficha(a)}#citar">${I.quote} Citar</a>
               ${online(a) ? `<a class="btn btn-ghost" href="${U.repo(a)}" target="_blank" rel="noopener">${I.code} Código${NEW}</a>` : ""}
@@ -560,7 +567,9 @@
 
     publicaciones() {
       const soft = APPS.filter((a) => a.doi).map((a) => ({
-        tipo: "software", anio: 2026, titulo: `${a.nombre}: ${a.lema}`, autores: C.autor,
+        /* el lema sí se traduce: es texto de la propia suite, no el título de
+           un trabajo de otra persona. El DOI es el que localiza el registro. */
+        tipo: "software", anio: 2026, titulo: `${a.nombre}: ${t(a.lema)}`, autores: C.autor,
         revista: `Zenodo${a.version ? " · versión " + a.version : ""}`, doi: a.doi, url: U.doi(a.doi), tema: "software"
       }));
       const ALL = PUBS.concat(soft);
@@ -591,7 +600,7 @@
         const list = ALL.filter((p) => (tipo === "todos" || p.tipo === tipo) && (!tm || p.tema === tm) &&
           (!t || norm([p.titulo, p.autores, p.revista].join(" ")).includes(t)))
           .sort((a, b) => b.anio - a.anio || a.titulo.localeCompare(b.titulo));
-        $("#pcount").textContent = `${list.length} de ${ALL.length} registros`;
+        $("#pcount").textContent = fmt("{n} de {total} registros", { n: list.length, total: ALL.length });
         if (!list.length) { $("#pubs").innerHTML = '<p class="empty">Ningún registro coincide con los filtros.</p>'; return; }
         const years = [...new Set(list.map((p) => p.anio))];
         $("#pubs").innerHTML = years.map((y) => `<div class="pub-year"><h2>${y}</h2><div class="pub-list">${
@@ -621,17 +630,26 @@
         $("#posts").innerHTML = POSTS.map(postCard).join("");
       } else {
         list.hidden = true; art.hidden = false;
-        document.title = `${post.titulo} · ${C.sitio} Suite`;
+        document.title = `${t(post.titulo)} · ${C.sitio} Suite`;
         $("#postHead").innerHTML = `<a href="blog.html" class="muted" style="font-size:.9rem">← Todas las entradas</a>
           <div class="tags">${post.etiquetas.map((t) => `<span class="chip chip-cat">${esc(t)}</span>`).join("")}</div>
           <h1 style="font-size:clamp(1.9rem,4vw,2.7rem)">${esc(post.titulo)}</h1>
           <time datetime="${post.fecha}">${fmtDate(post.fecha)} · ${esc(C.autor)}</time>`;
         const body = $("#postBody");
-        if (!body.hasAttribute("data-static")) {
-        body.innerHTML = '<p class="muted">Cargando…</p>';
-        fetch(`blog/entradas/${post.slug}.md`).then((r) => { if (!r.ok) throw 0; return r.text(); })
-          .then((src) => { body.innerHTML = markdown(src); })
-          .catch(() => { body.innerHTML = '<p>No se pudo cargar la entrada. Si abriste el archivo con doble clic, usa el servidor local (ver LEEME.md).</p>'; });
+        /* el texto de la entrada: en inglés se pide primero la versión traducida
+           (blog/entradas/en/) y, si todavía no existe, se queda la española.
+           La página armada por el build ya trae el texto español dentro, así que
+           en inglés hay que ir a buscarlo aunque esté marcado como estático. */
+        const ingles = L && L.lang === "en";
+        const estatico = body.hasAttribute("data-static");
+        if (!estatico || ingles) {
+          if (!estatico) body.innerHTML = '<p class="muted">' + t("Cargando…") + "</p>";
+          const pedir = (ruta) => fetch(ruta).then((r) => { if (!r.ok) throw 0; return r.text(); });
+          const fuente = ingles
+            ? pedir(`blog/entradas/en/${post.slug}.md`).catch(() => pedir(`blog/entradas/${post.slug}.md`))
+            : pedir(`blog/entradas/${post.slug}.md`);
+          fuente.then((src) => { body.innerHTML = markdown(src); })
+            .catch(() => { if (!estatico) body.innerHTML = "<p>" + t("No se pudo cargar la entrada. Si abriste el archivo con doble clic, usa el servidor local (ver LEEME.md).") + "</p>"; });
         }
         const rel = (post.apps || []).map((id) => APPS.find((a) => a.id === id)).filter(Boolean);
         $("#postApps").innerHTML = rel.length ? `<span class="eyebrow">Aplicaciones mencionadas</span><div class="dl-links">${rel.map((a) => `<a class="btn btn-ghost btn-sm" href="${U.ficha(a)}">${esc(a.nombre)}</a>`).join("")}</div>` : "";
@@ -696,7 +714,7 @@
   const markdown = (src) => window.LABG_MD.markdown(src);
 
   function fmtDate(d) {
-    try { return new Date(d + "T12:00:00").toLocaleDateString("es-MX", { day: "numeric", month: "long", year: "numeric" }); }
+    try { return new Date(d + "T12:00:00").toLocaleDateString(L && L.lang === "en" ? "en-GB" : "es-MX", { day: "numeric", month: "long", year: "numeric" }); }
     catch (e) { return d; }
   }
   function postCard(p) {

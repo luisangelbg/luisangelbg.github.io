@@ -9,6 +9,7 @@
   const root = document.documentElement;
   const APPS = window.LABG_APPS || [], CATS = window.LABG_CATEGORIAS || {}, C = window.LABG_CONFIG || {};
   const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const L = window.LABG_I18N || null;          /* motor bilingüe del portal */
 
   /* ilustración de cada app: la de la portada de su manual (assets/ilustraciones/) */
   const ARTE = window.LABG_ARTE = {
@@ -94,7 +95,7 @@
     const out = [];
     APPS.forEach((a) => {
       out.push({ t: a.nombre, s: a.lema, href: ficha(a), img: art(a), k: norm([a.nombre, a.lema, a.descripcion, (CATS[a.categoria] || {}).nombre, (a.puntos || []).join(' ')].join(' ')) });
-      if (a.estado === 'enlinea' && a.manualPdf) out.push({ t: 'Manual de ' + a.nombre, s: `PDF · ${a.manualMb} MB`, href: `${C.base || ''}/${a.id}/manual/${encodeURIComponent(a.manualPdf)}`, img: 'assets/marca/svg/labg-isotipo.svg', k: norm('manual guia ' + a.nombre + ' ' + a.lema) });
+      if (a.estado === 'enlinea' && a.manualPdf) out.push({ t: L ? L.fmt('Manual de {app}', { app: a.nombre }) : 'Manual de ' + a.nombre, s: `PDF · ${a.manualMb} MB`, href: `${C.base || ''}/${a.id}/manual/${encodeURIComponent(a.manualPdf)}`, img: 'assets/marca/svg/labg-isotipo.svg', k: norm('manual guia ' + a.nombre + ' ' + a.lema) });
     });
     return out;
   }
