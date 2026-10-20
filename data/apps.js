@@ -19,6 +19,8 @@
      manualMb    tamaño aproximado del PDF en MB
      manualHtml  true si existe manual/es/manual-completo.html
      datos       true si el repositorio trae datos de ejemplo
+     idiomas     (opcional) ["es", "en"] cuando la app está traducida: añade la
+                 insignia ES · EN y el botón que la abre en inglés
      puntos      3 o 4 cosas que hace (se muestran en la ficha)
      destacada   true para mostrarla en la portada
      anio        (opcional) año de la cita; si falta se usa el de publicación de la suite (2026)
@@ -40,6 +42,7 @@ window.LABG_APPS = [
     descripcion: "Preparación de datos, supuestos, extracción, rotación, mapas factoriales e interpretación, hasta un informe listo para publicar. Incluye además AC, ACM, FAMD, AFM y agrupamiento HCPC sobre las coordenadas factoriales.",
     categoria: "estadistica", estado: "enlinea", version: "1.1.0", doi: "10.5281/zenodo.22649709", licencia: "GPL-3.0",
     manualPdf: "PCAPro User's Manual.pdf", manualMb: 16, manualHtml: true, datos: true,
+    idiomas: ["es", "en"],
     puntos: ["PCA, AC, ACM, FAMD y AFM con un mismo núcleo", "Recomendador del método según tu tabla", "HCPC sobre las coordenadas factoriales", "Informe bilingüe listo para publicar"],
     destacada: true
   },

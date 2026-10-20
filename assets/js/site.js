@@ -25,6 +25,9 @@
     shot: (a) => `assets/apps/${a.id}.webp`
   };
   const online = (a) => a.estado === "enlinea";
+  /* apps traducidas: se anuncian con una insignia y pueden abrirse en inglés */
+  const bilingue = (a) => Array.isArray(a.idiomas) && a.idiomas.includes("en");
+  const langChip = (a) => (bilingue(a) ? `<span class="chip" title="Disponible en español y en inglés">ES · EN</span>` : "");
 
   /* ---------- Iconos (SVG en línea) ---------- */
   const I = {
@@ -444,12 +447,13 @@
         </ol></nav>
         <div class="detail-grid">
           <div class="detail-copy">
-            <div class="chips">${statusChip(a)}<span class="chip chip-cat">${esc(cat.nombre || "")}</span></div>
+            <div class="chips">${statusChip(a)}<span class="chip chip-cat">${esc(cat.nombre || "")}</span>${langChip(a)}</div>
             <h1>${esc(a.nombre)}</h1>
             <p class="lead detail-lema">${esc(a.lema)}</p>
             <p>${esc(a.descripcion)}</p>
             <div class="hero-actions">
               ${online(a) ? `<a class="btn btn-primary" href="${U.app(a)}" target="_blank" rel="noopener">Abrir ${esc(a.nombre)} ${I.arrow}${NEW}</a>` : `<span class="btn btn-ghost" aria-disabled="true">Disponible próximamente</span>`}
+              ${online(a) && bilingue(a) ? `<a class="btn btn-ghost" href="${U.app(a)}?lang=en" target="_blank" rel="noopener" lang="en">Open in English ${I.arrow}${NEW}</a>` : ""}
               ${online(a) && a.manualPdf ? `<a class="btn btn-ghost" href="${U.pdf(a)}" target="_blank" rel="noopener">${I.doc} Manual PDF${NEW}</a>` : ""}
               <a class="btn btn-ghost" href="${U.ficha(a)}#citar">${I.quote} Citar</a>
               ${online(a) ? `<a class="btn btn-ghost" href="${U.repo(a)}" target="_blank" rel="noopener">${I.code} Código${NEW}</a>` : ""}
