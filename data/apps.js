@@ -158,7 +158,7 @@ window.LABG_APPS = [
     id: "FloralPro", nombre: "FloralPro",
     lema: "La flor, verticilo por verticilo",
     descripcion: "Para enseñar y aprender la estructura de la flor: fórmulas y diagramas florales, la flor en 3D y en corte, un atlas de verticilos, 82 familias de angiospermas con énfasis en México, clave interactiva, autoevaluación y modo clase.",
-    categoria: "botanica", estado: "proximamente", version: "1.2.0", doi: "", licencia: "GPL-3.0",
+    categoria: "botanica", estado: "enlinea", version: "1.0.0", doi: "", licencia: "GPL-3.0",
     manualPdf: "", manualMb: 0, manualHtml: false, datos: false,
     puntos: ["Fórmulas y diagramas florales", "82 familias de angiospermas", "Clave interactiva y autoevaluación", "Modo clase para proyectar e imprimir"],
     destacada: false
