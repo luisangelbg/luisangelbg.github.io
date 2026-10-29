@@ -53,6 +53,7 @@ window.LABG_APPS = [
     descripcion: "Del cuadro de datos al dendrograma listo para publicar: tendencia de agrupamiento, coeficientes de similitud para todo tipo de variables, métodos jerárquicos y de partición, número óptimo de grupos, validación y perfil de cada grupo.",
     categoria: "estadistica", estado: "enlinea", version: "1.0.1", doi: "10.5281/zenodo.22682795", licencia: "GPL-3.0",
     manualPdf: "ClusteringPro User's Manual.pdf", manualMb: 25, manualHtml: true, datos: true,
+    manualEn: { pdf: "ClusteringPro User's Manual (English).pdf", mb: 26, html: true },
     puntos: ["Datos cuantitativos, binarios, nominales, mixtos y ecológicos", "k-means, PAM, CLARA, c-means difuso, DBSCAN y mezclas gaussianas", "Validación y estabilidad de los grupos", "Dendrogramas y mapas editables"],
     destacada: false
   },

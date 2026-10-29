@@ -321,6 +321,7 @@ window.LABG_DIC = {
   "Manual de BreedingPro en PDF (25 MB, abre otra pestaña)": "BreedingPro manual in PDF (25 MB, opens in a new tab)",
   "Manual de CladisticsPro en PDF (13 MB, abre otra pestaña)": "CladisticsPro manual in PDF (13 MB, opens in a new tab)",
   "Manual de ClusteringPro en PDF (25 MB, abre otra pestaña)": "ClusteringPro manual in PDF (25 MB, opens in a new tab)",
+  "Manual de ClusteringPro en PDF (26 MB, abre otra pestaña)": "ClusteringPro manual in PDF (26 MB, opens in a new tab)",
   "Manual de EconomicsPro en PDF (12 MB, abre otra pestaña)": "EconomicsPro manual in PDF (12 MB, opens in a new tab)",
   "Manual de PCAPro en PDF (16 MB, abre otra pestaña)": "PCAPro manual in PDF (16 MB, opens in a new tab)",
   "Manual de PhenologyPro en PDF (14 MB, abre otra pestaña)": "PhenologyPro manual in PDF (14 MB, opens in a new tab)",
