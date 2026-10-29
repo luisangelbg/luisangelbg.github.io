@@ -42,6 +42,7 @@ window.LABG_APPS = [
     descripcion: "Preparación de datos, supuestos, extracción, rotación, mapas factoriales e interpretación, hasta un informe listo para publicar. Incluye además AC, ACM, FAMD, AFM y agrupamiento HCPC sobre las coordenadas factoriales.",
     categoria: "estadistica", estado: "enlinea", version: "1.1.0", doi: "10.5281/zenodo.22649709", licencia: "GPL-3.0",
     manualPdf: "PCAPro User's Manual.pdf", manualMb: 16, manualHtml: true, datos: true,
+    manualEn: { pdf: "PCAPro User's Manual (English).pdf", mb: 16, html: true },
     idiomas: ["es", "en"],
     puntos: ["PCA, AC, ACM, FAMD y AFM con un mismo núcleo", "Recomendador del método según tu tabla", "HCPC sobre las coordenadas factoriales", "Informe bilingüe listo para publicar"],
     destacada: true

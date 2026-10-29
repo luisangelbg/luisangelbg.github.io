@@ -13,12 +13,17 @@
   const norm = (s) => String(s || "").normalize("NFD").replace(/[̀-ͯ]/g, "").toLowerCase();
 
   /* ---------- Enlaces de cada app ---------- */
+  const manEn = (a) => !!(a.manualEn && a.manualEn.pdf && L && L.lang === "en");
   const U = {
     app: (a) => (L ? L.conIdioma(`${C.base}/${a.id}/`) : `${C.base}/${a.id}/`),
     repo: (a) => `${C.github}/${a.id}`,
     zip: (a) => `${C.github}/${a.id}/archive/refs/heads/main.zip`,
-    pdf: (a) => a.manualPdf ? `${C.base}/${a.id}/manual/${encodeURIComponent(a.manualPdf)}` : "",
-    html: (a) => a.manualHtml ? `${C.base}/${a.id}/manual/es/manual-completo.html` : "",
+    /* quien lee en inglés recibe el manual inglés, si la app lo tiene (campo manualEn) */
+    pdf: (a) => manEn(a) ? U.pdfEn(a) : a.manualPdf ? `${C.base}/${a.id}/manual/${encodeURIComponent(a.manualPdf)}` : "",
+    pdfEn: (a) => (a.manualEn ? `${C.base}/${a.id}/manual/en/${encodeURIComponent(a.manualEn.pdf)}` : ""),
+    html: (a) => manEn(a) && a.manualEn.html ? `${C.base}/${a.id}/manual/en/manual-completo.html`
+      : a.manualHtml ? `${C.base}/${a.id}/manual/es/manual-completo.html` : "",
+    mb: (a) => (manEn(a) ? a.manualEn.mb : a.manualMb),
     doi: (d) => `https://doi.org/${d}`,
     ficha: (a) => `apps/${a.id.toLowerCase()}/`,
     post: (p) => `blog/${p.slug}/`,
@@ -255,7 +260,7 @@
       a.doi ? `<span>DOI <b>${esc(a.doi.replace("10.5281/zenodo.", "zenodo."))}</b></span>` : ""
     ].join("");
     const extra = [
-      online(a) && a.manualPdf ? `<a class="icon-btn" href="${U.pdf(a)}" target="_blank" rel="noopener" aria-label="Manual de ${esc(a.nombre)} en PDF (${a.manualMb} MB, abre otra pestaña)" title="Manual PDF · ${a.manualMb} MB">${I.doc}</a>` : "",
+      online(a) && a.manualPdf ? `<a class="icon-btn" href="${U.pdf(a)}" target="_blank" rel="noopener" aria-label="Manual de ${esc(a.nombre)} en PDF (${U.mb(a)} MB, abre otra pestaña)" title="Manual PDF · ${U.mb(a)} MB">${I.doc}</a>` : "",
       `<button class="icon-btn" type="button" data-cite-id="${esc(a.id)}" aria-label="Copiar la cita de ${esc(a.nombre)}" title="Copiar la cita">${I.quote}</button>`
     ].join("");
     return `<article class="card" data-cat="${esc(a.categoria)}">
@@ -503,8 +508,9 @@
             <h2>Descargas</h2>
             <div class="cite-box">
               <div class="dl-links">
-                ${a.manualPdf ? `<a class="btn btn-ghost btn-sm" href="${U.pdf(a)}" target="_blank" rel="noopener">${I.doc} Manual PDF <span class="size">${a.manualMb} MB</span>${NEW}</a>` : ""}
+                ${a.manualPdf ? `<a class="btn btn-ghost btn-sm" href="${U.pdf(a)}" target="_blank" rel="noopener">${I.doc} Manual PDF <span class="size">${U.mb(a)} MB</span>${NEW}</a>` : ""}
                 ${a.manualHtml ? `<a class="btn btn-ghost btn-sm" href="${U.html(a)}" target="_blank" rel="noopener">${I.doc} Manual en línea${NEW}</a>` : ""}
+                ${a.manualEn && !manEn(a) ? `<a class="btn btn-ghost btn-sm" href="${U.pdfEn(a)}" target="_blank" rel="noopener" hreflang="en">${I.doc} Manual en inglés <span class="size">${a.manualEn.mb} MB</span>${NEW}</a>` : ""}
                 <a class="btn btn-ghost btn-sm" href="${U.zip(a)}">${I.down} App completa (.zip)</a>
               </div>
               <p class="muted small">El .zip permite usar la aplicación sin internet: descomprímelo y abre <span class="mono">index.html</span>.</p>
@@ -553,7 +559,7 @@
       const rows = APPS.map((a) => {
         const on = online(a);
         const cells = on ? `
-          <td>${a.manualPdf ? `<a class="btn btn-ghost btn-sm" href="${U.pdf(a)}" target="_blank" rel="noopener">${I.doc} PDF</a> <span class="size">${a.manualMb} MB</span>` : '<span class="muted">—</span>'}</td>
+          <td>${a.manualPdf ? `<a class="btn btn-ghost btn-sm" href="${U.pdf(a)}" target="_blank" rel="noopener">${I.doc} PDF</a> <span class="size">${U.mb(a)} MB</span>` : '<span class="muted">—</span>'}</td>
           <td>${a.manualHtml ? `<a href="${U.html(a)}" target="_blank" rel="noopener">Leer en línea</a>` : '<span class="muted">—</span>'}</td>
           <td><div class="dl-links"><a class="btn btn-ghost btn-sm" href="${U.zip(a)}">${I.down} .zip</a><a class="btn btn-ghost btn-sm" href="${U.repo(a)}" target="_blank" rel="noopener">${I.code} GitHub</a></div></td>`
           : `<td colspan="3"><span class="chip chip-soon"><span class="dot"></span>Próximamente</span></td>`;
@@ -562,7 +568,7 @@
       $("#dlBody").innerHTML = rows;
       const man = APPS.filter((a) => online(a) && a.manualPdf);
       $("#nMan").textContent = man.length;
-      $("#mbMan").textContent = man.reduce((s, a) => s + a.manualMb, 0);
+      $("#mbMan").textContent = man.reduce((s, a) => s + U.mb(a), 0);
     },
 
     publicaciones() {

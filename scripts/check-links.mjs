@@ -12,6 +12,7 @@ for (const a of APPS) {
   urls.add(`${C.base}/${a.id}/`);
   if (a.manualPdf) urls.add(`${C.base}/${a.id}/manual/${encodeURIComponent(a.manualPdf)}`);
   if (a.manualHtml) urls.add(`${C.base}/${a.id}/manual/es/manual-completo.html`);
+  if (a.manualEn) { urls.add(`${C.base}/${a.id}/manual/en/${encodeURIComponent(a.manualEn.pdf)}`); if (a.manualEn.html) urls.add(`${C.base}/${a.id}/manual/en/manual-completo.html`); }
 }
 // Los DOI se comprueban en el registro oficial (api handles), no en la editorial:
 // muchas revistas bloquean robots o tardan, y eso no significa que el DOI esté roto.

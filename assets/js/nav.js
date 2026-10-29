@@ -95,7 +95,8 @@
     const out = [];
     APPS.forEach((a) => {
       out.push({ t: a.nombre, s: a.lema, href: ficha(a), img: art(a), k: norm([a.nombre, a.lema, a.descripcion, (CATS[a.categoria] || {}).nombre, (a.puntos || []).join(' ')].join(' ')) });
-      if (a.estado === 'enlinea' && a.manualPdf) out.push({ t: L ? L.fmt('Manual de {app}', { app: a.nombre }) : 'Manual de ' + a.nombre, s: `PDF · ${a.manualMb} MB`, href: `${C.base || ''}/${a.id}/manual/${encodeURIComponent(a.manualPdf)}`, img: 'assets/marca/svg/labg-isotipo.svg', k: norm('manual guia ' + a.nombre + ' ' + a.lema) });
+      const en = !!(a.manualEn && L && L.lang === 'en'); /* el manual en el idioma que se lee */
+      if (a.estado === 'enlinea' && a.manualPdf) out.push({ t: L ? L.fmt('Manual de {app}', { app: a.nombre }) : 'Manual de ' + a.nombre, s: `PDF · ${en ? a.manualEn.mb : a.manualMb} MB`, href: `${C.base || ''}/${a.id}/manual/${en ? 'en/' + encodeURIComponent(a.manualEn.pdf) : encodeURIComponent(a.manualPdf)}`, img: 'assets/marca/svg/labg-isotipo.svg', k: norm('manual guia ' + a.nombre + ' ' + a.lema) });
     });
     return out;
   }
