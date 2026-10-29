@@ -107,7 +107,8 @@ window.LABG_APPS = [
     lema: "Genética de poblaciones de plantas, del campo al artículo",
     descripcion: "Microsatélites, SNP, isoenzimas, bandas AFLP/ISSR/RAPD, secuencias y caracteres morfológicos: diversidad, Hardy–Weinberg, AMOVA y estadísticos F, distancias, agrupamiento bayesiano, redes de haplotipos e historia demográfica.",
     categoria: "genetica", estado: "enlinea", version: "1.0.1", doi: "10.5281/zenodo.22740171", licencia: "GPL-3.0",
-    manualPdf: "PopGeneticsPro_Manual_de_usuario_ES.pdf", manualMb: 30, manualHtml: true, datos: true,
+    manualPdf: "PopGeneticsPro User's Manual.pdf", manualMb: 30, manualHtml: true, datos: true,
+    manualEn: { pdf: "PopGeneticsPro User's Manual (English).pdf", mb: 30, html: true },
     puntos: ["Marcadores codominantes, dominantes y secuencias", "AMOVA jerárquico y estadísticos F", "Agrupamiento bayesiano y redes de haplotipos", "Sistema de apareamiento y QST vs FST"],
     destacada: false
   },
