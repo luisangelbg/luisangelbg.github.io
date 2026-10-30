@@ -14,6 +14,8 @@
 
   /* ---------- Enlaces de cada app ---------- */
   const manEn = (a) => !!(a.manualEn && a.manualEn.pdf && L && L.lang === "en");
+  /* la marca ES / EN solo aparece cuando la app tiene manual en los dos idiomas */
+  const tagLang = (m, all) => (all.length > 1 ? ` <span class="lang-tag" lang="${m.lang}">${m.lang.toUpperCase()}</span>` : "");
   const U = {
     app: (a) => (L ? L.conIdioma(`${C.base}/${a.id}/`) : `${C.base}/${a.id}/`),
     repo: (a) => `${C.github}/${a.id}`,
@@ -24,6 +26,15 @@
     html: (a) => manEn(a) && a.manualEn.html ? `${C.base}/${a.id}/manual/en/manual-completo.html`
       : a.manualHtml ? `${C.base}/${a.id}/manual/es/manual-completo.html` : "",
     mb: (a) => (manEn(a) ? a.manualEn.mb : a.manualMb),
+    /* todos los manuales de la app, uno por idioma; primero el del idioma en que se lee */
+    manuales: (a) => {
+      const m = [];
+      if (a.manualPdf) m.push({ lang: "es", pdf: `${C.base}/${a.id}/manual/${encodeURIComponent(a.manualPdf)}`, mb: a.manualMb,
+        html: a.manualHtml ? `${C.base}/${a.id}/manual/es/manual-completo.html` : "" });
+      if (a.manualEn && a.manualEn.pdf) m.push({ lang: "en", pdf: U.pdfEn(a), mb: a.manualEn.mb,
+        html: a.manualEn.html ? `${C.base}/${a.id}/manual/en/manual-completo.html` : "" });
+      return manEn(a) ? m.reverse() : m;
+    },
     doi: (d) => `https://doi.org/${d}`,
     ficha: (a) => `apps/${a.id.toLowerCase()}/`,
     post: (p) => `blog/${p.slug}/`,
@@ -466,7 +477,7 @@
             <p>${esc(a.descripcion)}</p>
             <div class="hero-actions">
               ${online(a) ? `<a class="btn btn-primary" href="${U.app(a)}" target="_blank" rel="noopener">Abrir ${esc(a.nombre)} ${I.arrow}${NEW}</a>` : `<span class="btn btn-ghost" aria-disabled="true">Disponible próximamente</span>`}
-              ${online(a) && a.manualPdf ? `<a class="btn btn-ghost" href="${U.pdf(a)}" target="_blank" rel="noopener">${I.doc} Manual PDF${NEW}</a>` : ""}
+              ${online(a) ? U.manuales(a).map((m, i, all) => `<a class="btn btn-ghost" href="${m.pdf}" target="_blank" rel="noopener" hreflang="${m.lang}">${I.doc} Manual PDF${tagLang(m, all)}${NEW}</a>`).join("") : ""}
               <a class="btn btn-ghost" href="${U.ficha(a)}#citar">${I.quote} Citar</a>
               ${online(a) ? `<a class="btn btn-ghost" href="${U.repo(a)}" target="_blank" rel="noopener">${I.code} Código${NEW}</a>` : ""}
             </div>
@@ -508,9 +519,8 @@
             <h2>Descargas</h2>
             <div class="cite-box">
               <div class="dl-links">
-                ${a.manualPdf ? `<a class="btn btn-ghost btn-sm" href="${U.pdf(a)}" target="_blank" rel="noopener">${I.doc} Manual PDF <span class="size">${U.mb(a)} MB</span>${NEW}</a>` : ""}
-                ${a.manualHtml ? `<a class="btn btn-ghost btn-sm" href="${U.html(a)}" target="_blank" rel="noopener">${I.doc} Manual en línea${NEW}</a>` : ""}
-                ${a.manualEn && !manEn(a) ? `<a class="btn btn-ghost btn-sm" href="${U.pdfEn(a)}" target="_blank" rel="noopener" hreflang="en">${I.doc} Manual en inglés <span class="size">${a.manualEn.mb} MB</span>${NEW}</a>` : ""}
+                ${U.manuales(a).map((m, i, all) => `<a class="btn btn-ghost btn-sm" href="${m.pdf}" target="_blank" rel="noopener" hreflang="${m.lang}">${I.doc} Manual PDF${tagLang(m, all)} <span class="size">${m.mb} MB</span>${NEW}</a>`
+                  + (m.html ? `<a class="btn btn-ghost btn-sm" href="${m.html}" target="_blank" rel="noopener" hreflang="${m.lang}">${I.doc} Manual en línea${tagLang(m, all)}${NEW}</a>` : "")).join("")}
                 <a class="btn btn-ghost btn-sm" href="${U.zip(a)}">${I.down} App completa (.zip)</a>
               </div>
               <p class="muted small">El .zip permite usar la aplicación sin internet: descomprímelo y abre <span class="mono">index.html</span>.</p>
@@ -559,16 +569,16 @@
       const rows = APPS.map((a) => {
         const on = online(a);
         const cells = on ? `
-          <td>${a.manualPdf ? `<a class="btn btn-ghost btn-sm" href="${U.pdf(a)}" target="_blank" rel="noopener">${I.doc} PDF</a> <span class="size">${U.mb(a)} MB</span>` : '<span class="muted">—</span>'}</td>
-          <td>${a.manualHtml ? `<a href="${U.html(a)}" target="_blank" rel="noopener">Leer en línea</a>` : '<span class="muted">—</span>'}</td>
+          <td>${a.manualPdf ? `<div class="dl-man">${U.manuales(a).map((m, i, all) => `<span><a class="btn btn-ghost btn-sm" href="${m.pdf}" target="_blank" rel="noopener" hreflang="${m.lang}">${I.doc} PDF${tagLang(m, all)}</a> <span class="size">${m.mb} MB</span></span>`).join("")}</div>` : '<span class="muted">—</span>'}</td>
+          <td>${U.manuales(a).some((m) => m.html) ? `<div class="dl-man">${U.manuales(a).filter((m) => m.html).map((m, i, all) => `<span><a href="${m.html}" target="_blank" rel="noopener" hreflang="${m.lang}">Leer en línea</a>${tagLang(m, U.manuales(a))}</span>`).join("")}</div>` : '<span class="muted">—</span>'}</td>
           <td><div class="dl-links"><a class="btn btn-ghost btn-sm" href="${U.zip(a)}">${I.down} .zip</a><a class="btn btn-ghost btn-sm" href="${U.repo(a)}" target="_blank" rel="noopener">${I.code} GitHub</a></div></td>`
           : `<td colspan="3"><span class="chip chip-soon"><span class="dot"></span>Próximamente</span></td>`;
         return `<tr><td><div class="name"><a href="${U.ficha(a)}">${esc(a.nombre)}</a></div><div class="sub">${esc((CATS[a.categoria] || {}).corto || "")}${a.version ? " · v" + esc(a.version) : ""}</div></td>${cells}</tr>`;
       }).join("");
       $("#dlBody").innerHTML = rows;
       const man = APPS.filter((a) => online(a) && a.manualPdf);
-      $("#nMan").textContent = man.length;
-      $("#mbMan").textContent = man.reduce((s, a) => s + U.mb(a), 0);
+      $("#nMan").textContent = man.reduce((s, a) => s + U.manuales(a).length, 0);
+      $("#mbMan").textContent = man.reduce((s, a) => s + U.manuales(a).reduce((t, m) => t + m.mb, 0), 0);
     },
 
     publicaciones() {

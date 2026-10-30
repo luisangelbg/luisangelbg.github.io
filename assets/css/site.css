@@ -303,6 +303,9 @@ table.dl td .name { font-weight: 600; }
 table.dl td .sub { font-size: .82rem; color: var(--muted); }
 .dl-links { display: flex; flex-wrap: wrap; gap: 6px; }
 .size { font: .78rem var(--f-mono); color: var(--muted); }
+/* manual por idioma: marca ES / EN y un renglón por idioma en la tabla de descargas */
+.lang-tag { display: inline-block; margin-left: .35em; padding: 0 .4em; border: 1px solid var(--line); border-radius: 4px; font: 600 .68rem/1.5 var(--f-mono); letter-spacing: .06em; color: var(--muted); vertical-align: .1em; }
+.dl-man { display: flex; flex-direction: column; gap: 6px; align-items: flex-start; }
 
 /* ---------- Blog ---------- */
 .posts { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; }
