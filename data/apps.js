@@ -91,6 +91,7 @@ window.LABG_APPS = [
     descripcion: "Evaluación económica y financiera de proyectos agrícolas y agroindustriales, del supuesto al informe: horizonte, precios constantes o corrientes y tasa de descuento por TREMA, CPPC o CAPM; series deflactadas con cinco métodos de proyección; inversión con reposición automática, costos y capital de trabajo; créditos y estados proforma con los dos flujos; VAN, TIR con todas sus raíces, TIRM, B/C, recuperación y valor anual equivalente; análisis marginal del CIMMYT; valores límite, escenarios y Monte Carlo con correlación; precios cuenta con el puente exacto al VAN económico; y comparación de alternativas, reemplazo, turno de Faustmann y comprar o rentar.",
     categoria: "agronomia", estado: "enlinea", version: "1.0.7", doi: "10.5281/zenodo.23005974", licencia: "GPL-3.0",
     manualPdf: "EconomicsPro User's Manual.pdf", manualMb: 12, manualHtml: true, datos: true,
+    manualEn: { pdf: "EconomicsPro User's Manual (English).pdf", mb: 13, html: true },
     puntos: ["VAN, TIR y todos los indicadores de los dos flujos, con el dictamen redactado", "Riesgo: valores límite, escenarios, Monte Carlo con correlación y árbol de decisión", "Evaluación social con precios cuenta y un puente exacto del VAN privado al económico", "Informe que se lee solo y paquete .zip que permite rehacer todos los cálculos"],
     destacada: true
   },
