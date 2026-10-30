@@ -72,6 +72,7 @@ window.LABG_APPS = [
     descripcion: "De la libreta de campo a resultados listos para publicar: importación y revisión de datos, descriptiva, supuestos del ANOVA, los diseños experimentales clásicos con sus pruebas de comparación de medias, figuras editables e informe automático.",
     categoria: "agronomia", estado: "enlinea", version: "1.0", doi: "10.5281/zenodo.22683046", licencia: "GPL-3.0",
     manualPdf: "AgriDesign User's Manual.pdf", manualMb: 20, manualHtml: true, datos: true,
+    manualEn: { pdf: "AgriDesign User's Manual (English).pdf", mb: 21, html: true },
     puntos: ["DCA, bloques, cuadro latino, factoriales y parcelas divididas", "Tukey, Duncan, LSD y otras pruebas de medias", "Generador de croquis de campo", "Informe automático"],
     destacada: true
   },
