@@ -130,6 +130,7 @@ window.LABG_APPS = [
     descripcion: "Descarga registros de presencia de portales abiertos de biodiversidad, depúralos, extrae variables bioclimáticas, de clima y de suelo, explóralas y modela la distribución de la especie con diez algoritmos y un ensamble, con validación, umbrales y proyecciones a escenarios climáticos.",
     categoria: "biogeografia", estado: "enlinea", version: "1.1.1", doi: "10.5281/zenodo.22907825", licencia: "GPL-3.0",
     manualPdf: "BioModelling Pro User's Manual.pdf", manualMb: 13, manualHtml: true, datos: true,
+    manualEn: { pdf: "BioModelling Pro User's Manual (English).pdf", mb: 13, html: true },
     puntos: ["Registros de presencia abiertos y su depuración", "Máxima entropía y otros nueve algoritmos, más ensamble", "Validación, umbrales e importancia de variables", "Proyección a escenarios de cambio climático"],
     destacada: true
   },
