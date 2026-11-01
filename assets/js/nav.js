@@ -25,7 +25,7 @@
   /* ---------- paneles: por área y por tipo de análisis ---------- */
   const ANALISIS = [
     ['Explorar y probar', { AnalizaR: 'Pruebas, ANOVA y regresión, sin código' }],
-    ['Multivariado', { PCAPro: 'ACP, AC, ACM, AFDM y AFM', ClusteringPro: 'Agrupamientos y su validación' }],
+    ['Multivariado', { PCAPro: 'ACP, AC, ACM, AFDM y AFM', ClusteringPro: 'Agrupamientos y su validación', CorrelationPro: 'Correlación, redes y metaanálisis' }],
     ['Experimentos y campo', { AgriDesign: 'Diseños, ANOVA y comparación de medias', PhenologyPro: 'Grados-día, ETo y balance hídrico' }],
     ['Genética', { BreedingPro: 'Cruzas, heredabilidad y selección', PopGeneticsPro: 'Diversidad, F_ST, AMOVA y estructura', GermplasmPro: 'Vacíos de colecta y colección núcleo' }],
     ['Espacio y evolución', { BioModellingPro: 'Distribución de especies y clima', PollinationPro: 'Flor y polinizador en el mapa', PhylogenyPro: 'Alineamiento, árboles y fechado', CladisticsPro: 'Parsimonia con caracteres morfológicos' }],

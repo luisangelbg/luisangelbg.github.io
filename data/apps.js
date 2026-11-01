@@ -58,6 +58,16 @@ window.LABG_APPS = [
     destacada: false
   },
   {
+    id: "CorrelationPro", nombre: "CorrelationPro",
+    lema: "Correlación de todo tipo, con su teoría",
+    descripcion: "Del cuadro de datos a la correlación bien elegida y bien reportada: coeficientes clásicos, robustos y no lineales, correlación parcial y entre conjuntos, medidas para variables categóricas, ordinales y latentes, acuerdo y fiabilidad, datos agrupados, repetidos, en el tiempo, el espacio o el círculo, redes de correlación, comparación de correlaciones, potencia y metaanálisis, con cada fórmula explicada y figuras listas para publicar.",
+    categoria: "estadistica", estado: "enlinea", version: "1.0.0", doi: "10.5281/zenodo.23867439", licencia: "GPL-3.0",
+    manualPdf: "CorrelationPro_Manual_de_usuario_ES.pdf", manualMb: 18, manualHtml: true, datos: true,
+    idiomas: ["es", "en"],
+    puntos: ["Más de ochenta medidas, de Pearson a la dependencia no lineal", "Parcial, canónica, categóricas, policóricas y acuerdo", "Datos con grupos, series, espacio, filogenia y ángulos", "Redes, comparación de correlaciones, potencia y metaanálisis"],
+    destacada: false
+  },
+  {
     id: "AnalizaR", nombre: "StatsPro",
     lema: "Estadística rigurosa para el aula, sin código",
     descripcion: "Sube una hoja de cálculo y obtén estadística descriptiva, supuestos del ANOVA, regresión, comparación de medias, correlación y análisis multivariado, con gráficas editables de calidad para publicación.",
