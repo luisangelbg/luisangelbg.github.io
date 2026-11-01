@@ -200,6 +200,7 @@ window.LABG_APPS = [
     descripcion: "Un artículo de revisión de principio a fin, narrativo, exploratorio, sistemático o con meta-análisis: protocolo y registro, cadenas de búsqueda, importación y duplicados, cribado priorizado con acuerdo entre revisores, texto completo y diagrama PRISMA, extracción con calculadora de tamaños del efecto, calidad y riesgo de sesgo con GRADE, meta-análisis multinivel y escritura orientada que liga cada afirmación con su evidencia.",
     categoria: "ciencia", estado: "enlinea", version: "1.0.0", doi: "", licencia: "GPL-3.0",
     manualPdf: "ReviewPro User's Manual.pdf", manualMb: 13, manualHtml: true, datos: true,
+    manualEn: { pdf: "ReviewPro User's Manual (English).pdf", mb: 13, html: true },
     puntos: ["Protocolo con PRISMA-P y plantillas de registro PROSPERO y OSF", "Cribado priorizado, regla de paro y acuerdo entre revisores", "Riesgo de sesgo, GRADE y meta-análisis multinivel de tres niveles", "Escritura orientada con verificador de afirmaciones, informe y paquete"],
     destacada: false
   }
