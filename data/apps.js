@@ -190,6 +190,7 @@ window.LABG_APPS = [
     descripcion: "Importa las exportaciones de las bases de datos, une duplicados, normaliza autores, instituciones y países, calcula los indicadores clásicos, dibuja las estructuras conceptual, intelectual y social y registra una revisión sistemática PRISMA 2020.",
     categoria: "ciencia", estado: "enlinea", version: "1.0.1", doi: "10.5281/zenodo.22879993", licencia: "GPL-3.0",
     manualPdf: "SciMetricsPro User's Manual.pdf", manualMb: 26, manualHtml: true, datos: true,
+    manualEn: { pdf: "SciMetricsPro User's Manual (English).pdf", mb: 26, html: true },
     puntos: ["Lee exportaciones de las principales bases", "Redes de coautoría, cocitación y temas", "Diagrama PRISMA 2020", "Texto metodológico redactado con tus datos"],
     destacada: true
   },
