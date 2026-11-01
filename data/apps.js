@@ -101,7 +101,7 @@ window.LABG_APPS = [
     lema: "De los progenitores al mejor híbrido",
     descripcion: "Cruzas dialélicas, diseños de apareamiento, medias generacionales, índices de selección, interacción genotipo × ambiente, modelo animal, predicción genómica y de híbridos, para mejoramiento vegetal y animal.",
     categoria: "genetica", estado: "enlinea", version: "1.0.1", doi: "10.5281/zenodo.23005938", licencia: "GPL-3.0",
-    manualPdf: "BreedingPro User's Manual.pdf", manualMb: 25, manualHtml: true, datos: true,
+    manualPdf: "BreedingPro User's Manual.pdf", manualMb: 24, manualHtml: true, datos: true,
     manualEn: { pdf: "BreedingPro User's Manual (English).pdf", mb: 24, html: true },
     puntos: ["Griffing, Hayman–Jinks y Gardner–Eberhart", "Heredabilidad, heterosis e índices de selección", "Interacción G×A: AMMI y estabilidad", "BLUP y predicción genómica"],
     destacada: true
