@@ -121,6 +121,7 @@ window.LABG_APPS = [
     descripcion: "Para el trabajo diario de una colección de recursos fitogenéticos de cualquier especie y forma de conservación —semillas, campo, in vitro, criopreservación e in situ—: pasaporte MCPD v2.1, control de duplicados, mapas de colecta sin internet, diversidad geográfica, vacíos de colecta, colección núcleo, viabilidad, existencias y regeneración, etiquetas con código QR o de barras, e informe con exportación a MCPD y Darwin Core.",
     categoria: "genetica", estado: "enlinea", version: "1.0.0", doi: "", licencia: "GPL-3.0",
     manualPdf: "GermplasmPro User's Manual.pdf", manualMb: 21, manualHtml: true, datos: true,
+    manualEn: { pdf: "GermplasmPro User's Manual (English).pdf", mb: 21, html: true },
     puntos: ["Pasaporte MCPD v2.1 con validación y control de duplicados", "Mapas, diversidad geográfica y vacíos de colecta, sin internet", "Colección núcleo validada y viabilidad proyectada lote por lote", "Etiquetas con QR o Code 128 e informe con MCPD y Darwin Core"],
     destacada: false
   },
