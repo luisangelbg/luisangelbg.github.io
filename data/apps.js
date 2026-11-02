@@ -218,6 +218,17 @@ window.LABG_APPS = [
     destacada: false
   },
   {
+    id: "PalynoPro", nombre: "PalynoPro",
+    lema: "De la micrografía electrónica a la clave polínica",
+    descripcion: "Morfometría polínica cuantitativa en micrografías electrónicas de barrido, de la carpeta de imágenes al informe: cada imagen calibrada por la magnificación y comprobada contra su barra de escala; el contorno leído en 720 direcciones, el cuerpo medido sin las espinas, los anchos de Feret, el alargamiento y la circularidad; espinas contadas y medidas, lúmenes del retículo y textura de la superficie; granos turgentes y colapsados en las panorámicas con intervalos de Wilson; análisis de varianza con letras de Tukey, Kruskal–Wallis, componentes principales, PERMANOVA, discriminante y bosque aleatorio, siempre con el grano como unidad; y un informe con los métodos y sus fuentes. Las imágenes no salen de tu computadora. Validada contra implementaciones independientes.",
+    categoria: "botanica", estado: "enlinea", version: "1.0.0", doi: "10.5281/zenodo.XXXXXXX", licencia: "GPL-3.0",
+    manualPdf: "PalynoPro_Manual_de_usuario_ES.pdf", manualMb: 8, manualHtml: true, datos: true,
+    manualEn: { pdf: "PalynoPro User's Manual (English).pdf", mb: 8, html: true },
+    idiomas: ["es", "en"],
+    puntos: ["Calibración por la magnificación, comprobada contra la barra de escala", "Cuerpo sin espinas, anchos de Feret, espinas, lúmenes del retículo y textura", "Fertilidad en las panorámicas por la solidez del cuerpo, con intervalos de Wilson", "ANOVA, PERMANOVA, discriminante y bosque aleatorio con el grano como unidad"],
+    destacada: false
+  },
+  {
     id: "SciMetricsPro", nombre: "SciMetricsPro",
     lema: "De tu búsqueda bibliográfica a un artículo bibliométrico",
     descripcion: "Importa las exportaciones de las bases de datos, une duplicados, normaliza autores, instituciones y países, calcula los indicadores clásicos, dibuja las estructuras conceptual, intelectual y social y registra una revisión sistemática PRISMA 2020.",
