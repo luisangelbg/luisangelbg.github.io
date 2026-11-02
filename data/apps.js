@@ -140,7 +140,7 @@ window.LABG_APPS = [
   {
     id: "CytogeneticsPro", nombre: "CytogeneticsPro",
     lema: "Del conteo cromosómico al cariotipo publicable",
-    descripcion: "Citogenética vegetal en el navegador, de la fotomicrografía al informe: medición de cromosomas sobre imágenes calibradas, cariotipo con su fórmula e idiograma a escala, índices de asimetría y categorías de Stebbins, meiosis con las configuraciones esperadas según la ploidía, conteos, citometría de flujo y prueba de Allium, bandeo y FISH, comparación entre taxones con distancias, ACP y evolución del número cromosómico sobre un árbol, docencia con simuladores de mitosis y meiosis, y un informe con métodos redactados y paquete reproducible. Validada contra R.",
+    descripcion: "Citogenética vegetal en el navegador, de la fotomicrografía al informe: medición de cromosomas sobre imágenes calibradas, cariotipo con su fórmula e idiograma a escala, índices de asimetría y categorías de Stebbins, meiosis con las configuraciones esperadas según la ploidía, conteos, citometría de flujo y prueba de Allium, bandeo y FISH, comparación entre taxones con distancias, ACP y evolución del número cromosómico sobre un árbol, docencia con simuladores de mitosis y meiosis, y un informe con métodos redactados y paquete reproducible. Validada contra implementaciones independientes.",
     categoria: "genetica", estado: "enlinea", version: "1.0.0", doi: "10.5281/zenodo.23873606", licencia: "GPL-3.0",
     manualPdf: "CytogeneticsPro_Manual_de_usuario_ES.pdf", manualMb: 22, manualHtml: true, datos: true,
     manualEn: { pdf: "CytogeneticsPro User's Manual (English).pdf", mb: 22, html: true },

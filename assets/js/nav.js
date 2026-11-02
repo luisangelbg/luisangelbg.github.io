@@ -17,6 +17,7 @@
     BreedingPro: 'chile', BioModellingPro: 'pinonero', ClusteringPro: 'orquidea', PopGeneticsPro: 'uva',
     PollinationPro: 'flor-calabaza', SciMetricsPro: 'chayote-2', GermplasmPro: 'maiz', LeafPro: 'cafe', FloralPro: 'loto',
     AnalizaR: 'jitomate', PhylogenyPro: 'papilio', CladisticsPro: 'dalia',
+    ReviewPro: 'agave', CorrelationPro: 'lirio', CytogeneticsPro: 'mazorca-planta',
   };
   const art = (a) => `assets/ilustraciones/${ARTE[a.id] || 'agave'}.svg`;
   const ficha = (a) => `apps/${a.id.toLowerCase()}/`;
