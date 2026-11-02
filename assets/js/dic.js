@@ -361,7 +361,7 @@ window.LABG_DIC = {
   "Manual de EconomicsPro en PDF (13 MB, abre otra pestaña)": "EconomicsPro manual in PDF (13 MB, opens in a new tab)",
   "Manual de ForestPro en PDF (18 MB, abre otra pestaña)": "ForestPro manual in PDF (18 MB, opens in a new tab)",
   "Manual de PCAPro en PDF (16 MB, abre otra pestaña)": "PCAPro manual in PDF (16 MB, opens in a new tab)",
-  "Manual de PalynoPro en PDF (8 MB, abre otra pestaña)": "PalynoPro manual in PDF (8 MB, opens in a new tab)",
+  "Manual de PalynoPro en PDF (16 MB, abre otra pestaña)": "PalynoPro manual in PDF (16 MB, opens in a new tab)",
   "Manual de PhenologyPro en PDF (14 MB, abre otra pestaña)": "PhenologyPro manual in PDF (14 MB, opens in a new tab)",
   "Manual de PhylogenyPro en PDF (4 MB, abre otra pestaña)": "PhylogenyPro manual in PDF (4 MB, opens in a new tab)",
   "Manual de PollinationPro en PDF (17 MB, abre otra pestaña)": "PollinationPro manual in PDF (17 MB, opens in a new tab)",
