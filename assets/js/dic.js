@@ -96,6 +96,7 @@ window.LABG_DIC = {
   "BioModelling Pro (abre otra pestaña)": "BioModelling Pro (opens in a new tab)",
   "Biogeografía": "Biogeography",
   "Biogeografía y filogenia": "Biogeography and phylogeny",
+  "Biogeografía · v1.0.0": "Biogeography · v1.0.0",
   "Biogeografía · v1.0.1": "Biogeography · v1.0.1",
   "Biogeografía · v1.1.1": "Biogeography · v1.1.1",
   "Biogeografía · v1.2.5": "Biogeography · v1.2.5",

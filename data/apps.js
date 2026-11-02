@@ -200,6 +200,17 @@ window.LABG_APPS = [
     destacada: false
   },
   {
+    id: "PalynoPro", nombre: "PalynoPro",
+    lema: "De la micrografía electrónica a la clave polínica",
+    descripcion: "Morfometría polínica cuantitativa en micrografías electrónicas de barrido, de la carpeta de imágenes al informe: cada imagen calibrada por la magnificación y comprobada contra su barra de escala; el contorno leído en 720 direcciones, el cuerpo medido sin las espinas, los anchos de Feret, el alargamiento y la circularidad; espinas contadas y medidas, lúmenes del retículo y textura de la superficie; granos turgentes y colapsados en las panorámicas con intervalos de Wilson; análisis de varianza con letras de Tukey, Kruskal–Wallis, componentes principales, PERMANOVA, discriminante y bosque aleatorio, siempre con el grano como unidad; y un informe con los métodos y sus fuentes. Las imágenes no salen de tu computadora. Validada contra implementaciones independientes.",
+    categoria: "biogeografia", estado: "enlinea", version: "1.0.0", doi: "10.5281/zenodo.XXXXXXX", licencia: "GPL-3.0",
+    manualPdf: "PalynoPro_Manual_de_usuario_ES.pdf", manualMb: 8, manualHtml: true, datos: true,
+    manualEn: { pdf: "PalynoPro User's Manual (English).pdf", mb: 8, html: true },
+    idiomas: ["es", "en"],
+    puntos: ["Calibración por la magnificación, comprobada contra la barra de escala", "Cuerpo sin espinas, anchos de Feret, espinas, lúmenes del retículo y textura", "Fertilidad en las panorámicas por la solidez del cuerpo, con intervalos de Wilson", "ANOVA, PERMANOVA, discriminante y bosque aleatorio con el grano como unidad"],
+    destacada: false
+  },
+  {
     id: "FloralPro", nombre: "FloralPro",
     lema: "La flor, verticilo por verticilo",
     descripcion: "Para enseñar y aprender la estructura de la flor: fórmulas y diagramas florales, la flor en 3D y en corte, un atlas de verticilos, 82 familias de angiospermas con énfasis en México, clave interactiva, autoevaluación y modo clase.",
@@ -215,17 +226,6 @@ window.LABG_APPS = [
     categoria: "botanica", estado: "enlinea", version: "1.2.0", doi: "", licencia: "GPL-3.0",
     manualPdf: "", manualMb: 0, manualHtml: false, datos: false,
     puntos: ["Corte anatómico interactivo", "Atlas de más de 140 términos ilustrados", "Constructor de hojas con descripción redactada", "Autoevaluación generativa y modo clase"],
-    destacada: false
-  },
-  {
-    id: "PalynoPro", nombre: "PalynoPro",
-    lema: "De la micrografía electrónica a la clave polínica",
-    descripcion: "Morfometría polínica cuantitativa en micrografías electrónicas de barrido, de la carpeta de imágenes al informe: cada imagen calibrada por la magnificación y comprobada contra su barra de escala; el contorno leído en 720 direcciones, el cuerpo medido sin las espinas, los anchos de Feret, el alargamiento y la circularidad; espinas contadas y medidas, lúmenes del retículo y textura de la superficie; granos turgentes y colapsados en las panorámicas con intervalos de Wilson; análisis de varianza con letras de Tukey, Kruskal–Wallis, componentes principales, PERMANOVA, discriminante y bosque aleatorio, siempre con el grano como unidad; y un informe con los métodos y sus fuentes. Las imágenes no salen de tu computadora. Validada contra implementaciones independientes.",
-    categoria: "botanica", estado: "enlinea", version: "1.0.0", doi: "10.5281/zenodo.XXXXXXX", licencia: "GPL-3.0",
-    manualPdf: "PalynoPro_Manual_de_usuario_ES.pdf", manualMb: 8, manualHtml: true, datos: true,
-    manualEn: { pdf: "PalynoPro User's Manual (English).pdf", mb: 8, html: true },
-    idiomas: ["es", "en"],
-    puntos: ["Calibración por la magnificación, comprobada contra la barra de escala", "Cuerpo sin espinas, anchos de Feret, espinas, lúmenes del retículo y textura", "Fertilidad en las panorámicas por la solidez del cuerpo, con intervalos de Wilson", "ANOVA, PERMANOVA, discriminante y bosque aleatorio con el grano como unidad"],
     destacada: false
   },
   {
