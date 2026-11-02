@@ -17,7 +17,7 @@
     BreedingPro: 'chile', BioModellingPro: 'pinonero', ClusteringPro: 'orquidea', PopGeneticsPro: 'uva',
     PollinationPro: 'flor-calabaza', SciMetricsPro: 'chayote-2', GermplasmPro: 'maiz', LeafPro: 'cafe', FloralPro: 'loto',
     AnalizaR: 'jitomate', PhylogenyPro: 'papilio', CladisticsPro: 'dalia',
-    ReviewPro: 'agave', CorrelationPro: 'lirio', CytogeneticsPro: 'mazorca-planta',
+    ReviewPro: 'agave', CorrelationPro: 'lirio', CytogeneticsPro: 'mazorca-planta', ForestPro: 'encino',
   };
   const art = (a) => `assets/ilustraciones/${ARTE[a.id] || 'agave'}.svg`;
   const ficha = (a) => `apps/${a.id.toLowerCase()}/`;
@@ -27,7 +27,7 @@
   const ANALISIS = [
     ['Explorar y probar', { AnalizaR: 'Pruebas, ANOVA y regresión, sin código' }],
     ['Multivariado', { PCAPro: 'ACP, AC, ACM, AFDM y AFM', ClusteringPro: 'Agrupamientos y su validación', CorrelationPro: 'Correlación, redes y metaanálisis' }],
-    ['Experimentos y campo', { AgriDesign: 'Diseños, ANOVA y comparación de medias', PhenologyPro: 'Grados-día, ETo y balance hídrico' }],
+    ['Experimentos y campo', { AgriDesign: 'Diseños, ANOVA y comparación de medias', PhenologyPro: 'Grados-día, ETo y balance hídrico', ForestPro: 'Inventario, biomasa y carbono' }],
     ['Genética', { BreedingPro: 'Cruzas, heredabilidad y selección', PopGeneticsPro: 'Diversidad, F_ST, AMOVA y estructura', GermplasmPro: 'Vacíos de colecta y colección núcleo', CytogeneticsPro: 'Cariotipo, meiosis y citometría' }],
     ['Espacio y evolución', { BioModellingPro: 'Distribución de especies y clima', PollinationPro: 'Flor y polinizador en el mapa', PhylogenyPro: 'Alineamiento, árboles y fechado', CladisticsPro: 'Parsimonia con caracteres morfológicos' }],
     ['Decisión y literatura', { EconomicsPro: 'VAN, TIR y riesgo', SciMetricsPro: 'Bibliometría y redes de autores' }],

@@ -108,6 +108,17 @@ window.LABG_APPS = [
     destacada: true
   },
   {
+    id: "ForestPro", nombre: "ForestPro",
+    lema: "Del árbol medido a la tonelada de carbono",
+    descripcion: "Inventario forestal y agroforestal, de la hoja de campo al informe: dasometría con ecuaciones de volumen, ahusamiento y altura–diámetro; diseños de muestreo con su error, relascopía, tablas de rodal y distribución de Weibull; biomasa y carbono con 31 ecuaciones alométricas, densidad de la madera e incertidumbre por Monte Carlo; crecimiento, índice de sitio y tabla de producción; diversidad, ordenación y patrón espacial; sombra y diseño de cafetales y sistemas agroforestales; mapas con cuadrícula de muestreo, GPX, KML, GeoJSON y kriging; y las cuentas del aserradero y de la plantación. Validada contra implementaciones independientes.",
+    categoria: "agronomia", estado: "enlinea", version: "1.0.0", doi: "10.5281/zenodo.23876374", licencia: "GPL-3.0",
+    manualPdf: "ForestPro_Manual_de_usuario_ES.pdf", manualMb: 18, manualHtml: true, datos: true,
+    manualEn: { pdf: "ForestPro User's Manual (English).pdf", mb: 18, html: true },
+    idiomas: ["es", "en"],
+    puntos: ["Volumen, ahusamiento y altura por ajuste no lineal; inventario con su error de muestreo", "Biomasa y carbono con densidad de la madera, Monte Carlo y todos los reservorios", "Crecimiento, índice de sitio, diversidad, ordenación y patrón espacial", "Sombra y diseño agroforestal, mapas con kriging y GPX, informe autocontenido"],
+    destacada: false
+  },
+  {
     id: "BreedingPro", nombre: "BreedingPro",
     lema: "De los progenitores al mejor híbrido",
     descripcion: "Cruzas dialélicas, diseños de apareamiento, medias generacionales, índices de selección, interacción genotipo × ambiente, modelo animal, predicción genómica y de híbridos, para mejoramiento vegetal y animal.",
