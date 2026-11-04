@@ -440,6 +440,39 @@
       });
       kf(sc, css);
     },
+    /* PostHarvestPro: un fruto que madura por etapas (verde, amarillo, naranja, rojizo) mientras se traza su curva de
+       pérdida de firmeza; el color cambia apagando y encendiendo capas (solo opacidad) */
+    postharvestpro(sc, id) {
+      loop(sc, 2.8);
+      const C = ['#6B9E2F', '#A9BE38', '#E8B21F', '#EF6C00', '#C8461A'];
+      const fr = el('i', 'lfx-ph-fr', sc);
+      const P = 'M24 8C35 7 45 18 45 33C45 47 36 58 23 58C11 58 3 48 3 35C3 21 11 9 24 8Z';
+      fr.innerHTML = '<svg viewBox="0 0 48 62" width="48" height="62" aria-hidden="true"><path d="M24 8C25 3 31 0 38 0C36 5 31 8 24 8Z" fill="#7CB342"/>' +
+        C.map((c, i) => '<path class="lfx-ph-k' + i + '" d="' + P + '" fill="' + c + '"/>').join('') +
+        '<ellipse cx="16" cy="22" rx="7" ry="5" fill="#FFF3E0" opacity=".4"/></svg>';
+      let css = '.lfx-postharvestpro .lfx-ph-fr{left:36px;top:2px;width:48px;height:62px}' +
+        '.lfx-postharvestpro .lfx-ph-cv{height:2.6px;margin-top:-1.3px;border-radius:2px;background:var(--fx1);transform-origin:0 50%;transform:scaleX(0)}' +
+        '.lfx-postharvestpro .lfx-ph-pen{left:-4.5px;top:-4.5px;width:9px;height:9px;border-radius:50%;background:var(--fx2);box-shadow:0 0 0 3px color-mix(in srgb,var(--fx2) 25%,transparent)}' +
+        '.lfx-postharvestpro .lfx-ph-lim{left:14px;right:8px;top:104px;height:0;border-top:1.5px dashed color-mix(in srgb,var(--fx1) 55%,transparent)}';
+      /* each stage owns a fifth of the loop: it comes in over the one before and stays until the next one covers it */
+      C.forEach((_, i) => {
+        if (!i) return;
+        const a = r1(6 + i * 15), b = r1(a + 8);
+        css += '@keyframes ' + id + 'k' + i + '{0%,' + a + '%{opacity:0}' + b + '%,100%{opacity:1}}' +
+          '.lfx-postharvestpro .lfx-ph-k' + i + '{animation:' + id + 'k' + i + ' 2.8s ease infinite}';
+      });
+      el('i', 'lfx-ax x', sc, 'top:112px;left:14px');
+      el('i', 'lfx-ax y', sc, 'top:70px;height:43px;left:14px');
+      el('i', 'lfx-ph-lim', sc);
+      const pts = [];
+      for (let k = 0; k <= 12; k++) { const x = 16 + 92 * k / 12; pts.push([r1(x), r1(74 + 34 * (1 - Math.exp(-2.4 * k / 12)) / (1 - Math.exp(-2.4)))]); }
+      let pen = '';
+      for (let k = 0; k < 12; k++) css += stroke(sc, 'lfx-ph-cv', id, 'c' + k, pts[k][0], pts[k][1], pts[k + 1][0], pts[k + 1][1], 6 + k * 6.6, 12.6 + k * 6.6, 2.8);
+      pts.forEach((p, k) => { pen += r1(6 + k * 6.6) + '%{transform:translate(' + p[0] + 'px,' + p[1] + 'px)}'; });
+      css += '@keyframes ' + id + 'pen{0%{transform:translate(' + pts[0][0] + 'px,' + pts[0][1] + 'px)}' + pen + '100%{transform:translate(' + pts[12][0] + 'px,' + pts[12][1] + 'px)}}';
+      el('i', 'lfx-ph-pen will', sc).style.animation = id + 'pen 2.8s linear infinite';
+      kf(sc, css);
+    },
     /* respaldo, para una app sin escena propia: puntos que se ordenan sobre una recta */
     default(sc, id) {
       el('i', 'lfx-ax x', sc); el('i', 'lfx-ax y', sc);

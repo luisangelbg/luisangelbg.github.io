@@ -1,5 +1,9 @@
 # Efectos LABG · cambios
 
+## Sin versión nueva · 3 de noviembre de 2026
+
+- **Escena de PostHarvestPro** (`data-app="postharvestpro"`): un fruto que madura por etapas (verde, amarillo, naranja, rojizo) mientras se traza su curva de pérdida de firmeza hasta el límite de aceptación; solo `transform` y `opacity`. Es la misma de `LABG-Design/labg-fx.js` y de la copia de la app; la copia fija de `v1.0.0/` no cambia.
+
 ## 1.0.0 · 3 de octubre de 2026
 
 Primera versión. Sin sonido: el autor de la suite decidió dejarlo fuera.
