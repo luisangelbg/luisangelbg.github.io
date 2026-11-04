@@ -368,7 +368,7 @@ window.LABG_DIC = {
   "Manual de PhenologyPro en PDF (14 MB, abre otra pestaña)": "PhenologyPro manual in PDF (14 MB, opens in a new tab)",
   "Manual de PhylogenyPro en PDF (4 MB, abre otra pestaña)": "PhylogenyPro manual in PDF (4 MB, opens in a new tab)",
   "Manual de PollinationPro en PDF (17 MB, abre otra pestaña)": "PollinationPro manual in PDF (17 MB, opens in a new tab)",
-  "Manual de PostHarvestPro en PDF (12 MB, abre otra pestaña)": "PostHarvestPro manual in PDF (12 MB, opens in a new tab)",
+  "Manual de PostHarvestPro en PDF (17 MB, abre otra pestaña)": "PostHarvestPro manual in PDF (17 MB, opens in a new tab)",
   "Manual de PopGeneticsPro en PDF (30 MB, abre otra pestaña)": "PopGeneticsPro manual in PDF (30 MB, opens in a new tab)",
   "Manual de ReviewPro en PDF (13 MB, abre otra pestaña)": "ReviewPro manual in PDF (13 MB, opens in a new tab)",
   "Manual de SciMetricsPro en PDF (26 MB, abre otra pestaña)": "SciMetricsPro manual in PDF (26 MB, opens in a new tab)",

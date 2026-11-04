@@ -122,9 +122,9 @@ window.LABG_APPS = [
     id: "PostHarvestPro", nombre: "PostHarvestPro",
     lema: "Del campo al consumidor: calidad, vida de anaquel y sensorial con datos",
     descripcion: "Fisiología y tecnología poscosecha en el navegador: índices de calidad y color CIELAB con ΔE00, cinética de deterioro con Arrhenius, Q10 y vida de anaquel, tiempo hasta el rechazo con censura, respiración, etileno y atmósferas modificadas, preenfriamiento, pérdidas en la cadena de valor con Sankey, daño mecánico, evaluación sensorial discriminativa, afectiva y descriptiva con desempeño del panel, ensayos factoriales y de medidas repetidas, calculadoras de empaque y almacén, e informe autocontenido. Tus datos no salen de tu computadora. Validada contra implementaciones independientes.",
-    categoria: "agronomia", estado: "enlinea", version: "1.0.0", doi: "10.5281/zenodo.XXXXXXX", licencia: "GPL-3.0",
-    manualPdf: "PostHarvestPro_Manual_de_usuario_ES.pdf", manualMb: 12, manualHtml: true, datos: true,
-    manualEn: { pdf: "PostHarvestPro User's Manual (English).pdf", mb: 12, html: true },
+    categoria: "agronomia", estado: "enlinea", version: "1.0.0", doi: "10.5281/zenodo.23935616", licencia: "GPL-3.0",
+    manualPdf: "PostHarvestPro_Manual_de_usuario_ES.pdf", manualMb: 17, manualHtml: true, datos: true,
+    manualEn: { pdf: "PostHarvestPro User's Manual (English).pdf", mb: 17, html: true },
     idiomas: ["es", "en"],
     puntos: ["Cinética de orden 0, 1 y 2 con AIC, Arrhenius, Q10 y vida de anaquel a cualquier temperatura", "Kaplan–Meier, Weibull y log-normal para el tiempo hasta el rechazo", "Respiración, climaterio, atmósfera modificada y carga de refrigeración", "Sensorial con d′ de Thurstone, penalidades JAR, CATA y desempeño del panel"],
     destacada: false
