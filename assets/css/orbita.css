@@ -11,15 +11,16 @@
 .mega-orbita {
   /* colores */
   --orb-rama: rgba(125, 91, 20, .24);          /* ramas en reposo: el oro hondo, muy tenue */
-  --orb-acento: var(--oro);                    /* rama y punto resaltados */
+  --orb-acento: var(--oro);                    /* rama resaltada y brillo del ícono */
+  --orb-brillo: rgba(212, 168, 72, .7);        /* el resplandor dorado del ícono resaltado */
   --orb-acento-texto: var(--oro-texto);        /* nombre resaltado (6:1 sobre blanco) */
-  --orb-punto-borde: #A9A296;                  /* contorno del punto en reposo */
+  --orb-punto-borde: #A9A296;                  /* contorno del punto (si una app aún no tiene ícono) */
   --orb-texto: var(--tinta);
   --orb-atenuado: .34;                         /* lo que no está resaltado */
   /* tamaños */
   --orb-centro: 104px;                         /* diámetro del disco de SigmaPro */
   --orb-halo: 15px;                            /* el anillo que lo rodea */
-  --orb-p: 9px;                                /* diámetro de los puntos */
+  --orb-p: 28px;                               /* lado del ícono de cada app */
   --orb-letra: .84rem;                         /* nombres de las apps */
   /* tiempos de la entrada (en total, unos 600 ms) */
   --orb-t-centro: 220ms;
@@ -35,7 +36,7 @@
 .mega-orbita .mega-in { overflow: visible; }
 
 .orbita { position: relative; height: calc(var(--orb-alto, 500px) + 60px); user-select: none; }
-.orbita.compacta { --orb-centro: 88px; --orb-halo: 12px; --orb-p: 7px; --orb-letra: .74rem; }
+.orbita.compacta { --orb-centro: 88px; --orb-halo: 12px; --orb-p: 24px; --orb-letra: .74rem; }
 
 /* ---------- las ramas ---------- */
 .orbita-ramas { position: absolute; left: 0; top: 0; overflow: visible; pointer-events: none; }
@@ -55,23 +56,31 @@
 .orbita-centro:hover .oc-halo, .orbita-centro:focus-visible .oc-halo { border-color: var(--orb-acento); transform: scale(1.06); }
 .orbita-centro:focus-visible { outline: 2px solid var(--oro); outline-offset: calc(var(--orb-halo) + 4px); }
 
-/* ---------- los nodos: un punto y el nombre hacia afuera ---------- */
+/* ---------- los nodos: el ícono de la app y su nombre hacia afuera ---------- */
 .orbita-nodos { list-style: none; margin: 0; padding: 0; }
-.orbita-nodo { position: absolute; z-index: 1; display: flex; align-items: center; gap: 7px; color: var(--orb-texto); text-decoration: none; white-space: nowrap;
+.orbita-nodo { position: absolute; z-index: 1; display: flex; align-items: center; gap: 8px; color: var(--orb-texto); text-decoration: none; white-space: nowrap;
   transition: opacity .25s var(--suave); }
-/* el punto queda justo en la coordenada calculada; la etiqueta, del lado de afuera */
+/* el centro del ícono queda justo en la coordenada calculada; la etiqueta, del lado de afuera */
 .orbita-nodo[data-lado="der"] { transform: translate(calc(var(--orb-p) / -2), -50%); }
 .orbita-nodo[data-lado="izq"] { flex-direction: row-reverse; transform: translate(calc(-100% + var(--orb-p) / 2), -50%); }
 .orbita-nodo[data-lado="arr"] { flex-direction: column-reverse; gap: 5px; transform: translate(-50%, calc(-100% + var(--orb-p) / 2)); }
 .orbita-nodo[data-lado="aba"] { flex-direction: column; gap: 5px; transform: translate(-50%, calc(var(--orb-p) / -2)); }
-.on-punto { flex: none; box-sizing: border-box; width: var(--orb-p); height: var(--orb-p); border-radius: 50%; background: #fff; border: 1.5px solid var(--orb-punto-borde);
+/* el marco del ícono: siempre del mismo lado, para que todo quede alineado aunque un ícono falte */
+.on-punto { flex: none; position: relative; display: grid; place-items: center; width: var(--orb-p); height: var(--orb-p); }
+.on-icono { display: block; width: 100%; height: 100%; object-fit: contain; filter: drop-shadow(0 1px 1.5px rgba(17, 17, 17, .14));
+  transition: transform .3s var(--salida), filter .3s var(--suave); }
+/* sin ícono propio: un punto discreto en su lugar */
+.on-punto.sin-icono::after { content: ""; box-sizing: border-box; width: 9px; height: 9px; border-radius: 50%; background: #fff; border: 1.5px solid var(--orb-punto-borde);
   transition: background .25s var(--suave), border-color .25s var(--suave), box-shadow .3s var(--suave); }
 .on-nombre { padding: 1px 5px; border-radius: 6px; background: rgba(255, 255, 255, .86); font: 600 var(--orb-letra)/1.3 var(--sans); letter-spacing: .005em;
   transition: color .25s var(--suave), box-shadow .2s var(--suave); }
 .on-pronto { padding: 1px 6px; border-radius: 6px; background: var(--fondo-2, #F6F3EC); color: var(--texto-2); font: 600 .6rem var(--sans); letter-spacing: .08em; text-transform: uppercase; }
-.orbita-nodo.activo .on-punto { background: var(--orb-acento); border-color: var(--orb-acento-texto); box-shadow: 0 0 0 5px rgba(212, 168, 72, .18), 0 0 14px rgba(212, 168, 72, .35); }
+/* resaltado: el ícono crece un poco y brilla en oro, siguiendo su propia silueta */
+.orbita-nodo.activo .on-icono { transform: scale(1.14); filter: drop-shadow(0 0 5px var(--orb-brillo)) drop-shadow(0 0 1px var(--orb-brillo)); }
+.orbita-nodo.activo .on-punto.sin-icono::after { background: var(--orb-acento); border-color: var(--orb-acento-texto); box-shadow: 0 0 0 5px rgba(212, 168, 72, .18), 0 0 14px rgba(212, 168, 72, .35); }
 .orbita-nodo.activo .on-nombre { color: var(--orb-acento-texto); }
 .enfoque .orbita-nodo:not(.activo) { opacity: var(--orb-atenuado); }
+.enfoque .orbita-nodo:not(.activo) .on-icono { filter: grayscale(.6); }
 .orbita-nodo:focus-visible { outline: none; }
 .orbita-nodo:focus-visible .on-nombre { box-shadow: 0 0 0 2px var(--oro); }
 
@@ -80,12 +89,12 @@
   border-top: 1px solid var(--linea-suave); }
 .orbita-info { display: flex; align-items: center; gap: 8px; min-width: 0; margin: 0; color: var(--texto-2); font: 400 .88rem/1.3 var(--sans); white-space: nowrap; overflow: hidden; }
 .orbita-info b { color: var(--tinta); font-weight: 700; }
-.orbita-info img { flex: none; width: 26px; height: 26px; object-fit: contain; }
+.orbita-info img { flex: none; width: 24px; height: 24px; object-fit: contain; }
 .orbita-info span { overflow: hidden; text-overflow: ellipsis; }
 .orbita-info .oi-cat { flex: none; font: 700 .64rem var(--sans); letter-spacing: .16em; text-transform: uppercase; color: var(--oro-texto); }
 .orbita-todas { flex: none; font: 600 .86rem var(--sans); color: var(--oro-texto); text-decoration: none; }
 
-@media (max-width: 1080px) { .mega-orbita { --orb-letra: .78rem; --orb-centro: 96px; } }
+@media (max-width: 1080px) { .mega-orbita { --orb-letra: .78rem; --orb-centro: 96px; --orb-p: 26px; } }
 
 /* ---------- la entrada: el centro, luego las ramas que se dibujan y los nodos, escalonados ---------- */
 @media (prefers-reduced-motion: no-preference) {
@@ -124,9 +133,15 @@
 .arbol-ramas::before { content: ""; position: absolute; left: 0; top: 0; bottom: 21px; width: 1px; background: rgba(125, 91, 20, .28); transform-origin: top; }
 .arbol-ramas li { position: relative; }
 .arbol-ramas li::before { content: ""; position: absolute; left: -26px; top: 0; width: 22px; height: 21px; border-left: 1px solid rgba(125, 91, 20, .28); border-bottom: 1px solid rgba(125, 91, 20, .28); border-bottom-left-radius: 12px; }
-.mobile-links .arbol-ramas a { padding: 8px 0; }
-.ar-punto { flex: none; width: 8px; height: 8px; margin-left: -5px; border-radius: 50%; background: #fff; border: 1.5px solid var(--orb-punto-borde, #A9A296); box-sizing: border-box; }
-.arbol-ramas a:hover .ar-punto, .arbol-ramas a:focus-visible .ar-punto { background: var(--oro); border-color: var(--oro-texto); }
+/* el ícono arriba a la izquierda, con su centro a la altura donde llega la rama (21 px) */
+.mobile-links .arbol-ramas a { align-items: flex-start; padding: 8px 0; }
+.arbol-ramas .ar-txt { padding-top: 3px; }
+.ar-punto { flex: none; display: grid; place-items: center; width: 26px; height: 26px; }
+.ar-icono { display: block; width: 100%; height: 100%; object-fit: contain; filter: drop-shadow(0 1px 1.5px rgba(17, 17, 17, .14)); transition: transform .3s var(--salida), filter .3s var(--suave); }
+.arbol-ramas a:hover .ar-icono, .arbol-ramas a:focus-visible .ar-icono { transform: scale(1.1); filter: drop-shadow(0 0 5px rgba(212, 168, 72, .7)); }
+/* sin ícono propio: el punto de siempre */
+.ar-punto.sin-icono::after { content: ""; box-sizing: border-box; width: 8px; height: 8px; border-radius: 50%; background: #fff; border: 1.5px solid var(--orb-punto-borde, #A9A296); }
+.arbol-ramas a:hover .ar-punto.sin-icono::after, .arbol-ramas a:focus-visible .ar-punto.sin-icono::after { background: var(--oro); border-color: var(--oro-texto); }
 .arbol-ramas a:hover b, .arbol-ramas a:focus-visible b { color: var(--oro-texto); }
 .mobile-links .arbol a:focus-visible { outline: 2px solid var(--oro); outline-offset: 2px; border-radius: 6px; }
 .mobile-links .arbol-todas { display: inline-block; margin-top: 14px; color: var(--oro-texto); font: 600 .9rem var(--sans); }

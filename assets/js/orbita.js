@@ -12,6 +12,10 @@
        al añadir su bloque. Su lugar alrededor del centro sigue el orden de
        las categorías (window.LABG_CATEGORIAS) y, dentro de cada una, el del
        archivo, así que las apps del mismo campo quedan juntas.
+     · Los íconos: assets/iconos/<id>.svg, el mismo ícono que la app usa en
+       su pestaña o en su barra. Si una app aún no tiene el suyo, su nodo
+       muestra un punto discreto en su lugar. SigmaPro, al centro, conserva
+       su disco con la σ.
      · La app del centro, los anillos, el alto y la curva de las ramas:
        CONFIG, aquí abajo.
      · Los colores, las letras y los tiempos de la animación: las variables
@@ -52,7 +56,19 @@
   const NS = 'http://www.w3.org/2000/svg';
   /* la misma dirección que tenían los nodos del menú anterior (nav.js) */
   const ficha = (a) => `apps/${a.id.toLowerCase()}/`;
-  const arte = (a) => `assets/ilustraciones/${(window.LABG_ARTE || {})[a.id] || 'agave'}.svg`;
+  /* el ícono propio de cada app */
+  const icono = (a) => `assets/iconos/${a.id}.svg`;
+  /* la imagen del ícono; el archivo se pide hasta que hace falta (data-src), no al cargar la portada */
+  const imgIcono = (a, cls, lado) => `<img class="${cls}" data-src="${esc(icono(a))}" alt="" width="${lado}" height="${lado}" decoding="async">`;
+  /* pide los íconos que falten dentro de «raiz»; si uno no existe, su nodo vuelve al punto */
+  function cargarIconos(raiz) {
+    if (!raiz) return;
+    $$('img[data-src]', raiz).forEach((img) => {
+      img.addEventListener('error', () => { const p = img.parentNode; if (p) p.classList.add('sin-icono'); img.remove(); }, { once: true });
+      img.src = img.dataset.src;
+      img.removeAttribute('data-src');
+    });
+  }
   /* el centro lleva la σ del logo de SigmaPro; si fuera otra app, su inicial */
   const glifo = (a) => (a.id === 'SigmaPro' ? 'σ' : a.nombre.charAt(0));
 
@@ -88,7 +104,7 @@
       '<ul class="orbita-nodos" aria-label="Apps de la suite">' +
         resto.map((a, i) =>
           `<li><a class="orbita-nodo" href="${ficha(a)}" data-id="${esc(a.id)}" style="--i:${i}">` +
-            '<span class="on-punto" aria-hidden="true"></span>' +
+            `<span class="on-punto" aria-hidden="true">${imgIcono(a, 'on-icono', 28)}</span>` +
             `<span class="on-nombre">${esc(a.nombre)}</span> <span class="sr-only">${esc(a.lema)}</span>` +
             (a.estado === 'enlinea' ? '' : ' <span class="on-pronto">Pronto</span>') +
           '</a></li>').join('') +
@@ -110,9 +126,10 @@
       return;
     }
     const cat = (D.CATS[a.categoria] || {}).corto;
-    p.innerHTML = `<img src="${esc(arte(a))}" alt="" width="26" height="26">` +
+    p.innerHTML = imgIcono(a, 'oi-icono', 24) +
       `<b>${esc(a.nombre)}</b>` + (cat ? ` <span class="oi-cat">${esc(t(cat))}</span>` : '') +
       ` <span class="oi-lema">${esc(t(a.lema))}</span>`;
+    cargarIconos(p);
   }
 
   /* ---------- acomodar: posiciones, choques y ramas ---------- */
@@ -186,17 +203,20 @@
     return false;
   }
 
-  /* una rama por app: curva de Bézier desde el halo del centro hasta el punto, todas con el mismo giro.
+  /* una rama por app: curva de Bézier desde el halo del centro hasta el ícono, todas con el mismo giro.
      Las del anillo interior hacen una «C» suave. Las del exterior salen con el mismo giro y luego se
      enderezan (una «S» apenas marcada): así, a media rama, pasan justo por la mitad del hueco entre
-     sus dos vecinos del anillo interior, en lugar de rozar uno de sus puntos. */
+     sus dos vecinos del anillo interior, en lugar de rozar uno de sus íconos. */
   function ramas(nodos, W, H) {
     const svg = $('.orbita-ramas', caja), [cx, cy] = caja._c;
     svg.setAttribute('width', W); svg.setAttribute('height', H); svg.setAttribute('viewBox', `0 0 ${W} ${H}`);
     const r0 = $('.oc-halo', caja).offsetWidth / 2 + 2;
     svg.innerHTML = nodos.map((a, i) => {
       const [x, y] = a._xy, dx = x - cx, dy = y - cy, d = Math.hypot(dx, dy) || 1, ux = dx / d, uy = dy / d;
-      const sx = cx + ux * r0, sy = cy + uy * r0, ex = x - ux * 6, ey = y - uy * 6;
+      /* la rama termina a 3 px de la orilla del ícono (un cuadrado de esquinas redondas) o del punto */
+      const marco = $('.on-punto', a), h = marco.classList.contains('sin-icono') ? 4.5 : marco.offsetWidth / 2;
+      const orilla = Math.min(h / Math.max(Math.abs(ux), Math.abs(uy)), h * 1.25) + 3;
+      const sx = cx + ux * r0, sy = cy + uy * r0, ex = x - ux * orilla, ey = y - uy * orilla;
       const k = CONFIG.curva * d, nx = -uy * k, ny = ux * k;
       /* [posición a lo largo de la rama, desvío] de los dos puntos de control */
       const [p1, m1, p2, m2] = a._lejos ? [0.3, 0.8, 0.7, -0.6] : [0.38, 1, 0.72, 0.55];
@@ -233,8 +253,11 @@
     caja.addEventListener('focusin', sobre);
     caja.addEventListener('focusout', (e) => { if (!caja.contains(e.relatedTarget)) activar(null); });
     /* cada vez que se abre: acomodar de nuevo (el ancho pudo cambiar) y repetir la entrada */
+    /* los íconos se piden en cuanto el cursor o el foco llegan a «Apps», un instante antes de abrir */
+    const boton = $('.nav-links button[aria-controls="megaApps"]');
+    if (boton) ['pointerenter', 'focus'].forEach((ev) => boton.addEventListener(ev, () => cargarIconos(caja), { once: true }));
     new MutationObserver(() => {
-      if (panel.classList.contains('open')) { caja.classList.remove('quieto'); disponer(); }
+      if (panel.classList.contains('open')) { cargarIconos(caja); caja.classList.remove('quieto'); disponer(); }
       else { activar(null); }
     }).observe(panel, { attributes: true, attributeFilter: ['class'] });
     let espera = 0;
@@ -262,7 +285,7 @@
       `<a class="arbol-centro" href="${ficha(centro)}"><span class="oc-disco" aria-hidden="true"><span class="oc-glifo">${esc(glifo(centro))}</span></span>` +
         `<span class="ar-txt"><b>${esc(centro.nombre)}</b><small>${esc(centro.lema)}</small></span></a>` +
       '<ul class="arbol-ramas" aria-label="Apps de la suite">' +
-        resto.map((a, i) => `<li style="--i:${i}"><a href="${ficha(a)}"><span class="ar-punto" aria-hidden="true"></span>` +
+        resto.map((a, i) => `<li style="--i:${i}"><a href="${ficha(a)}"><span class="ar-punto" aria-hidden="true">${imgIcono(a, 'ar-icono', 26)}</span>` +
           `<span class="ar-txt"><b>${esc(a.nombre)}</b><small>${esc(a.lema)}</small></span></a></li>`).join('') +
       '</ul>' +
       '<a class="link-arrow arbol-todas" href="aplicaciones.html">Ver el catálogo completo →</a>';
@@ -271,7 +294,7 @@
       const abre = b.getAttribute('aria-expanded') !== 'true';
       b.setAttribute('aria-expanded', String(abre));
       arbol.hidden = !abre;
-      if (abre) { arbol.classList.remove('crece'); void arbol.offsetWidth; arbol.classList.add('crece'); }
+      if (abre) { cargarIconos(arbol); arbol.classList.remove('crece'); void arbol.offsetWidth; arbol.classList.add('crece'); }
     });
     /* al cerrar el menú, el árbol vuelve a plegarse */
     const menu = $('#mobileMenu');
