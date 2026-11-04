@@ -37,6 +37,17 @@ window.LABG_CATEGORIAS = {
 
 window.LABG_APPS = [
   {
+    id: "SigmaPro", nombre: "SigmaPro",
+    lema: "Del experimento a la conclusión, con cifras que se pueden comprobar",
+    descripcion: "Estadística para la investigación agronómica y biológica, del archivo de campo a la tabla y la figura publicadas: diseños experimentales con comparaciones de medias, contrastes y polinomios ortogonales; regresión, correlación y tablas de contingencia; modelos lineales mixtos, componentes de varianza y heredabilidad; modelos generalizados y no lineales; superficies de respuesta, mezclas y deseabilidad; ensayos multiambiente con estabilidad, AMMI y GGE; tamaño de muestra, muestreo, supervivencia, series de tiempo y multivariado. Cada uno de sus 78 análisis da la conclusión en palabras, revisa sus supuestos, explica cómo leer cada número, escribe el párrafo de métodos y el código R equivalente, y tiene su ficha de fundamentos. Validada contra R.",
+    categoria: "estadistica", estado: "enlinea", version: "1.0.0", doi: "10.5281/zenodo.23935865", licencia: "GPL-3.0",
+    manualPdf: "SigmaPro_Manual_de_usuario_ES.pdf", manualMb: 18, manualHtml: true, datos: true,
+    manualEn: { pdf: "SigmaPro User's Manual (English).pdf", mb: 18, html: true },
+    idiomas: ["es", "en"],
+    puntos: ["78 análisis, de los diseños experimentales a los modelos mixtos y multiambiente", "Conclusión en palabras, supuestos con semáforo y guía para leer cada número", "Reporte en .docx, PDF y Markdown con métodos, código R y apéndice metodológico", "Validada contra R: 849 casos y 93 169 valores"],
+    destacada: false
+  },
+  {
     id: "PCAPro", nombre: "PCAPro",
     lema: "Análisis de componentes principales guiado",
     descripcion: "Preparación de datos, supuestos, extracción, rotación, mapas factoriales e interpretación, hasta un informe listo para publicar. Incluye además AC, ACM, FAMD, AFM y agrupamiento HCPC sobre las coordenadas factoriales.",
