@@ -32,6 +32,7 @@
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400..700;1,9..144,400..600&family=Manrope:wght@400;500;600;700&display=swap" media="print" onload="this.onload=null;this.media='all'">
 <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400..700;1,9..144,400..600&family=Manrope:wght@400;500;600;700&display=swap"></noscript>
 <link rel="stylesheet" href="assets/css/home.css">
+<link rel="stylesheet" href="assets/css/orbita.css">
 <script>
   /* antes de pintar: qué héroe toca. Aquí solo lo barato; la prueba de WebGL se hace después
      de la carga (hero-boot.js), así el logotipo en SVG se pinta de inmediato en todos los casos.
@@ -58,6 +59,7 @@
 <script defer src="data/apps.js"></script>
 <script defer src="assets/js/datos-ejemplo.js"></script>
 <script defer src="assets/js/nav.js"></script>
+<script defer src="assets/js/orbita.js"></script>
 <script defer src="assets/js/home.js"></script>
 <script defer src="assets/js/chapters.js"></script>
 <script type="module" src="assets/js/hero-boot.js"></script>
@@ -101,7 +103,8 @@
     </div>
   </div>
   <!-- paneles desplegables: se llenan desde data/apps.js -->
-  <div class="mega" id="megaApps" aria-label="Apps por área"><div class="mega-in"><div class="wrap mega-grid"></div></div></div>
+  <!-- «Apps»: la constelación de la suite, con SigmaPro al centro (assets/js/orbita.js y assets/css/orbita.css) -->
+  <div class="mega mega-orbita" id="megaApps" aria-label="Ecosistema de apps LABG"><div class="mega-in"><div class="wrap orbita"></div></div></div>
   <div class="mega" id="megaAnalisis" aria-label="Apps por tipo de análisis"><div class="mega-in"><div class="wrap mega-grid"></div></div></div>
 </header>
 <div class="nav-dim" id="navDim" aria-hidden="true"></div>
@@ -113,7 +116,7 @@
     <button class="icon-btn" id="menuClose" type="button" aria-label="Cerrar el menú"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 6l12 12M18 6 6 18"/></svg></button>
   </div>
   <ul class="mobile-links">
-    <li style="--i:0"><a href="aplicaciones.html">Apps</a></li>
+    <li style="--i:0"><a href="aplicaciones.html" data-arbol>Apps</a></li>
     <li style="--i:1"><a href="aplicaciones.html#estadistica">Análisis</a></li>
     <li style="--i:2"><a href="descargas.html">Manuales</a></li>
     <li style="--i:3"><a href="publicaciones.html">Publicaciones</a></li>

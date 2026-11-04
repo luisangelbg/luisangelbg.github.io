@@ -41,7 +41,9 @@
     const byId = Object.fromEntries(APPS.map((a) => [a.id, a]));
     const byTipo = ANALISIS.map(([t, m], i) => `<div class="mega-col" style="--i:${i}"><h3>${esc(t)}</h3><ul>${Object.entries(m).filter(([id]) => byId[id]).map(([id, l]) => item(byId[id], l)).join('')}</ul></div>`).join('');
     const all = (n) => `<p class="mega-all" style="--i:${n}"><a class="link-arrow" href="aplicaciones.html">Ver el catálogo completo →</a></p>`;
-    $('#megaApps .mega-grid').innerHTML = byArea + all(7);
+    /* el panel de Apps, si es la constelación (orbita.js), no tiene esta cuadrícula */
+    const gApps = $('#megaApps .mega-grid');
+    if (gApps) gApps.innerHTML = byArea + all(7);
     $('#megaAnalisis .mega-grid').innerHTML = byTipo + all(7);
   }
 
@@ -88,6 +90,13 @@
       panel.addEventListener('focusout', (e) => { if (!panel.contains(e.relatedTarget) && e.relatedTarget !== b) setOpen(b, false); });
     });
     dim.addEventListener('click', closeAll);
+    /* un clic fuera del panel abierto (y fuera de los botones que abren paneles) lo cierra */
+    document.addEventListener('click', (e) => {
+      if (!openPanel) return;
+      const panel = $('#' + openPanel.getAttribute('aria-controls'));
+      if (panel.contains(e.target) || (e.target.closest && e.target.closest('.nav-links button[aria-controls]'))) return;
+      closeAll();
+    });
   }
 
   /* ---------- búsqueda en la barra: sugiere apps y manuales ---------- */
@@ -153,7 +162,7 @@
     m.addEventListener('keydown', (e) => {
       if (e.key === 'Escape') close();
       if (e.key === 'Tab') {   /* el foco no sale del menú mientras está abierto */
-        const f = $$('a, button, input', m), first = f[0], last = f[f.length - 1];
+        const f = $$('a, button, input', m).filter((x) => x.offsetParent !== null), first = f[0], last = f[f.length - 1];
         if (e.shiftKey && document.activeElement === first) { e.preventDefault(); last.focus(); }
         else if (!e.shiftKey && document.activeElement === last) { e.preventDefault(); first.focus(); }
       }
